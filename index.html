@@ -3,792 +3,793 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Complete Airbnb Co-Hosting Business Blueprint</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Complete Airbnb Remote Co-Hosting Business Blueprint</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --secondary: #ff6b35;
-            --dark: #1e3a8a;
-            --light: #f8fafc;
+            --primary: #FF5A5F;
+            --secondary: #00A699;
+            --dark: #484848;
+            --light: #f7f7f7;
+            --success: #008489;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Circular', -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
         }
         
         body {
-            font-family: 'Inter', sans-serif;
-            color: #333;
+            color: var(--dark);
             line-height: 1.6;
         }
         
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
             color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: #f03c42;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #00897d;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 15px 0;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        /* Hero section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #fd927e 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Features section */
+        .features {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-item {
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* Documents section */
+        .documents {
+            background-color: var(--light);
             padding: 80px 0;
         }
         
-        .btn-primary {
-            background-color: var(--secondary);
-            border-color: var(--secondary);
-            padding: 12px 30px;
-            font-weight: 600;
-            font-size: 18px;
-            border-radius: 6px;
-            transition: all 0.3s;
+        .doc-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
         
-        .btn-primary:hover {
-            background-color: #ff5a1f;
-            border-color: #ff5a1f;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.2);
-        }
-        
-        .countdown {
-            background-color: var(--dark);
-            color: white;
-            padding: 15px;
+        .doc-category {
+            background-color: white;
             border-radius: 8px;
-            text-align: center;
-            margin-bottom: 30px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
-        .countdown span {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--secondary);
+        .doc-category h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
         }
         
-        .card {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            height: 100%;
+        .doc-list {
+            list-style-type: none;
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        .doc-list li {
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .doc-list li:before {
+            content: "✓";
+            color: var(--success);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 0;
+            background-color: white;
         }
         
         .testimonial {
-            background-color: #f8fafc;
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 20px;
-        }
-        
-        .price-tag {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
             position: relative;
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--secondary);
-            color: white;
-            font-size: 28px;
-            font-weight: 700;
-            border-radius: 6px;
-            margin-bottom: 20px;
         }
         
-        .price-tag .original {
+        .testimonial:after {
+            content: """;
             position: absolute;
-            top: -20px;
-            right: 0;
-            text-decoration: line-through;
-            font-size: 18px;
-            color: #fecaca;
+            top: 10px;
+            right: 20px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.2;
+            line-height: 1;
         }
         
+        .customer-name {
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 1rem;
+        }
+        
+        /* Pricing */
+        .pricing {
+            background-color: var(--light);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .price-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .price {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1.5rem 0;
+        }
+        
+        .price sup {
+            font-size: 2rem;
+            position: relative;
+            top: -1.5rem;
+        }
+        
+        .price-subtitle {
+            color: var(--success);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        
+        /* Guarantee */
         .guarantee {
+            background-color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .guarantee-badge {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+        
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg, var(--secondary) 0%, #00d4c2 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            margin-bottom: 2rem;
+        }
+        
+        /* FAQ */
+        .faq {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+        
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+        }
+        
+        .faq-question {
+            font-weight: 700;
+            cursor: pointer;
+            padding: 1rem 0;
+            position: relative;
+            padding-right: 30px;
+        }
+        
+        .faq-question:after {
+            content: "+";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+        }
+        
+        .faq-answer {
+            display: none;
+            padding: 1rem 0;
+        }
+        
+        .active.faq-question:after {
+            content: "-";
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-links {
             display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .doc-categories {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Popup Form */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
             align-items: center;
-            margin: 30px 0;
-            padding: 20px;
-            border: 1px solid #e5e7eb;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background-color: white;
+            padding: 2rem;
             border-radius: 8px;
-            background-color: #f8fafc;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            transform: translateY(-50px);
+            transition: all 0.3s;
         }
         
-        .highlight {
-            background-color: #fffbeb;
-            border-left: 4px solid #fbbf24;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
+        .popup-overlay.active .popup-content {
+            transform: translateY(0);
         }
         
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+        }
+        
+        .popup-form input,
+        .popup-form button {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .popup-form input {
+            border: 1px solid #ddd;
+        }
+        
+        .popup-form button {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        /* Count Down Timer */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .countdown-item {
+            background-color: var(--dark);
+            color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        /* Bonus section */
         .bonus {
-            background-color: #f0fdf4;
-            border: 1px solid #86efac;
-            padding: 20px;
-            margin-bottom: 15px;
+            background-color: #fffbeb;
+            border: 2px dashed #ffc107;
             border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .bonus h3 {
+            color: #ff9800;
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">Airbnb Co-Hosting Pro</div>
+            <a href="#pricing" class="btn">Get Started</a>
+        </div>
+    </header>
+
     <section class="hero">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <h1 class="display-4 fw-bold mb-4">The Secret to Running a Profitable Airbnb Management Business From Anywhere in the World</h1>
-                    <p class="lead mb-4">Discover our proprietary remote management system that lets you charge just 15% while traditional managers charge 25-40%</p>
-                    <div class="countdown mb-4">
-                        Limited Time Offer: Expires in <span id="countdown">47:59:59</span>
-                    </div>
-                    <a href="#blueprint" class="btn btn-primary btn-lg px-5 py-3 mb-3">YES! SHOW ME THE REMOTE HOSTING SECRET</a>
-                    <p class="text-white-50 mt-2">Join 732 successful remote property managers in 47 countries</p>
+            <h1>THE COMPLETE AIRBNB REMOTE CO-HOSTING BUSINESS BLUEPRINT</h1>
+            <p class="hero-subtitle">Launch Your Remote Property Management Empire - Earn Thousands Without Owning a Single Property!</p>
+            <div>
+                <a href="#pricing" class="btn btn-large">GET STARTED TODAY</a>
+            </div>
+            <div style="margin-top: 3rem;">
+                <p>Are you ready to tap into the $113.4 billion vacation rental market with a proven, innovative business model that property owners are desperate for?</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">YOUR KEY TO LOCATION-INDEPENDENT INCOME</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <h3>Lower Fees, Higher Profits</h3>
+                    <p>Charge just 25% commission (instead of the industry-standard 30-40%) while delivering exceptional results that make property owners THRILLED to work with you.</p>
                 </div>
-                <div class="col-lg-5">
-                    <div class="position-relative" style="padding-bottom:56.25%;">
-                        <iframe class="position-absolute top-0 start-0 w-100 h-100" src="https://www.youtube.com/embed/placeholder" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Work From Anywhere</h3>
+                    <p>Our revolutionary approach to running a completely remote hosting business means you can manage properties from a different state or even a different country!</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Launch in Weeks, Not Months</h3>
+                    <p>Skip the painful trial-and-error phase and start with proven systems. Save 300+ hours of document creation and process development.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Scale Quickly</h3>
+                    <p>With ready-made systems, you can focus on growth. Manage 10 properties for $100,000+ in annual recurring revenue - all while working remotely.</p>
                 </div>
             </div>
         </div>
     </section>
-    
-    <!-- Benefits Section -->
-    <section class="py-5 bg-light">
+
+    <section class="documents">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Manage Vacation Rentals Remotely While Earning More Than Local Managers</h2>
-                <p class="lead">Our breakthrough system works even if you live in a different state or country</p>
+            <h2 class="section-title">23 COMPLETE, READY-TO-USE BUSINESS DOCUMENTS</h2>
+            <p style="text-align: center;">This comprehensive package includes every document you need to hit the ground running</p>
+            
+            <div class="doc-categories">
+                <div class="doc-category">
+                    <h3>Client Facing Documents</h3>
+                    <ul class="doc-list">
+                        <li>Co-Hosting Service Agreement</li>
+                        <li>Property Assessment Checklist</li>
+                        <li>Property Onboarding Questionnaire</li>
+                        <li>Service Packages and Pricing Sheet</li>
+                        <li>Client Welcome Packet</li>
+                        <li>Monthly Owner Reporting Template</li>
+                    </ul>
+                </div>
+                <div class="doc-category">
+                    <h3>Team Documents</h3>
+                    <ul class="doc-list">
+                        <li>Cleaning-Manager Service Agreement</li>
+                        <li>Cleaning and Inspection Standards Guide</li>
+                        <li>Property Management Responsibilities Outline</li>
+                        <li>Compensation Structure Document</li>
+                        <li>Team Training Manual</li>
+                    </ul>
+                </div>
+                <div class="doc-category">
+                    <h3>Operation Documents</h3>
+                    <ul class="doc-list">
+                        <li>Standard Operating Procedures Manual</li>
+                        <li>Guest Communication Templates</li>
+                        <li>Booking Management Workflow</li>
+                        <li>Turnover Coordination Process</li>
+                        <li>Issue Resolution Protocol</li>
+                        <li>Emergency Response Plan</li>
+                    </ul>
+                </div>
+                <div class="doc-category">
+                    <h3>Marketing Documents</h3>
+                    <ul class="doc-list">
+                        <li>Company Overview/Pitch Deck</li>
+                        <li>Service Brochure</li>
+                        <li>Case Study Template</li>
+                        <li>Website Content Plan</li>
+                        <li>Social Media Strategy Document</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">SUCCESS STORIES</h2>
+            
+            <div class="testimonial">
+                <p>"These documents revealed the exact strategy I needed to manage properties in Florida while living in California. I launched with 3 properties in my first month and scaled to 22 within a year using these exact systems."</p>
+                <p class="customer-name">- Michael T., Satisfied Client</p>
             </div>
             
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
-                                    <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
-                                </svg>
-                            </div>
-                            <h5 class="card-title">100% Location Independent</h5>
-                            <p class="card-text">Manage properties from anywhere in the world with our proven remote system</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
-                                    <path d="M4 .5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z"/>
-                                </svg>
-                            </div>
-                            <h5 class="card-title">Launch in 30 Days</h5>
-                            <p class="card-text">Use our ready-to-implement systems to start generating income immediately</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
-                                    <path d="M8 0a.5.5 0 0 1 .5.5v.514C12.625 1.238 16 4.22 16 8c0 0 0 .5-.5.5-.149 0-.352-.145-.352-.145l-.004-.004-.025-.023a3.484 3.484 0 0 0-.555-.394A3.166 3.166 0 0 0 13 7.5c-.638 0-1.178.213-1.564.434a3.484 3.484 0 0 0-.555.394l-.025.023-.003.003s-.204.146-.353.146-.352-.145-.352-.145l-.004-.004-.025-.023a3.484 3.484 0 0 0-.555-.394 3.3 3.3 0 0 0-1.064-.39V13.5H8h.5v.039l-.005.083a2.958 2.958 0 0 1-.298 1.102 2.257 2.257 0 0 1-.763.88C7.06 15.851 6.587 16 6 16s-1.061-.148-1.434-.396a2.255 2.255 0 0 1-.763-.88 2.958 2.958 0 0 1-.302-1.185v-.025l-.001-.009v-.003s0-.002.5-.002h-.5V13a.5.5 0 0 1 1 0v.506l.003.044a1.958 1.958 0 0 0 .195.726c.095.191.23.367.423.495.19.127.466.229.879.229s.689-.102.879-.229c.193-.128.328-.304.424-.495a1.958 1.958 0 0 0 .197-.77V7.544a3.3 3.3 0 0 0-1.064.39 3.482 3.482 0 0 0-.58.417l-.004.004S5.65 8.5 5.5 8.5c-.149 0-.352-.145-.352-.145l-.004-.004a3.482 3.482 0 0 0-.58-.417A3.166 3.166 0 0 0 3 7.5c-.638 0-1.177.213-1.564.434a3.482 3.482 0 0 0-.58.417l-.004.004S.65 8.5.5 8.5C0 8.5 0 8 0 8c0-3.78 3.375-6.762 7.5-6.986V.5A.5.5 0 0 1 8 0zM6.577 2.123c-2.833.5-4.99 2.458-5.474 4.854A4.124 4.124 0 0 1 3 6.5c.806 0 1.48.25 1.962.511a9.706 9.706 0 0 1 .344-2.358c.242-.868.763-1.93 1.271-2.53zm1.504-1.209c-.242.868-.763 1.93-1.271 2.53A9.717 9.717 0 0 0 6.577 5.8a4.46 4.46 0 0 1 .986-.511 4.126 4.126 0 0 1 1.756-.376c-.421-.631-.784-1.27-1.022-1.874-.241-.602-.356-1.496-.356-1.946a.75.75 0 0 0 .132-.232 8.455 8.455 0 0 0-.332.073 7.677 7.677 0 0 0-.66.187zM11.139 5.8c-.421-.631-.784-1.27-1.022-1.874-.241-.602-.356-1.496-.356-1.946.121-.155.208-.302.269-.428 2.249.62 3.995 2.554 4.366 4.897a4.128 4.128 0 0 0-1.384-.323 4.458 4.458 0 0 0-1.873.374zm.979 1.333a9.638 9.638 0 0 1-.001-.001l.001.001zm-.973-.824a4.453 4.453 0 0 0-.615.117 4.456 4.456 0 0 0-1.258.394 9.734 9.734 0 0 0-.344-2.358c-.242-.868-.763-1.93-1.271-2.53.339.07.668.163.985.29 1.018.408 1.59 1.048 1.851 1.686.323.788.434 1.683.652 2.401zm-6.3.176a9.638 9.638 0 0 1-.001-.001l.001.001z"/>
-                                </svg>
-                            </div>
-                            <h5 class="card-title">Charge Just 15%</h5>
-                            <p class="card-text">Undercut traditional managers (25-40%) while maintaining excellent margins</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
-                                    <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z"/>
-                                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                                </svg>
-                            </div>
-                            <h5 class="card-title">Recurring Revenue</h5>
-                            <p class="card-text">Build a sustainable business with predictable monthly income</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="testimonial">
+                <p>"I was skeptical about managing properties remotely, but this blueprint changed everything. The documents and systems are so comprehensive and professional. I now manage 15 properties while traveling full-time!"</p>
+                <p class="customer-name">- Sarah K., Digital Nomad</p>
             </div>
         </div>
     </section>
-    
-    <!-- Blueprint Overview Section -->
-    <section id="blueprint" class="py-5">
+
+    <section class="pricing" id="pricing">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <img src="https://via.placeholder.com/600x400" alt="Airbnb Co-Hosting Business Blueprint" class="img-fluid rounded shadow">
+            <h2 class="section-title">LIMITED TIME OFFER</h2>
+            
+            <div class="price-box">
+                <h3>The Complete Airbnb Co-Hosting Business Blueprint</h3>
+                <div class="price"><sup>$</sup>997</div>
+                <p class="price-subtitle">That's less than $43 per comprehensive document!</p>
+                
+                <div class="bonus">
+                    <h3>BONUS INCLUDED</h3>
+                    <p>Implementation Guide: Our step-by-step roadmap showing you exactly how to launch your business in 30 days, acquire your first 5 properties, and scale to 25+ properties.</p>
                 </div>
-                <div class="col-lg-6">
-                    <h2 class="fw-bold mb-4">The Complete Airbnb Co-Hosting Business Blueprint</h2>
-                    <p class="lead mb-4">Discover our proprietary remote management system that allows you to run a thriving vacation rental management business from anywhere in the world.</p>
-                    
-                    <div class="highlight">
-                        <h5 class="fw-bold">Our Breakout Winning Strategy Revealed</h5>
-                        <p>For the first time ever, we're revealing our revolutionary approach to running a completely remote hosting business - even from a different state or country!</p>
+                
+                <p>Limited Time Offer - Price Increases Soon!</p>
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">3</div>
+                        <div class="countdown-label">Days</div>
                     </div>
-                    
-                    <p>This comprehensive package includes everything you need to launch, operate and scale a profitable remote property management business charging just 15% (vs. the industry-standard 25-40%) while delivering exceptional results.</p>
-                    
-                    <a href="#packages" class="btn btn-primary btn-lg mt-3">Get Instant Access Now</a>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">11</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">45</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">30</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
                 </div>
+                
+                <a href="#" class="btn btn-large open-popup">GET STARTED NOW</a>
             </div>
         </div>
     </section>
-    
-    <!-- What's Included Section -->
-    <section class="py-5 bg-light">
+
+    <section class="guarantee">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">What's Included In Your Blueprint</h2>
-                <p class="lead">7 Complete, Ready-to-Use Business Documents</p>
+            <div class="guarantee-badge">
+                <img src="/api/placeholder/120/120" alt="100% Satisfaction Guarantee">
+            </div>
+            <h2>100% SATISFACTION GUARANTEE</h2>
+            <p>If these documents don't provide everything you need to launch your Airbnb Co-Hosting business, simply request a refund within 30 days.</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>YOUR REMOTE PROPERTY MANAGEMENT EMPIRE AWAITS</h2>
+            <p>Just ONE property client generates $7,000 to $10,000+ in annual management fees.</p>
+            <p>This complete package costs less than what you'll earn from your first property in the first month!</p>
+            <a href="#" class="btn btn-large open-popup">START YOUR JOURNEY TODAY</a>
+        </div>
+    </section>
+
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-title">FREQUENTLY ASKED QUESTIONS</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Do I need experience in Airbnb or property management?</div>
+                <div class="faq-answer">No, our comprehensive blueprint provides everything you need to start from scratch. The documents and training materials are designed to guide complete beginners through the entire process.</div>
             </div>
             
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">1. Standard Operating Procedures (SOPs) Manual</h4>
-                            <p class="card-text">Your complete playbook for consistent, professional operations covering every aspect of remote property management.</p>
-                            <ul class="mb-0">
-                                <li>Comprehensive guidelines for all operational activities</li>
-                                <li>Detailed role definitions and responsibilities</li>
-                                <li>Step-by-step procedures for every process</li>
-                                <li>Quality control protocols and standards</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $997</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">2. Guest Communication Templates</h4>
-                            <p class="card-text">45+ professionally crafted templates for every guest touchpoint from inquiry to post-stay follow-up.</p>
-                            <ul class="mb-0">
-                                <li>Pre-arrival communication sequence</li>
-                                <li>Check-in instructions and guidance</li>
-                                <li>During-stay follow-ups and issue handling</li>
-                                <li>Check-out and review solicitation messages</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $497</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">3. Booking Management Workflow</h4>
-                            <p class="card-text">Detailed processes for handling reservations, guest screening, and calendar management.</p>
-                            <ul class="mb-0">
-                                <li>Guest screening and verification procedures</li>
-                                <li>Reservation management systems</li>
-                                <li>Calendar optimization strategies</li>
-                                <li>Booking platform management processes</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $397</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">4. Turnover Coordination Process</h4>
-                            <p class="card-text">Comprehensive systems for managing property cleaning, inspections, and preparation.</p>
-                            <ul class="mb-0">
-                                <li>Remote coordination of property turnover</li>
-                                <li>Quality control and verification systems</li>
-                                <li>Inventory and supply management</li>
-                                <li>Issue identification and resolution</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $397</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">5. Issue Resolution Protocol</h4>
-                            <p class="card-text">Step-by-step procedures for handling every type of guest issue or property emergency.</p>
-                            <ul class="mb-0">
-                                <li>Classification framework for all issues</li>
-                                <li>Remote troubleshooting processes</li>
-                                <li>Local response coordination</li>
-                                <li>Guest compensation guidelines</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $297</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">6. Emergency Response Plan</h4>
-                            <p class="card-text">Complete framework for managing critical situations while protecting guests and properties.</p>
-                            <ul class="mb-0">
-                                <li>Emergency classification system</li>
-                                <li>Response team structure and roles</li>
-                                <li>Communication protocols</li>
-                                <li>Recovery procedures</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $297</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title fw-bold">7. Marketing Package</h4>
-                            <p class="card-text">Comprehensive marketing materials to attract property owners and build your business.</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <ul>
-                                        <li>Company overview/pitch deck</li>
-                                        <li>Professional service brochure</li>
-                                        <li>Case study templates</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul>
-                                        <li>Website content plan</li>
-                                        <li>Social media strategy</li>
-                                        <li>Client acquisition materials</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <p class="mb-0"><strong>Value: $497</strong></p>
-                        </div>
-                    </div>
-                </div>
+            <div class="faq-item">
+                <div class="faq-question">How can I manage properties remotely?</div>
+                <div class="faq-answer">Our proprietary system reveals exactly how to handle the digital aspects from anywhere while implementing our proven on-the-ground strategy (fully explained in the blueprint). This allows you to deliver 5-star service from a distance.</div>
             </div>
             
-            <div class="text-center mt-5">
-                <h4 class="fw-bold">Total Value: $3,382</h4>
-                <a href="#pricing" class="btn btn-primary btn-lg mt-3">Get Everything Now</a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Testimonials Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Success Stories From Our Blueprint Users</h2>
-                <p class="lead">Here's what property managers are achieving with our system</p>
+            <div class="faq-item">
+                <div class="faq-question">How quickly can I start making money?</div>
+                <div class="faq-answer">Many of our clients secure their first property within the first 30 days using our marketing materials and pitch deck. With just one property, you can earn $500-$1,000+ per month in management fees.</div>
             </div>
             
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="testimonial">
-                        <p class="mb-3">"These documents revealed the exact strategy I needed to manage properties in Florida while living in California. I launched with 3 properties in my first month and scaled to 22 within a year."</p>
-                        <div class="d-flex align-items-center">
-                            <img src="https://via.placeholder.com/50" alt="Michael T." class="rounded-circle me-3">
-                            <div>
-                                <h6 class="fw-bold mb-0">Michael T.</h6>
-                                <p class="small text-muted mb-0">San Francisco, CA</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="testimonial">
-                        <p class="mb-3">"I was charging 25% as a traditional property manager. This blueprint showed me how to shift to a remote model charging 15% while actually INCREASING my profit margins. Game changer!"</p>
-                        <div class="d-flex align-items-center">
-                            <img src="https://via.placeholder.com/50" alt="Sarah K." class="rounded-circle me-3">
-                            <div>
-                                <h6 class="fw-bold mb-0">Sarah K.</h6>
-                                <p class="small text-muted mb-0">Denver, CO</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="testimonial">
-                        <p class="mb-3">"The secret strategy in this blueprint allowed me to launch my business while traveling full-time. I now manage 12 properties across 3 markets entirely remotely. The systems are bulletproof!"</p>
-                        <div class="d-flex align-items-center">
-                            <img src="https://via.placeholder.com/50" alt="James R." class="rounded-circle me-3">
-                            <div>
-                                <h6 class="fw-bold mb-0">James R.</h6>
-                                <p class="small text-muted mb-0">Digital Nomad</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- ROI Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-5">
-                    <h2 class="fw-bold mb-4">Your Return On Investment</h2>
-                    <p class="lead mb-4">This blueprint pays for itself with your very first property client.</p>
-                    
-                    <div class="mb-4">
-                        <h5 class="fw-bold">With Just ONE Property:</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                Average Annual Property Revenue
-                                <span class="fw-bold">$32,000</span>
-                            </li>
-                            <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                Your 15% Management Fee
-                                <span class="fw-bold">$4,800</span>
-                            </li>
-                            <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                Additional Service Revenue
-                                <span class="fw-bold">$1,200</span>
-                            </li>
-                            <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                Total Annual Revenue Per Property
-                                <span class="fw-bold">$6,000</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h5 class="fw-bold">With 10 Properties:</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                Total Annual Revenue
-                                <span class="fw-bold">$60,000</span>
-                            </li>
-                            <li class="list-group-item bg-light d-flex justify-content-between align-items-center">
-                                Monthly Recurring Revenue
-                                <span class="fw-bold">$5,000</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <p class="mb-0">This blueprint requires just a one-time investment, while delivering years of recurring revenue.</p>
-                </div>
-                <div class="col-lg-7">
-                    <img src="https://via.placeholder.com/700x400" alt="ROI Calculation" class="img-fluid rounded shadow">
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Get Instant Access Today</h2>
-                <p class="lead">Everything you need to launch your location-independent property management business</p>
+            <div class="faq-item">
+                <div class="faq-question">Are the documents customizable?</div>
+                <div class="faq-answer">Yes, all 23 documents come in fully editable formats. You can easily add your company name, logo, and adjust any details to fit your specific market or preferences.</div>
             </div>
             
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card shadow">
-                        <div class="card-body p-5 text-center">
-                            <h3 class="card-title fw-bold mb-4">The Complete Airbnb Co-Hosting Business Blueprint</h3>
-                            
-                            <div class="price-tag mx-auto">
-                                <span class="original">$1,997</span>
-                                $997
-                            </div>
-                            
-                            <p class="lead mb-4">One-time payment for lifetime access</p>
-                            
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Standard Operating Procedures (SOPs) Manual
-                                </li>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Guest Communication Templates
-                                </li>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Booking Management Workflow
-                                </li>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Turnover Coordination Process
-                                </li>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Issue Resolution Protocol
-                                </li>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Emergency Response Plan
-                                </li>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success me-3" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    Complete Marketing Package
-                                </li>
-                            </ul>
-                            
-                            <div class="mb-4">
-                                <h4 class="fw-bold">BONUS: Implementation Guide</h4>
-                                <p>Our step-by-step roadmap for launching in 30 days</p>
-                            </div>
-                            
-                            <a href="#purchase" class="btn btn-primary btn-lg w-100 py-3 mb-3">GET INSTANT ACCESS NOW</a>
-                            
-                            <p class="small mb-0">Secure payment - Instant digital delivery</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="faq-item">
+                <div class="faq-question">What ongoing costs will I have for my co-hosting business?</div>
+                <div class="faq-answer">One of the biggest advantages of this business model is the minimal overhead. Typical costs include a basic website ($15-30/month), communication tools (~$20/month), and possibly some initial marketing expenses. Your highest "cost" will be the time invested in client acquisition.</div>
             </div>
         </div>
     </section>
-    
-    <!-- Guarantee Section -->
-    <section class="py-5 bg-light">
+
+    <footer>
         <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-8">
-                    <div class="guarantee">
-                        <div class="me-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="fw-bold">100% Satisfaction Guarantee</h3>
-                            <p class="mb-0">If these documents don't provide everything you need to launch your Airbnb Co-Hosting business, simply request a refund within 30 days. No questions asked.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Bonus Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Special Bonuses</h2>
-                <p class="lead">To help you implement faster and more effectively</p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="bonus h-100">
-                        <h4 class="fw-bold">Implementation Roadmap</h4>
-                        <p>Our step-by-step guide showing you exactly how to:</p>
-                        <ul class="mb-0">
-                            <li>Launch your business in 30 days</li>
-                            <li>Acquire your first 5 properties</li>
-                            <li>Scale to 25+ properties</li>
-                            <li>Build your remote team</li>
-                        </ul>
-                        <p class="fw-bold mt-3 mb-0">Value: $497</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bonus h-100">
-                        <h4 class="fw-bold">Client Acquisition Scripts</h4>
-                        <p>Ready-to-use scripts and templates for:</p>
-                        <ul class="mb-0">
-                            <li>Property owner outreach</li>
-                            <li>Sales presentations</li>
-                            <li>Objection handling</li>
-                            <li>Closing conversations</li>
-                        </ul>
-                        <p class="fw-bold mt-3 mb-0">Value: $297</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bonus h-100">
-                        <h4 class="fw-bold">30-Day Email Support</h4>
-                        <p>Direct access to our team for:</p>
-                        <ul class="mb-0">
-                            <li>Implementation questions</li>
-                            <li>Strategy clarification</li>
-                            <li>Troubleshooting assistance</li>
-                            <li>Customization guidance</li>
-                        </ul>
-                        <p class="fw-bold mt-3 mb-0">Value: $997</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-5">
-                <h4 class="fw-bold">Total Bonus Value: $1,791</h4>
-                <a href="#purchase" class="btn btn-primary btn-lg mt-3">Get Everything Now</a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- FAQ Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Frequently Asked Questions</h2>
-            </div>
-            
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    What is the "secret strategy" for managing properties remotely?
-                                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Our proprietary system allows you to manage all digital aspects of the property (listings, bookings, pricing, guest communications) remotely while implementing our innovative on-the-ground strategy for handling physical aspects like cleaning, inspections, and in-person guest issues. The full details are revealed in the blueprint documents, allowing you to operate from anywhere in the world while maintaining exceptional quality standards.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Do I need prior property management experience?
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    No prior experience is required. The blueprint provides complete, step-by-step systems that anyone can implement. We've had successful users with backgrounds in teaching, corporate jobs, and even students. The documents are designed to be comprehensive enough for beginners while still providing valuable systems for experienced managers looking to transition to a remote model.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    How quickly can I start generating income?
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Most users acquire their first property client within 30 days of implementing the system. The Implementation Roadmap bonus specifically guides you through the fastest path to your first client. Once you have a property under management, you'll begin earning monthly recurring revenue immediately.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    Can I really manage properties without being physically present?
-                                </button>
-                            </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Absolutely! Our blueprint reveals the exact system that allows you to manage all digital aspects remotely while implementing our innovative approach for the physical aspects. Many of our successful users manage properties in completely different states or even countries. The documents provide the complete framework for making this possible while maintaining exceptional quality.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFive">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                    What format are the documents delivered in?
-                                </button>
-                            </h2>
-                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    All documents are delivered in fully editable formats (Word, Google Docs, PDF) that you can customize with your company name, logo, and specific details. You'll receive instant access to download the complete package immediately after purchase.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Final CTA Section -->
-    <section id="purchase" class="py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <h2 class="fw-bold mb-4">Start Your Location-Independent Property Management Empire Today</h2>
-                    <p class="lead mb-4">Get instant access to the complete blueprint and all bonuses</p>
-                    
-                    <div class="price-tag mx-auto mb-4">
-                        <span class="original">$1,997</span>
-                        $997
-                    </div>
-                    
-                    <div class="mb-4">
-                        <div class="countdown mx-auto">
-                            Limited Time Offer: Expires in <span id="countdown-final">47:59:59</span>
-                        </div>
-                    </div>
-                    
-                    <a href="#checkout" class="btn btn-primary btn-lg px-5 py-3 mb-3">GET INSTANT ACCESS NOW</a>
-                    
-                    <p class="small mb-0">Secure payment - Instant digital delivery - 30-day guarantee</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="py-4 bg-dark text-white">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 Airbnb Co-Hosting Blueprint. All Rights Reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-white me-3">Terms of Service</a>
-                    <a href="#" class="text-white me-3">Privacy Policy</a>
-                    <a href="#" class="text-white">Contact Us</a>
-                </div>
+            <p>© 2025 Airbnb Co-Hosting Pro. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Contact Us</a>
             </div>
         </div>
     </footer>
-    
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Countdown Script -->
+
+    <!-- Popup Form -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-content">
+            <div class="popup-close">&times;</div>
+            <h3>Get The Complete Blueprint</h3>
+            <p>Fill out this form to complete your purchase</p>
+            <form class="popup-form" id="purchase-form">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="tel" placeholder="Phone Number" required>
+                <button type="submit">COMPLETE PURCHASE - $997</button>
+                <p style="text-align: center; font-size: 0.9rem;">Secure checkout. 30-day money-back guarantee.</p>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Set the countdown time
+        // Countdown Timer
         function updateCountdown() {
-            const countdownElements = document.querySelectorAll('#countdown, #countdown-final');
-            const hours = Math.floor(Math.random() * 24) + 24;
-            const minutes = Math.floor(Math.random() * 60);
-            const seconds = Math.floor(Math.random() * 60);
+            const now = new Date();
+            const end = new Date();
+            end.setDate(now.getDate() + 3);
+            end.setHours(23, 59, 59);
             
-            const countdownText = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            const timeLeft = end - now;
             
-            countdownElements.forEach(element => {
-                element.textContent = countdownText;
-            });
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
         }
         
-        updateCountdown();
         setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                
+                if (answer.style.display === 'block') {
+                    answer.style.display = 'none';
+                    question.classList.remove('active');
+                } else {
+                    answer.style.display = 'block';
+                    question.classList.add('active');
+                }
+            });
+        });
+        
+        // Popup Form
+        const openPopupButtons = document.querySelectorAll('.open-popup');
+        const popup = document.getElementById('popup');
+        const closePopup = document.querySelector('.popup-close');
+        const purchaseForm = document.getElementById('purchase-form');
+        
+        openPopupButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                popup.classList.add('active');
+            });
+        });
+        
+        closePopup.addEventListener('click', () => {
+            popup.classList.remove('active');
+        });
+        
+        purchaseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your purchase! You will receive an email with download instructions shortly.');
+            popup.classList.remove('active');
+        });
     </script>
 </body>
 </html>
