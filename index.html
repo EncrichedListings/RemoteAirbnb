@@ -3,33 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Airbnb Remote Co-Hosting Business Blueprint</title>
-    
-    <!-- Meta Pixel Code -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '583076971560109');
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=583076971560109&ev=PageView&noscript=1"
-    /></noscript>
-    <!-- End Meta Pixel Code -->
+    <title>Remote Airbnb: Remote Airbnb Co-Hosting Business Blueprint</title>
     
     <style>
         :root {
-            --primary: #FF5A5F;
-            --secondary: #00A699;
-            --dark: #484848;
-            --light: #f7f7f7;
-            --success: #008489;
+            --primary: #ff5a5f;
+            --primary-dark: #008F86;
+            --secondary: #FF5A5F;
+            --secondary-dark: ##ff5a5f;
+            --text: #484848;
+            --text-light: #767676;
+            --background: #ffffff;
+            --background-alt: #F7F7F7;
+            --border: #DDDDDD;
         }
         
         * {
@@ -40,13 +26,15 @@
         }
         
         body {
-            color: var(--dark);
+            color: var(--text);
             line-height: 1.6;
+            background-color: var(--background);
         }
         
         h1, h2, h3, h4 {
             font-weight: 700;
             line-height: 1.3;
+            color: var(--text);
         }
         
         h1 {
@@ -66,6 +54,7 @@
         
         p {
             margin-bottom: 1rem;
+            color: var(--text-light);
         }
         
         .container {
@@ -80,24 +69,19 @@
             color: white;
             text-decoration: none;
             padding: 15px 30px;
-            border-radius: 4px;
-            font-weight: 700;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 1.1rem;
             transition: all 0.3s ease;
             text-align: center;
+            border: none;
+            cursor: pointer;
         }
         
         .btn:hover {
-            background-color: #f03c42;
+            background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        
-        .btn-large {
-            padding: 20px 40px;
-            font-size: 1.3rem;
-            width: 100%;
-            max-width: 400px;
         }
         
         .btn-secondary {
@@ -105,109 +89,156 @@
         }
         
         .btn-secondary:hover {
-            background-color: #00897d;
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-large {
+            padding: 18px 36px;
+            font-size: 1.2rem;
+        }
+        
+        .text-center {
+            text-align: center;
         }
         
         /* Header */
         header {
-            background-color: var(--dark);
-            color: white;
-            padding: 15px 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px 0;
         }
         
         .logo {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
         }
         
         /* Hero section */
         .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, #fd927e 100%);
-            color: white;
-            padding: 60px 0;
-            text-align: center;
+            padding: 100px 0 80px;
+            background-color: var(--background-alt);
         }
         
-        .hero h1 {
-            font-size: 3rem;
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .hero-content h1 {
             margin-bottom: 1.5rem;
         }
         
         .hero-subtitle {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             margin-bottom: 2rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            color: var(--text-light);
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         /* Features section */
         .features {
-            padding: 80px 0;
+            padding: 100px 0;
             background-color: white;
         }
         
-        .section-title {
-            text-align: center;
+        .section-heading {
             margin-bottom: 3rem;
+            text-align: center;
         }
         
-        .feature-item {
-            margin-bottom: 2rem;
-            padding: 2rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            border: 1px solid #eee;
-        }
-        
-        .feature-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .feature-icon {
-            color: var(--primary);
-            font-size: 2.5rem;
+        .section-heading h2 {
             margin-bottom: 1rem;
         }
         
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+        
+        .feature-item {
+            background: var(--background-alt);
+            padding: 30px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
         }
         
         /* Documents section */
         .documents {
-            background-color: var(--light);
-            padding: 80px 0;
+            padding: 100px 0;
+            background-color: var(--background-alt);
         }
         
         .doc-categories {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
             margin-top: 3rem;
         }
         
         .doc-category {
             background-color: white;
-            border-radius: 8px;
-            padding: 2rem;
+            border-radius: 12px;
+            padding: 30px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .doc-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         }
         
         .doc-category h3 {
             color: var(--primary);
             margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--primary);
             padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
         }
         
         .doc-list {
@@ -222,7 +253,7 @@
         
         .doc-list li:before {
             content: "✓";
-            color: var(--success);
+            color: var(--primary);
             position: absolute;
             left: 0;
             font-weight: bold;
@@ -230,276 +261,491 @@
         
         /* Testimonials */
         .testimonials {
-            padding: 80px 0;
+            padding: 100px 0;
             background-color: white;
         }
         
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 3rem;
+        }
+        
         .testimonial {
-            background-color: var(--light);
-            padding: 2rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
+            background-color: var(--background-alt);
+            padding: 30px;
+            border-radius: 12px;
             position: relative;
+            transition: all 0.3s ease;
         }
         
-        .testimonial:after {
-            content: """;
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 5rem;
-            color: var(--primary);
-            opacity: 0.2;
-            line-height: 1;
+        .testimonial:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         }
         
-        .customer-name {
+        .quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 700;
-            color: var(--primary);
-            margin-top: 1rem;
+            margin-right: 15px;
+        }
+        
+        .author-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-position {
+            font-size: 0.9rem;
+            color: var(--text-light);
         }
         
         /* Pricing */
         .pricing {
-            background-color: var(--light);
-            padding: 80px 0;
-            text-align: center;
+            padding: 100px 0;
+            background-color: var(--background-alt);
         }
         
         .price-box {
             background-color: white;
-            border-radius: 8px;
-            padding: 3rem 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto;
+            border-radius: 12px;
+            padding: 50px;
+            max-width: 800px;
+            margin: 3rem auto 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
         }
         
-        .price {
+        .price-value {
+            margin: 2rem 0;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .price-amount {
             font-size: 4rem;
             font-weight: 700;
             color: var(--primary);
-            margin: 1.5rem 0;
         }
         
-        .price sup {
-            font-size: 2rem;
-            position: relative;
-            top: -1.5rem;
-        }
-        
-        .price-subtitle {
-            color: var(--success);
-            font-size: 1.2rem;
+        .price-currency {
+            position: absolute;
+            top: 0.5rem;
+            left: -1.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .price-note {
+            font-size: 1.1rem;
+            color: var(--text-light);
             margin-bottom: 2rem;
         }
         
-        /* Countdown Timer */
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
+        .price-features {
             margin: 2rem 0;
+            text-align: left;
         }
         
-        .countdown-item {
-            background-color: var(--dark);
-            color: white;
-            border-radius: 8px;
-            padding: 1rem;
-            width: 80px;
-            text-align: center;
+        .price-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
         }
         
-        .countdown-number {
-            font-size: 2rem;
+        .price-feature-icon {
+            margin-right: 1rem;
+            color: var(--primary);
             font-weight: 700;
-        }
-        
-        .countdown-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        
-        /* Guarantee */
-        .guarantee {
-            background-color: white;
-            padding: 60px 0;
-            text-align: center;
-        }
-        
-        .guarantee-badge {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            position: relative;
-        }
-        
-        /* CTA */
-        .cta {
-            background: linear-gradient(135deg, var(--secondary) 0%, #00d4c2 100%);
-            color: white;
-            padding: 80px 0;
-            text-align: center;
-        }
-        
-        .cta h2 {
-            margin-bottom: 2rem;
         }
         
         /* FAQ */
         .faq {
-            padding: 80px 0;
-            background-color: var(--light);
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 3rem auto 0;
         }
         
         .faq-item {
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         .faq-question {
-            font-weight: 700;
+            padding: 1.5rem;
+            font-weight: 600;
             cursor: pointer;
-            padding: 1rem 0;
-            position: relative;
-            padding-right: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--background-alt);
         }
         
-        .faq-question:after {
-            content: "+";
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
+        .faq-question:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .faq-toggle {
             font-size: 1.5rem;
+            transition: transform 0.3s ease;
         }
         
         .faq-answer {
-            display: none;
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-answer-content {
             padding: 1rem 0;
         }
         
-        .active.faq-question:after {
-            content: "-";
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+        
+        /* CTA */
+        .cta {
+            padding: 100px 0;
+            background-color: var(--background-alt);
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta p {
+            margin-bottom: 2rem;
         }
         
         /* Footer */
         footer {
-            background-color: var(--dark);
+            background-color: var(--text);
             color: white;
-            padding: 40px 0;
-            text-align: center;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .footer-text {
+            color: #bbbbbb;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-heading {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: white;
         }
         
         .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
         }
         
         .footer-links a {
-            color: white;
+            color: #bbbbbb;
             text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #666666;
+            text-align: center;
+            color: #bbbbbb;
+        }
+        
+        /* Benefits section */
+        .benefits {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 3rem;
+        }
+        
+        .benefit-item {
+            text-align: center;
+            padding: 30px;
+            border-radius: 12px;
+            background-color: var(--background-alt);
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* How it works */
+        .how-it-works {
+            padding: 100px 0;
+            background-color: var(--background-alt);
+        }
+        
+        .steps {
+            margin-top: 3rem;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 3rem;
+        }
+        
+        .step:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-right: 30px;
+        }
+        
+        .step-content h3 {
+            margin-top: 0;
+        }
+        
+        /* Guarantee */
+        .guarantee {
+            padding: 60px 0;
+            background-color: white;
+            text-align: center;
+        }
+        
+        .guarantee-box {
+            background-color: var(--background-alt);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .guarantee-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        
+        .guarantee-content {
+            text-align: left;
+        }
+        
+        .guarantee-content h3 {
+            margin-top: 0;
         }
         
         /* Mobile responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+            .hero-container, 
+            .feature-grid, 
+            .doc-categories, 
+            .testimonial-grid, 
+            .benefits-grid,
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
             h1 {
                 font-size: 2rem;
             }
             
-            .hero h1 {
-                font-size: 2.2rem;
+            .guarantee-box {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .hero-subtitle {
-                font-size: 1.2rem;
+            .guarantee-content {
+                text-align: center;
             }
             
-            .feature-grid {
-                grid-template-columns: 1fr;
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
             }
-            
-            .doc-categories {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Bonus section */
-        .bonus {
-            background-color: #fffbeb;
-            border: 2px dashed #ffc107;
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .bonus h3 {
-            color: #ff9800;
         }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-container">
-            <div class="logo">Remote Airbnb</div>
-            <a href="#pricing" class="btn">Get Started</a>
+            <a href="#" class="logo">Remote Airbnb</a>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#documents">Documents</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+            </nav>
         </div>
     </header>
 
     <section class="hero">
-        <div class="container">
-            <h1>Remote Airbnb: The Secret to Running a Profitable Airbnb Management Business From Anywhere in the World</h1>
-            <p class="hero-subtitle">Launch Your Remote Property Management Empire - Earn Thousands Without Owning a Single Property!</p>
-            <div>
-                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" target="_blank" class="btn btn-large">GET STARTED TODAY</a>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1>The Complete Airbnb Co-Hosting Business Blueprint</h1>
+                <p class="hero-subtitle">Launch your remote property management business and earn thousands without owning a single property.</p>
+                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get Started Today</a>
             </div>
-            <div style="margin-top: 3rem;">
-                <p>Are you ready to tap into the $113.4 billion vacation rental market with a proven, innovative business model that property owners are desperate for?</p>
+            <div class="hero-image">
+                <img src="https://github.com/EncrichedListings/RemoteAirbnb/blob/main/Remote%20Airbnb.png?raw=true" alt="Remote property management" />
             </div>
         </div>
     </section>
 
-    <section class="features">
+    <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title">YOUR KEY TO LOCATION-INDEPENDENT INCOME</h2>
+            <div class="section-heading">
+                <h2>Why Remote Airbnb Works</h2>
+                <p>Our innovative approach combines professional remote management with reliable local support</p>
+            </div>
             <div class="feature-grid">
                 <div class="feature-item">
                     <div class="feature-icon">💰</div>
-                    <h3>Lower Fees, Higher Profits</h3>
-                    <p>Charge just 25% commission (instead of the industry-standard 30-40%) while delivering exceptional results that make property owners THRILLED to work with you.</p>
+                    <h3>Competitive Edge</h3>
+                    <p>Charge just 25% commission (instead of the industry-standard 30-40%) while delivering exceptional results that property owners love.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">🌍</div>
                     <h3>Work From Anywhere</h3>
-                    <p>Our revolutionary approach to running a completely remote hosting business means you can manage properties from a different state or even a different country!</p>
+                    <p>Our proven remote management system lets you operate your business from anywhere in the world while maintaining 5-star quality service.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">⚡</div>
-                    <h3>Launch in Weeks, Not Months</h3>
-                    <p>Skip the painful trial-and-error phase and start with proven systems. Save 300+ hours of document creation and process development.</p>
+                    <h3>Ready-to-Use Systems</h3>
+                    <p>Save 300+ hours of document creation and process development with our comprehensive, professional business templates.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">🚀</div>
-                    <h3>Scale Quickly</h3>
-                    <p>With ready-made systems, you can focus on growth. Manage 10 properties for $100,000+ in annual recurring revenue - all while working remotely.</p>
+                    <h3>Rapid Implementation</h3>
+                    <p>Launch your business in weeks instead of months, and start generating revenue from your very first client almost immediately.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="documents">
+    <section class="benefits">
         <div class="container">
-            <h2 class="section-title">23 COMPLETE, READY-TO-USE BUSINESS DOCUMENTS</h2>
-            <p style="text-align: center;">This comprehensive package includes every document you need to hit the ground running</p>
-            
+            <div class="section-heading">
+                <h2>Benefits of Remote Co-Hosting</h2>
+                <p>Create a flexible business that grows with you</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🏡</div>
+                    <h3>No Property Investment</h3>
+                    <p>Build a profitable business without the risks and capital requirements of owning property.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📈</div>
+                    <h3>Recurring Revenue</h3>
+                    <p>Create stable, predictable monthly income that grows as you add properties to your portfolio.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏱️</div>
+                    <h3>Flexible Schedule</h3>
+                    <p>Design your work around your lifestyle, not the other way around.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="documents" id="documents">
+        <div class="container">
+            <div class="section-heading">
+                <h2>23 Comprehensive Business Documents</h2>
+                <p>Everything you need to launch and operate a professional property management business</p>
+            </div>
             <div class="doc-categories">
                 <div class="doc-category">
-                    <h3>Client Facing Documents</h3>
+                    <h3>Client-Facing Documents</h3>
                     <ul class="doc-list">
                         <li>Co-Hosting Service Agreement</li>
                         <li>Property Assessment Checklist</li>
@@ -512,7 +758,7 @@
                 <div class="doc-category">
                     <h3>Team Documents</h3>
                     <ul class="doc-list">
-                        <li>Cleaning-Manager Service Agreement</li>
+                        <li>Service Agreement</li>
                         <li>Cleaning and Inspection Standards Guide</li>
                         <li>Property Management Responsibilities Outline</li>
                         <li>Compensation Structure Document</li>
@@ -520,7 +766,7 @@
                     </ul>
                 </div>
                 <div class="doc-category">
-                    <h3>Operation Documents</h3>
+                    <h3>Operational Documents</h3>
                     <ul class="doc-list">
                         <li>Standard Operating Procedures Manual</li>
                         <li>Guest Communication Templates</li>
@@ -544,199 +790,278 @@
         </div>
     </section>
 
-    <section class="testimonials">
+    <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <h2 class="section-title">SUCCESS STORIES</h2>
-            
-            <div class="testimonial">
-                <p>"These documents revealed the exact strategy I needed to manage properties in Florida while living in California. I launched with 3 properties in my first month and scaled to 22 within a year using these exact systems."</p>
-                <p class="customer-name">- Michael T., Satisfied Client</p>
+            <div class="section-heading">
+                <h2>How Our Remote Management System Works</h2>
+                <p>The innovative approach that lets you run properties from anywhere</p>
             </div>
-            
-            <div class="testimonial">
-                <p>"I was skeptical about managing properties remotely, but this blueprint changed everything. The documents and systems are so comprehensive and professional. I now manage 15 properties while traveling full-time!"</p>
-                <p class="customer-name">- Sarah K., Digital Nomad</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Handle Digital Management Remotely</h3>
+                        <p>Manage listings, pricing, booking management, and guest communications from anywhere in the world using our streamlined systems and templates.</p>
+                    </div>
+                </div>
+
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Coordinate Through Centralized Systems</h3>
+                        <p>Keep everything organized with our proven workflows, communication protocols, and coordination systems that ensure a seamless guest experience.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Scale Across Multiple Properties</h3>
+                        <p>As you add properties to your portfolio, our systems scale easily, allowing you to grow your business efficiently without adding proportional time commitments.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Success Stories from Property Managers</h2>
+                <p>Real results from people using our blueprint</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p class="quote">"These documents revealed the exact strategy I needed to manage properties in Florida while living in California. I launched with 3 properties in my first month and scaled to 22 within a year using these exact systems."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MT</div>
+                        <div class="author-info">
+                            <h4>Michael T.</h4>
+                            <p class="author-position">Remote Property Manager</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="quote">"I was skeptical about managing properties remotely, but this blueprint changed everything. The documents and systems are so comprehensive and professional. I now manage 15 properties while traveling full-time!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SK</div>
+                        <div class="author-info">
+                            <h4>Sarah K.</h4>
+                            <p class="author-position">Digital Nomad</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="quote">"The remote system is brilliant. It solved the biggest challenge of management. Property owners are impressed with the quality, and I can run everything from my laptop anywhere with Wi-Fi."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-info">
+                            <h4>James D.</h4>
+                            <p class="author-position">Co-Host Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="quote">"In just 3 months, I've gone from zero to 7 properties under management. The professional documents gave me immediate credibility with property owners, and the systems made scaling easy."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AL</div>
+                        <div class="author-info">
+                            <h4>Amanda L.</h4>
+                            <p class="author-position">New Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
     <section class="pricing" id="pricing">
         <div class="container">
-            <h2 class="section-title">LIMITED TIME OFFER</h2>
-            
+            <div class="section-heading">
+                <h2>Investment in Your Business Future</h2>
+                <p>Complete business system at a fraction of its value</p>
+            </div>
             <div class="price-box">
                 <h3>The Complete Airbnb Co-Hosting Business Blueprint</h3>
-                <div class="price"><sup>$</sup>199.99</div>
-                <p class="price-subtitle">That's less than $10 per comprehensive document, a bargain compared to "Gurus!"</p>
+                <div class="price-value">
+                    <span class="price-currency">$</span>
+                    <span class="price-amount">199</span>
+                </div>
+                <p class="price-note">One-time payment for lifetime access to all 23 documents</p>
                 
-                <p>Limited Time Offer - Price Increases Soon!</p>
-                <div class="countdown">
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="days">3</div>
-                        <div class="countdown-label">Days</div>
+                <div class="price-features">
+                    <div class="price-feature">
+                        <span class="price-feature-icon">✓</span>
+                        <span>All 23 professional business documents</span>
                     </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="hours">11</div>
-                        <div class="countdown-label">Hours</div>
+                    <div class="price-feature">
+                        <span class="price-feature-icon">✓</span>
+                        <span>Fully editable formats - customize with your branding</span>
                     </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="minutes">45</div>
-                        <div class="countdown-label">Minutes</div>
+                    <div class="price-feature">
+                        <span class="price-feature-icon">✓</span>
+                        <span>Detailed implementation guide</span>
                     </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="seconds">30</div>
-                        <div class="countdown-label">Seconds</div>
+                    <div class="price-feature">
+                        <span class="price-feature-icon">✓</span>
+                        <span>30-day money-back guarantee</span>
+                    </div>
+</div>
+                
+                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get the Complete Blueprint</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Frequently Asked Questions</h2>
+                <p>Common questions about our Remote Co-Hosting Blueprint</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need experience in Airbnb or property management?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>No, our comprehensive blueprint provides everything you need to start from scratch. The documents and training materials are designed to guide complete beginners through the entire process, from finding your first client to scaling your business.</p>
+                        </div>
                     </div>
                 </div>
                 
-                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" target="_blank" class="btn btn-large">GET STARTED NOW</a>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How can I manage properties remotely?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our blueprint explains our secret model that solves the biggest challenge in remote management. This system allows you to deliver high-quality service from anywhere in the world.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How quickly can I start making money?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Many of our clients secure their first property within 30 days of implementing our marketing materials and client acquisition strategies. With just one property, you can typically earn $500-$1,000+ per month in management fees, depending on the property's booking value. Our blueprint includes step-by-step guidance for client acquisition to help you start generating revenue quickly.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Are the documents customizable?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, all 23 documents come in fully editable formats. You can easily add your company name, logo, and adjust any details to fit your specific market or preferences. The documents are designed to be templates that you can personalize to match your brand and business needs.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What ongoing costs will I have for my co-hosting business?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>One of the biggest advantages of this business model is the minimal overhead. Typical costs include a basic website ($15-30/month), communication tools (~$20/month), and possibly some initial marketing expenses. Your main "cost" will be the time invested in client acquisition. The business is designed to be extremely cost-efficient with strong profit margins.</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
     <section class="cta">
-        <div class="container">
-            <h2>YOUR REMOTE PROPERTY MANAGEMENT EMPIRE AWAITS</h2>
-            <p>Just ONE property client generates $7,000 to $10,000+ in annual management fees.</p>
-            <p>This complete package costs less than what you'll earn from your first property in the first month!</p>
-            <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" target="_blank" class="btn btn-large">START YOUR JOURNEY TODAY</a>
-        </div>
-    </section>
-
-    <section class="faq">
-        <div class="container">
-            <h2 class="section-title">FREQUENTLY ASKED QUESTIONS</h2>
-            
-            <div class="faq-item">
-                <div class="faq-question">Do I need experience in Airbnb or property management?</div>
-                <div class="faq-answer">No, our comprehensive blueprint provides everything you need to start from scratch. The documents and training materials are designed to guide complete beginners through the entire process.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">How can I manage properties remotely?</div>
-                <div class="faq-answer">Our proprietary system reveals exactly how to handle the digital aspects from anywhere while implementing our proven on-the-ground strategy (fully explained in the blueprint). This allows you to deliver 5-star service from a distance.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">How quickly can I start making money?</div>
-                <div class="faq-answer">Many of our clients secure their first property within the first 30 days using our marketing materials and pitch deck. With just one property, you can earn $500-$1,000+ per month in management fees.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">Are the documents customizable?</div>
-                <div class="faq-answer">Yes, all 23 documents come in fully editable formats. You can easily add your company name, logo, and adjust any details to fit your specific market or preferences.</div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question">What ongoing costs will I have for my co-hosting business?</div>
-                <div class="faq-answer">One of the biggest advantages of this business model is the minimal overhead. Typical costs include a basic website ($15-30/month), communication tools (~$20/month), and possibly some initial marketing expenses. Your highest "cost" will be the time invested in client acquisition.</div>
-            </div>
+        <div class="container cta-container">
+            <h2>Start Your Remote Property Management Business Today</h2>
+            <p>Just ONE property client generates $7,000 to $10,000+ in annual management fees. Your investment in this blueprint will pay for itself many times over with your very first client.</p>
+            <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get The Complete Blueprint</a>
         </div>
     </section>
 
     <footer>
-        <div class="container">
-            <p>© 2025 Remote Airbnb. All Rights Reserved.</p>
-            <div class="footer-links">
-                <a href="terms.html">Terms of Service</a>
-                <a href="privacy.html">Privacy Policy</a>
+        <div class="container footer-container">
+            <div>
+                <div class="footer-logo">Remote Airbnb</div>
+                <p class="footer-text">Providing entrepreneurs with the tools and systems to build successful, location-independent property management businesses.</p>
             </div>
+            <div>
+                <h3 class="footer-heading">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#documents">Documents</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="footer-heading">Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="terms">Terms of Service</a></li>
+                    <li><a href="privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Remote Airbnb. All Rights Reserved.</p>
         </div>
     </footer>
 
     <script>
-        // Countdown Timer
-        function updateCountdown() {
-            const now = new Date();
-            const end = new Date();
-            end.setDate(now.getDate() + 3);
-            end.setHours(23, 59, 59);
-            
-            const timeLeft = end - now;
-            
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            
-            document.getElementById('days').innerText = days;
-            document.getElementById('hours').innerText = hours;
-            document.getElementById('minutes').innerText = minutes;
-            document.getElementById('seconds').innerText = seconds;
-        }
-        
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-        
         // FAQ Accordion
-        const faqQuestions = document.querySelectorAll('.faq-question');
+        const faqItems = document.querySelectorAll('.faq-item');
         
-        faqQuestions.forEach(question => {
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
             question.addEventListener('click', () => {
-                const answer = question.nextElementSibling;
+                const isActive = item.classList.contains('active');
                 
-                if (answer.style.display === 'block') {
-                    answer.style.display = 'none';
-                    question.classList.remove('active');
-                } else {
-                    answer.style.display = 'block';
-                    question.classList.add('active');
-                }
-            });
-        });
-        
-        // Meta Pixel Button Click Tracking for all buttons
-        const allButtons = document.querySelectorAll('.btn');
-        
-        allButtons.forEach((button, index) => {
-            button.addEventListener('click', function(e) {
-                // Get button text or use a default label
-                const buttonText = button.textContent.trim() || 'Button Click';
-                
-                // Track button click with Meta Pixel
-                fbq('track', 'ClickButton', {
-                    button_text: buttonText,
-                    button_location: getButtonLocation(button),
-                    button_id: index
+                // Close all items
+                faqItems.forEach(faqItem => {
+                    faqItem.classList.remove('active');
                 });
                 
-                // If this is a purchase button (has specific text or classes)
-                if (buttonText.includes('GET STARTED') || 
-                    buttonText.includes('PURCHASE') || 
-                    button.href.includes('stripe.com')) {
-                    
-                    fbq('track', 'InitiateCheckout', {
-                        content_name: 'Airbnb Co-Hosting Blueprint',
-                        content_category: 'Digital Product',
-                        value: 199.99,
-                        currency: 'USD'
-                    });
+                // If it wasn't active before, make it active now
+                if (!isActive) {
+                    item.classList.add('active');
                 }
-                
-                // Let the default link behavior continue
-                // The target="_blank" will open in a new tab
-                return true;
             });
         });
         
-        // Helper function to determine button location
-        function getButtonLocation(button) {
-            // Check parent elements to determine section
-            let currentElement = button;
-            while (currentElement && currentElement !== document.body) {
-                if (currentElement.tagName === 'SECTION' && currentElement.className) {
-                    return currentElement.className.split(' ')[0] || 'unknown';
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
                 }
-                if (currentElement.tagName === 'HEADER') {
-                    return 'header';
-                }
-                if (currentElement.tagName === 'FOOTER') {
-                    return 'footer';
-                }
-                currentElement = currentElement.parentElement;
-            }
-            return 'page';
-        }
+            });
+        });
     </script>
 </body>
 </html>
