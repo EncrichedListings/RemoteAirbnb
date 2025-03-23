@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Airbnb Remote Co-Hosting Business Blueprint</title>
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '583076971560109');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=583076971560109&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    
     <style>
         :root {
             --primary: #FF5A5F;
@@ -276,6 +295,33 @@
             margin-bottom: 2rem;
         }
         
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .countdown-item {
+            background-color: var(--dark);
+            color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
         /* Guarantee */
         .guarantee {
             background-color: white;
@@ -382,103 +428,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* Popup Form */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-        
-        .popup-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .popup-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            transform: translateY(-50px);
-            transition: all 0.3s;
-        }
-        
-        .popup-overlay.active .popup-content {
-            transform: translateY(0);
-        }
-        
-        .popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            line-height: 30px;
-            border-radius: 50%;
-        }
-        
-        .popup-form input,
-        .popup-form button {
-            width: 100%;
-            margin-bottom: 1rem;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        
-        .popup-form input {
-            border: 1px solid #ddd;
-        }
-        
-        .popup-form button {
-            background-color: var(--primary);
-            border: none;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        
-        /* Count Down Timer */
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .countdown-item {
-            background-color: var(--dark);
-            color: white;
-            border-radius: 8px;
-            padding: 1rem;
-            width: 80px;
-            text-align: center;
-        }
-        
-        .countdown-number {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        .countdown-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
         
         /* Bonus section */
         .bonus {
@@ -507,7 +456,7 @@
             <h1>Remote Airbnb: The Secret to Running a Profitable Airbnb Management Business From Anywhere in the World</h1>
             <p class="hero-subtitle">Launch Your Remote Property Management Empire - Earn Thousands Without Owning a Single Property!</p>
             <div>
-                <a href="#pricing" class="btn btn-large">GET STARTED TODAY</a>
+                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" target="_blank" class="btn btn-large">GET STARTED TODAY</a>
             </div>
             <div style="margin-top: 3rem;">
                 <p>Are you ready to tap into the $113.4 billion vacation rental market with a proven, innovative business model that property owners are desperate for?</p>
@@ -640,7 +589,7 @@
                     </div>
                 </div>
                 
-                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-large">GET STARTED NOW</a>
+                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" target="_blank" class="btn btn-large">GET STARTED NOW</a>
             </div>
         </div>
     </section>
@@ -650,7 +599,7 @@
             <h2>YOUR REMOTE PROPERTY MANAGEMENT EMPIRE AWAITS</h2>
             <p>Just ONE property client generates $7,000 to $10,000+ in annual management fees.</p>
             <p>This complete package costs less than what you'll earn from your first property in the first month!</p>
-            <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-large">START YOUR JOURNEY TODAY</a>
+            <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" target="_blank" class="btn btn-large">START YOUR JOURNEY TODAY</a>
         </div>
     </section>
 
@@ -695,22 +644,6 @@
         </div>
     </footer>
 
-    <!-- Popup Form -->
-    <div class="popup-overlay" id="popup">
-        <div class="popup-content">
-            <div class="popup-close">&times;</div>
-            <h3>Get The Complete Blueprint</h3>
-            <p>Fill out this form to complete your purchase</p>
-            <form class="popup-form" id="purchase-form">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email Address" required>
-                <input type="tel" placeholder="Phone Number" required>
-                <button type="submit">COMPLETE PURCHASE - $199.99</button>
-                <p style="text-align: center; font-size: 0.9rem;">Secure checkout. 30-day money-back guarantee.</p>
-            </form>
-        </div>
-    </div>
-
     <script>
         // Countdown Timer
         function updateCountdown() {
@@ -752,28 +685,58 @@
             });
         });
         
-        // Popup Form
-        const openPopupButtons = document.querySelectorAll('.open-popup');
-        const popup = document.getElementById('popup');
-        const closePopup = document.querySelector('.popup-close');
-        const purchaseForm = document.getElementById('purchase-form');
+        // Meta Pixel Button Click Tracking for all buttons
+        const allButtons = document.querySelectorAll('.btn');
         
-        openPopupButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                popup.classList.add('active');
+        allButtons.forEach((button, index) => {
+            button.addEventListener('click', function(e) {
+                // Get button text or use a default label
+                const buttonText = button.textContent.trim() || 'Button Click';
+                
+                // Track button click with Meta Pixel
+                fbq('track', 'ClickButton', {
+                    button_text: buttonText,
+                    button_location: getButtonLocation(button),
+                    button_id: index
+                });
+                
+                // If this is a purchase button (has specific text or classes)
+                if (buttonText.includes('GET STARTED') || 
+                    buttonText.includes('PURCHASE') || 
+                    button.href.includes('stripe.com')) {
+                    
+                    fbq('track', 'InitiateCheckout', {
+                        content_name: 'Airbnb Co-Hosting Blueprint',
+                        content_category: 'Digital Product',
+                        value: 199.99,
+                        currency: 'USD'
+                    });
+                }
+                
+                // Let the default link behavior continue
+                // The target="_blank" will open in a new tab
+                return true;
             });
         });
         
-        closePopup.addEventListener('click', () => {
-            popup.classList.remove('active');
-        });
-        
-        purchaseForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you for your purchase! You will receive an email with download instructions shortly.');
-            popup.classList.remove('active');
-        });
+        // Helper function to determine button location
+        function getButtonLocation(button) {
+            // Check parent elements to determine section
+            let currentElement = button;
+            while (currentElement && currentElement !== document.body) {
+                if (currentElement.tagName === 'SECTION' && currentElement.className) {
+                    return currentElement.className.split(' ')[0] || 'unknown';
+                }
+                if (currentElement.tagName === 'HEADER') {
+                    return 'header';
+                }
+                if (currentElement.tagName === 'FOOTER') {
+                    return 'footer';
+                }
+                currentElement = currentElement.parentElement;
+            }
+            return 'page';
+        }
     </script>
 </body>
 </html>
