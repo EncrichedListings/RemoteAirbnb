@@ -1050,67 +1050,155 @@
             document.getElementById('report-content').scrollIntoView({ behavior: 'smooth' });
         }
         
-        // Function for exporting the report as PDF
+        // Function for exporting the report as PDF (simplified version)
         function exportReport() {
-            // Get property information
             const propertyName = document.getElementById('property-name').value || 'Property';
             const ownerName = document.getElementById('owner-name').value || 'Owner';
             const monthSelect = document.getElementById('month');
             const monthName = monthSelect.options[monthSelect.selectedIndex].text;
             const year = document.getElementById('year').value;
             
-            // Create a simple alert to notify the user
-            alert(`Generating PDF report for ${propertyName}. Please wait...`);
+            // Create a printable version of the report
+            const printWindow = window.open('', '_blank');
             
-            // Get report element
+            if (!printWindow) {
+                alert('Please allow pop-ups to generate the report');
+                return;
+            }
+            
+            // Get the report content
             const reportElement = document.getElementById('report-content');
             
-            // Make sure charts are fully rendered
-            setTimeout(() => {
-                // Use html2canvas to convert the HTML to an image
-                html2canvas(reportElement, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff'
-                }).then(canvas => {
-                    // Create PDF document
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
+            // Create HTML content for the print window
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${propertyName} Report - ${monthName} ${year}</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                            color: #484848;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+                        .title {
+                            color: #FF5A5F;
+                            font-size: 24px;
+                            margin-bottom: 5px;
+                        }
+                        .subtitle {
+                            font-size: 18px;
+                            margin-bottom: 5px;
+                        }
+                        .info {
+                            font-size: 14px;
+                            margin-bottom: 15px;
+                        }
+                        hr {
+                            border: 1px solid #DDDDDD;
+                            margin-bottom: 20px;
+                        }
+                        .card {
+                            border: 1px solid #DDDDDD;
+                            border-radius: 8px;
+                            padding: 15px;
+                            margin-bottom: 20px;
+                            background-color: white;
+                        }
+                        .card-title {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin-bottom: 15px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        th, td {
+                            border: 1px solid #DDDDDD;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f7f7f7;
+                        }
+                        .metrics-grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr 1fr;
+                            gap: 15px;
+                            margin-bottom: 20px;
+                        }
+                        .metric-card {
+                            border: 1px solid #DDDDDD;
+                            border-radius: 8px;
+                            padding: 15px;
+                            text-align: center;
+                            background-color: white;
+                        }
+                        .metric-value {
+                            font-size: 24px;
+                            font-weight: bold;
+                            margin: 10px 0;
+                        }
+                        .metric-label {
+                            font-size: 14px;
+                            color: #767676;
+                        }
+                        .print-button {
+                            display: block;
+                            margin: 20px auto;
+                            padding: 10px 20px;
+                            background-color: #FF5A5F;
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 16px;
+                        }
+                        @media print {
+                            .print-button {
+                                display: none;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="title">Property Performance Report</div>
+                        <div class="subtitle">${propertyName}</div>
+                        <div class="info">Prepared for: ${ownerName} | Period: ${monthName} ${year}</div>
+                        <hr>
+                    </div>
                     
-                    // Document dimensions
-                    const imgWidth = 210; // A4 width in mm
-                    const pageHeight = 295; // A4 height in mm
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    <div class="content">
+                        ${reportElement.innerHTML}
+                    </div>
                     
-                    // Add title to PDF
-                    pdf.setFontSize(20);
-                    pdf.setTextColor(255, 90, 95); // Airbnb red
-                    pdf.text('Property Performance Report', 105, 15, { align: 'center' });
+                    <button class="print-button" onclick="window.print()">Print or Save as PDF</button>
                     
-                    pdf.setFontSize(16);
-                    pdf.setTextColor(0, 0, 0);
-                    pdf.text(propertyName, 105, 25, { align: 'center' });
-                    
-                    pdf.setFontSize(12);
-                    pdf.text(`Prepared for: ${ownerName} | Period: ${monthName} ${year}`, 105, 35, { align: 'center' });
-                    
-                    pdf.line(20, 40, 190, 40);
-                    
-                    // Add the image to the PDF
-                    let position = 45;
-                    pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 10, position, imgWidth - 20, imgHeight * 0.75);
-                    
-                    // Save the PDF
-                    pdf.save(`${propertyName}_Report_${monthName}_${year}.pdf`);
-                    
-                    alert('PDF generated successfully!');
-                }).catch(error => {
-                    console.error('Error generating PDF:', error);
-                    alert('There was an error generating the PDF. Please try again.');
-                });
-            }, 1000); // Wait for 1 second to ensure charts are rendered
+                    <script>
+                        // Remove any event handlers that might cause errors
+                        document.querySelectorAll('canvas').forEach(canvas => {
+                            // Replace canvas elements with their image representations
+                            try {
+                                const img = document.createElement('img');
+                                img.src = canvas.toDataURL('image/png');
+                                img.style.width = '100%';
+                                canvas.parentNode.replaceChild(img, canvas);
+                            } catch(e) {
+                                console.error('Could not convert canvas to image', e);
+                            }
+                        });
+                    </script>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
         }
     </script>
 </body>
