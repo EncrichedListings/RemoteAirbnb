@@ -1052,58 +1052,65 @@
         
         // Function for exporting the report as PDF
         function exportReport() {
+            // Get property information
             const propertyName = document.getElementById('property-name').value || 'Property';
             const ownerName = document.getElementById('owner-name').value || 'Owner';
             const monthSelect = document.getElementById('month');
             const monthName = monthSelect.options[monthSelect.selectedIndex].text;
             const year = document.getElementById('year').value;
             
-            // PDF export options
+            // Create a simple alert to notify the user
+            alert(`Generating PDF report for ${propertyName}. Please wait...`);
+            
+            // Get report element
             const reportElement = document.getElementById('report-content');
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: `${propertyName}_Report_${monthName}_${year}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
             
-            // Create header for the PDF
-            const header = document.createElement('div');
-            header.innerHTML = `
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h1 style="color: #FF5A5F; margin-bottom: 5px;">Property Performance Report</h1>
-                    <h2>${propertyName}</h2>
-                    <p>Prepared for: ${ownerName} | Period: ${monthName} ${year}</p>
-                    <hr style="margin: 10px 0;">
-                </div>
-            `;
-            
-            // Create a clone of the report content to avoid modifying the actual page
-            const pdfContent = document.createElement('div');
-            pdfContent.appendChild(header);
-            pdfContent.appendChild(reportElement.cloneNode(true));
-            
-            // Override some styles for better PDF rendering
-            const style = document.createElement('style');
-            style.textContent = `
-                body { font-family: Arial, sans-serif; }
-                .card { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; }
-                .metrics-grid { display: flex; flex-wrap: wrap; }
-                .metric-card { width: 22%; margin: 1%; }
-                .chart-container { height: 200px; }
-            `;
-            pdfContent.appendChild(style);
-            
-            // Generate the PDF
-            reportElement.style.display = 'block'; // Make sure it's visible
-            
-            // Use html2pdf library to create and download the PDF
-            html2pdf().set(opt).from(pdfContent).save()
-                .catch(err => {
-                    console.error('Error generating PDF:', err);
+            // Make sure charts are fully rendered
+            setTimeout(() => {
+                // Use html2canvas to convert the HTML to an image
+                html2canvas(reportElement, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    // Create PDF document
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    // Document dimensions
+                    const imgWidth = 210; // A4 width in mm
+                    const pageHeight = 295; // A4 height in mm
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    
+                    // Add title to PDF
+                    pdf.setFontSize(20);
+                    pdf.setTextColor(255, 90, 95); // Airbnb red
+                    pdf.text('Property Performance Report', 105, 15, { align: 'center' });
+                    
+                    pdf.setFontSize(16);
+                    pdf.setTextColor(0, 0, 0);
+                    pdf.text(propertyName, 105, 25, { align: 'center' });
+                    
+                    pdf.setFontSize(12);
+                    pdf.text(`Prepared for: ${ownerName} | Period: ${monthName} ${year}`, 105, 35, { align: 'center' });
+                    
+                    pdf.line(20, 40, 190, 40);
+                    
+                    // Add the image to the PDF
+                    let position = 45;
+                    pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 10, position, imgWidth - 20, imgHeight * 0.75);
+                    
+                    // Save the PDF
+                    pdf.save(`${propertyName}_Report_${monthName}_${year}.pdf`);
+                    
+                    alert('PDF generated successfully!');
+                }).catch(error => {
+                    console.error('Error generating PDF:', error);
                     alert('There was an error generating the PDF. Please try again.');
                 });
+            }, 1000); // Wait for 1 second to ensure charts are rendered
         }
     </script>
 </body>
