@@ -1050,9 +1050,60 @@
             document.getElementById('report-content').scrollIntoView({ behavior: 'smooth' });
         }
         
-        // Mock function for exporting the report as PDF
+        // Function for exporting the report as PDF
         function exportReport() {
-            alert('PDF export functionality would be implemented here. This would generate a printable/downloadable PDF version of the current report.');
+            const propertyName = document.getElementById('property-name').value || 'Property';
+            const ownerName = document.getElementById('owner-name').value || 'Owner';
+            const monthSelect = document.getElementById('month');
+            const monthName = monthSelect.options[monthSelect.selectedIndex].text;
+            const year = document.getElementById('year').value;
+            
+            // PDF export options
+            const reportElement = document.getElementById('report-content');
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `${propertyName}_Report_${monthName}_${year}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Create header for the PDF
+            const header = document.createElement('div');
+            header.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #FF5A5F; margin-bottom: 5px;">Property Performance Report</h1>
+                    <h2>${propertyName}</h2>
+                    <p>Prepared for: ${ownerName} | Period: ${monthName} ${year}</p>
+                    <hr style="margin: 10px 0;">
+                </div>
+            `;
+            
+            // Create a clone of the report content to avoid modifying the actual page
+            const pdfContent = document.createElement('div');
+            pdfContent.appendChild(header);
+            pdfContent.appendChild(reportElement.cloneNode(true));
+            
+            // Override some styles for better PDF rendering
+            const style = document.createElement('style');
+            style.textContent = `
+                body { font-family: Arial, sans-serif; }
+                .card { border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; }
+                .metrics-grid { display: flex; flex-wrap: wrap; }
+                .metric-card { width: 22%; margin: 1%; }
+                .chart-container { height: 200px; }
+            `;
+            pdfContent.appendChild(style);
+            
+            // Generate the PDF
+            reportElement.style.display = 'block'; // Make sure it's visible
+            
+            // Use html2pdf library to create and download the PDF
+            html2pdf().set(opt).from(pdfContent).save()
+                .catch(err => {
+                    console.error('Error generating PDF:', err);
+                    alert('There was an error generating the PDF. Please try again.');
+                });
         }
     </script>
 </body>
