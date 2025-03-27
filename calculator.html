@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Co-Host Owner Reporting Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF5A5F;
+            --secondary: #00A699;
+            --dark: #484848;
+            --light: #767676;
+            --white: #ffffff;
+            --light-gray: #f7f7f7;
+            --border: #DDDDDD;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Circular', -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.43;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 8px;
+            font-size: 28px;
+        }
+        
+        .date-range {
+            font-size: 14px;
+            color: var(--light);
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background-color: #ff3a3f;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #008F86;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .metric-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 8px 0;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: var(--light);
+            margin-bottom: 8px;
+        }
+        
+        .metric-change {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .metric-change.positive {
+            color: #00A699;
+        }
+        
+        .metric-change.negative {
+            color: var(--primary);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--dark);
+            background-color: var(--light-gray);
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .benchmark-comparison {
+            display: flex;
+            align-items: center;
+        }
+        
+        .benchmark-bar {
+            width: 100px;
+            height: 8px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+            margin: 0 8px;
+            position: relative;
+        }
+        
+        .benchmark-value {
+            height: 100%;
+            background-color: var(--secondary);
+            border-radius: 4px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .benchmark-marker {
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--light);
+            font-size: 14px;
+        }
+        
+        #summary-table .expense-type {
+            font-weight: 500;
+        }
+        
+        .summary-row {
+            font-weight: 600;
+            background-color: rgba(0, 166, 153, 0.05);
+        }
+        
+        .toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+        
+        .toggle-label {
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .info-badge {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: var(--light);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+            font-size: 12px;
+            cursor: help;
+            margin-left: 4px;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--light);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--border);
+        }
+        
+        .export-btn {
+            background-color: var(--white);
+            color: var(--dark);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .export-btn:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .export-icon {
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> HostPro Reports
+            </div>
+            <div class="date-range" id="current-month">
+                March 2025
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Generate Owner Report</h2>
+                <button class="export-btn" onclick="exportReport()">
+                    <span class="export-icon">📊</span> Export PDF
+                </button>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="property-name">Property Name</label>
+                    <input type="text" id="property-name" placeholder="Enter property name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="owner-name">Owner Name</label>
+                    <input type="text" id="owner-name" placeholder="Enter owner name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="month">Month</label>
+                    <select id="month">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3" selected>March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <select id="year">
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="total-nights">Total Available Nights</label>
+                    <input type="number" id="total-nights" placeholder="31" value="31">
+                </div>
+                
+                <div class="form-group">
+                    <label for="booked-nights">Booked Nights</label>
+                    <input type="number" id="booked-nights" placeholder="Enter booked nights">
+                </div>
+                
+                <div class="form-group">
+                    <label for="total-revenue">Total Revenue ($)</label>
+                    <input type="number" id="total-revenue" placeholder="Enter total revenue">
+                </div>
+                
+                <div class="form-group">
+                    <label for="commission-rate">Your Commission Rate (%)</label>
+                    <input type="number" id="commission-rate" placeholder="25" value="25">
+                </div>
+            </div>
+
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="cleaning-fees">Cleaning Fees ($)</label>
+                    <input type="number" id="cleaning-fees" placeholder="Enter cleaning fees">
+                </div>
+                
+                <div class="form-group">
+                    <label for="supplies">Supplies & Restocking ($)</label>
+                    <input type="number" id="supplies" placeholder="Enter supplies cost">
+                </div>
+                
+                <div class="form-group">
+                    <label for="maintenance">Maintenance ($)</label>
+                    <input type="number" id="maintenance" placeholder="Enter maintenance cost">
+                </div>
+                
+                <div class="form-group">
+                    <label for="other-expenses">Other Expenses ($)</label>
+                    <input type="number" id="other-expenses" placeholder="Enter other expenses">
+                </div>
+            </div>
+
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="market-occupancy">Market Average Occupancy (%)</label>
+                    <input type="number" id="market-occupancy" placeholder="Enter market occupancy" value="72">
+                </div>
+                
+                <div class="form-group">
+                    <label for="market-adr">Market Average Daily Rate ($)</label>
+                    <input type="number" id="market-adr" placeholder="Enter market ADR" value="185">
+                </div>
+                
+                <div class="form-group">
+                    <label for="previous-revenue">Previous Month Revenue ($)</label>
+                    <input type="number" id="previous-revenue" placeholder="Enter previous month revenue">
+                </div>
+
+                <div class="form-group">
+                    <label for="previous-occupancy">Previous Month Occupancy (%)</label>
+                    <input type="number" id="previous-occupancy" placeholder="Enter previous occupancy">
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 16px;">
+                <button class="btn" onclick="generateReport()">Generate Report</button>
+            </div>
+        </div>
+        
+        <div id="report-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Monthly Performance Summary</h2>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Revenue</div>
+                        <div class="metric-value" id="summary-revenue">$0</div>
+                        <div class="metric-change" id="revenue-change">0% from last month</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Net Owner Payout</div>
+                        <div class="metric-value" id="summary-payout">$0</div>
+                        <div class="metric-change" id="payout-percent">0% of total revenue</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Occupancy Rate</div>
+                        <div class="metric-value" id="summary-occupancy">0%</div>
+                        <div class="metric-change" id="occupancy-change">0% from last month</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Average Daily Rate</div>
+                        <div class="metric-value" id="summary-adr">$0</div>
+                        <div class="metric-change" id="adr-vs-market">0% vs market average</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Revenue Breakdown</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenue-breakdown-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Market Comparison</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="market-comparison-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Financial Summary</h2>
+                </div>
+                
+                <div class="table-container">
+                    <table id="summary-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="expense-type">Total Revenue</td>
+                                <td id="table-revenue">$0</td>
+                                <td>100%</td>
+                            </tr>
+                            <tr>
+                                <td class="expense-type">Cleaning Fees</td>
+                                <td id="table-cleaning">$0</td>
+                                <td id="table-cleaning-percent">0%</td>
+                            </tr>
+                            <tr>
+                                <td class="expense-type">Supplies & Restocking</td>
+                                <td id="table-supplies">$0</td>
+                                <td id="table-supplies-percent">0%</td>
+                            </tr>
+                            <tr>
+                                <td class="expense-type">Maintenance</td>
+                                <td id="table-maintenance">$0</td>
+                                <td id="table-maintenance-percent">0%</td>
+                            </tr>
+                            <tr>
+                                <td class="expense-type">Other Expenses</td>
+                                <td id="table-other">$0</td>
+                                <td id="table-other-percent">0%</td>
+                            </tr>
+                            <tr>
+                                <td class="expense-type">Management Fee</td>
+                                <td id="table-commission">$0</td>
+                                <td id="table-commission-percent">0%</td>
+                            </tr>
+                            <tr class="summary-row">
+                                <td class="expense-type">Net Owner Payout</td>
+                                <td id="table-payout">$0</td>
+                                <td id="table-payout-percent">0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Performance Metrics vs Market Average</h2>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Your Property</th>
+                                <th>Market Average</th>
+                                <th>Comparison</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Occupancy Rate</td>
+                                <td id="benchmark-occupancy">0%</td>
+                                <td id="benchmark-market-occupancy">0%</td>
+                                <td>
+                                    <div class="benchmark-comparison">
+                                        <span id="benchmark-occupancy-diff">0%</span>
+                                        <div class="benchmark-bar">
+                                            <div class="benchmark-value" id="benchmark-occupancy-bar" style="width: 0%"></div>
+                                            <div class="benchmark-marker" style="left: 70%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Average Daily Rate</td>
+                                <td id="benchmark-adr">$0</td>
+                                <td id="benchmark-market-adr">$0</td>
+                                <td>
+                                    <div class="benchmark-comparison">
+                                        <span id="benchmark-adr-diff">0%</span>
+                                        <div class="benchmark-bar">
+                                            <div class="benchmark-value" id="benchmark-adr-bar" style="width: 0%"></div>
+                                            <div class="benchmark-marker" style="left: 70%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RevPAR (Revenue Per Available Room)</td>
+                                <td id="benchmark-revpar">$0</td>
+                                <td id="benchmark-market-revpar">$0</td>
+                                <td>
+                                    <div class="benchmark-comparison">
+                                        <span id="benchmark-revpar-diff">0%</span>
+                                        <div class="benchmark-bar">
+                                            <div class="benchmark-value" id="benchmark-revpar-bar" style="width: 0%"></div>
+                                            <div class="benchmark-marker" style="left: 70%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recommendations</h2>
+                </div>
+                
+                <div id="recommendations" class="recommendations">
+                    <p>Based on this month's performance data, we have the following recommendations:</p>
+                    <ul id="recommendations-list">
+                        <!-- Recommendations will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>HostPro Reports &copy; 2025 | Professional Airbnb Co-Hosting Services</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the current date display
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            
+            document.getElementById('current-month').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+            
+            // Set current month and year in the form
+            document.getElementById('month').value = now.getMonth() + 1;
+            document.getElementById('year').value = now.getFullYear();
+        });
+
+        // Format currency
+        function formatCurrency(amount) {
+            return '$' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+        
+        // Format percentage
+        function formatPercentage(percentage) {
+            return parseFloat(percentage).toFixed(1) + '%';
+        }
+        
+        // Calculate all the metrics needed for the report
+        function calculateMetrics() {
+            // Get input values
+            const totalNights = parseFloat(document.getElementById('total-nights').value) || 0;
+            const bookedNights = parseFloat(document.getElementById('booked-nights').value) || 0;
+            const totalRevenue = parseFloat(document.getElementById('total-revenue').value) || 0;
+            const commissionRate = parseFloat(document.getElementById('commission-rate').value) || 0;
+            const cleaningFees = parseFloat(document.getElementById('cleaning-fees').value) || 0;
+            const supplies = parseFloat(document.getElementById('supplies').value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
+            const otherExpenses = parseFloat(document.getElementById('other-expenses').value) || 0;
+            const marketOccupancy = parseFloat(document.getElementById('market-occupancy').value) || 0;
+            const marketADR = parseFloat(document.getElementById('market-adr').value) || 0;
+            const previousRevenue = parseFloat(document.getElementById('previous-revenue').value) || 0;
+            const previousOccupancy = parseFloat(document.getElementById('previous-occupancy').value) || 0;
+            
+            // Calculate metrics
+            const occupancyRate = (bookedNights / totalNights) * 100;
+            const adr = totalRevenue / bookedNights;
+            const commission = (totalRevenue * commissionRate) / 100;
+            const totalExpenses = cleaningFees + supplies + maintenance + otherExpenses + commission;
+            const netOwnerPayout = totalRevenue - totalExpenses;
+            
+            // Calculate percentages
+            const cleaningPercent = (cleaningFees / totalRevenue) * 100;
+            const suppliesPercent = (supplies / totalRevenue) * 100;
+            const maintenancePercent = (maintenance / totalRevenue) * 100;
+            const otherPercent = (otherExpenses / totalRevenue) * 100;
+            const commissionPercent = (commission / totalRevenue) * 100;
+            const payoutPercent = (netOwnerPayout / totalRevenue) * 100;
+            
+            // Calculate comparisons
+            const revenueChange = previousRevenue ? ((totalRevenue - previousRevenue) / previousRevenue) * 100 : 0;
+            const occupancyChange = previousOccupancy ? ((occupancyRate - previousOccupancy) / previousOccupancy) * 100 : 0;
+            const adrVsMarket = marketADR ? ((adr - marketADR) / marketADR) * 100 : 0;
+            
+            // Calculate RevPAR (Revenue Per Available Room)
+            const revpar = totalRevenue / totalNights;
+            const marketRevpar = (marketADR * marketOccupancy) / 100;
+            const revparDiff = marketRevpar ? ((revpar - marketRevpar) / marketRevpar) * 100 : 0;
+            
+            // Return all metrics
+            return {
+                totalRevenue,
+                netOwnerPayout,
+                occupancyRate,
+                adr,
+                commission,
+                cleaningFees,
+                supplies,
+                maintenance,
+                otherExpenses,
+                totalExpenses,
+                cleaningPercent,
+                suppliesPercent,
+                maintenancePercent,
+                otherPercent,
+                commissionPercent,
+                payoutPercent,
+                revenueChange,
+                occupancyChange,
+                adrVsMarket,
+                marketOccupancy,
+                marketADR,
+                revpar,
+                marketRevpar,
+                revparDiff,
+                bookedNights,
+                totalNights
+            };
+        }
+        
+        // Generate recommendations based on the metrics
+        function generateRecommendations(metrics) {
+            const recommendations = [];
+            
+            // Occupancy recommendations
+            if (metrics.occupancyRate < metrics.marketOccupancy - 10) {
+                recommendations.push("Consider adjusting pricing strategy to increase occupancy rate, which is significantly below market average.");
+            } else if (metrics.occupancyRate > metrics.marketOccupancy + 10) {
+                recommendations.push("Your occupancy rate is above market average. Consider testing higher rates to maximize revenue.");
+            }
+            
+            // ADR recommendations
+            if (metrics.adr < metrics.marketADR - 20) {
+                recommendations.push("Your Average Daily Rate is below market average. Review property amenities and listing quality to justify higher rates.");
+            } else if (metrics.adr > metrics.marketADR + 20) {
+                recommendations.push("Your Average Daily Rate is strong. Focus on maintaining high guest satisfaction to support premium pricing.");
+            }
+            
+            // Expense recommendations
+            if (metrics.cleaningPercent > 15) {
+                recommendations.push("Cleaning expenses are higher than optimal. Consider negotiating rates with current cleaners or finding new service providers.");
+            }
+            
+            if (metrics.maintenancePercent > 10) {
+                recommendations.push("Maintenance costs were high this month. Consider a preventative maintenance check to address recurring issues.");
+            }
+            
+            // Seasonal recommendations
+            const month = parseInt(document.getElementById('month').value);
+            if (month >= 5 && month <= 8) { // Summer months
+                recommendations.push("Summer season approaching. Consider updating outdoor amenities and ensuring AC systems are working properly.");
+            } else if (month >= 11 || month <= 2) { // Winter months
+                recommendations.push("Winter season approaching. Ensure heating systems are functioning properly and consider adding seasonal touches for guest comfort.");
+            }
+            
+            // Default recommendation if none were generated
+            if (recommendations.length === 0) {
+                recommendations.push("Your property is performing well across all metrics. Continue with current strategies while monitoring market trends.");
+            }
+            
+            return recommendations;
+        }
+        
+        // Create the pie chart for revenue breakdown
+        function createRevenueBreakdownChart(metrics) {
+            const ctx = document.getElementById('revenue-breakdown-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.revenueChart) {
+                window.revenueChart.destroy();
+            }
+            
+            window.revenueChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Owner Payout', 'Management Fee', 'Cleaning', 'Supplies', 'Maintenance', 'Other'],
+                    datasets: [{
+                        data: [
+                            metrics.netOwnerPayout,
+                            metrics.commission,
+                            metrics.cleaningFees,
+                            metrics.supplies,
+                            metrics.maintenance,
+                            metrics.otherExpenses
+                        ],
+                        backgroundColor: [
+                            '#00A699',
+                            '#FF5A5F',
+                            '#008489',
+                            '#767676',
+                            '#484848',
+                            '#FFB400'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create the bar chart for market comparison
+        function createMarketComparisonChart(metrics) {
+            const ctx = document.getElementById('market-comparison-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.marketChart) {
+                window.marketChart.destroy();
+            }
+            
+            window.marketChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Occupancy Rate (%)', 'Average Daily Rate ($)', 'RevPAR ($)'],
+                    datasets: [{
+                        label: 'Your Property',
+                        data: [
+                            metrics.occupancyRate,
+                            metrics.adr,
+                            metrics.revpar
+                        ],
+                        backgroundColor: '#FF5A5F',
+                        borderColor: '#FF5A5F',
+                        borderWidth: 1
+                    }, {
+                        label: 'Market Average',
+                        data: [
+                            metrics.marketOccupancy,
+                            metrics.marketADR,
+                            metrics.marketRevpar
+                        ],
+                        backgroundColor: '#00A699',
+                        borderColor: '#00A699',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.raw || 0;
+                                    if (context.dataIndex === 0) {
+                                        return `${label}: ${formatPercentage(value)}`;
+                                    } else {
+                                        return `${label}: ${formatCurrency(value)}`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update the UI with the calculated metrics
+        function updateUI(metrics) {
+            // Show the report content
+            document.getElementById('report-content').style.display = 'block';
+            
+            // Update summary metrics
+            document.getElementById('summary-revenue').textContent = formatCurrency(metrics.totalRevenue);
+            document.getElementById('summary-payout').textContent = formatCurrency(metrics.netOwnerPayout);
+            document.getElementById('summary-occupancy').textContent = formatPercentage(metrics.occupancyRate);
+            document.getElementById('summary-adr').textContent = formatCurrency(metrics.adr);
+            
+            // Update change metrics
+            const revenueChangeEl = document.getElementById('revenue-change');
+            revenueChangeEl.textContent = `${formatPercentage(metrics.revenueChange)} from last month`;
+            revenueChangeEl.className = `metric-change ${metrics.revenueChange >= 0 ? 'positive' : 'negative'}`;
+            
+            document.getElementById('payout-percent').textContent = `${formatPercentage(metrics.payoutPercent)} of total revenue`;
+            
+            const occupancyChangeEl = document.getElementById('occupancy-change');
+            occupancyChangeEl.textContent = `${formatPercentage(metrics.occupancyChange)} from last month`;
+            occupancyChangeEl.className = `metric-change ${metrics.occupancyChange >= 0 ? 'positive' : 'negative'}`;
+            
+            const adrVsMarketEl = document.getElementById('adr-vs-market');
+            adrVsMarketEl.textContent = `${formatPercentage(metrics.adrVsMarket)} vs market average`;
+            adrVsMarketEl.className = `metric-change ${metrics.adrVsMarket >= 0 ? 'positive' : 'negative'}`;
+            
+            // Update table values
+            document.getElementById('table-revenue').textContent = formatCurrency(metrics.totalRevenue);
+            document.getElementById('table-cleaning').textContent = formatCurrency(metrics.cleaningFees);
+            document.getElementById('table-supplies').textContent = formatCurrency(metrics.supplies);
+            document.getElementById('table-maintenance').textContent = formatCurrency(metrics.maintenance);
+            document.getElementById('table-other').textContent = formatCurrency(metrics.otherExpenses);
+            document.getElementById('table-commission').textContent = formatCurrency(metrics.commission);
+            document.getElementById('table-payout').textContent = formatCurrency(metrics.netOwnerPayout);
+            
+            document.getElementById('table-cleaning-percent').textContent = formatPercentage(metrics.cleaningPercent);
+            document.getElementById('table-supplies-percent').textContent = formatPercentage(metrics.suppliesPercent);
+            document.getElementById('table-maintenance-percent').textContent = formatPercentage(metrics.maintenancePercent);
+            document.getElementById('table-other-percent').textContent = formatPercentage(metrics.otherPercent);
+            document.getElementById('table-commission-percent').textContent = formatPercentage(metrics.commissionPercent);
+            document.getElementById('table-payout-percent').textContent = formatPercentage(metrics.payoutPercent);
+            
+            // Update benchmark comparisons
+            document.getElementById('benchmark-occupancy').textContent = formatPercentage(metrics.occupancyRate);
+            document.getElementById('benchmark-market-occupancy').textContent = formatPercentage(metrics.marketOccupancy);
+            document.getElementById('benchmark-adr').textContent = formatCurrency(metrics.adr);
+            document.getElementById('benchmark-market-adr').textContent = formatCurrency(metrics.marketADR);
+            document.getElementById('benchmark-revpar').textContent = formatCurrency(metrics.revpar);
+            document.getElementById('benchmark-market-revpar').textContent = formatCurrency(metrics.marketRevpar);
+            
+            // Calculate and display differences
+            const occupancyDiff = metrics.occupancyRate - metrics.marketOccupancy;
+            const adrDiff = ((metrics.adr - metrics.marketADR) / metrics.marketADR) * 100;
+            const revparDiff = ((metrics.revpar - metrics.marketRevpar) / metrics.marketRevpar) * 100;
+            
+            document.getElementById('benchmark-occupancy-diff').textContent = `${occupancyDiff >= 0 ? '+' : ''}${formatPercentage(occupancyDiff)}`;
+            document.getElementById('benchmark-adr-diff').textContent = `${adrDiff >= 0 ? '+' : ''}${formatPercentage(adrDiff)}`;
+            document.getElementById('benchmark-revpar-diff').textContent = `${revparDiff >= 0 ? '+' : ''}${formatPercentage(revparDiff)}`;
+            
+            // Update benchmark bars
+            const occupancyBarWidth = Math.min(Math.max((metrics.occupancyRate / (metrics.marketOccupancy * 1.5)) * 100, 0), 100);
+            const adrBarWidth = Math.min(Math.max((metrics.adr / (metrics.marketADR * 1.5)) * 100, 0), 100);
+            const revparBarWidth = Math.min(Math.max((metrics.revpar / (metrics.marketRevpar * 1.5)) * 100, 0), 100);
+            
+            document.getElementById('benchmark-occupancy-bar').style.width = `${occupancyBarWidth}%`;
+            document.getElementById('benchmark-adr-bar').style.width = `${adrBarWidth}%`;
+            document.getElementById('benchmark-revpar-bar').style.width = `${revparBarWidth}%`;
+            
+            // Update recommendations
+            const recommendations = generateRecommendations(metrics);
+            const recommendationsList = document.getElementById('recommendations-list');
+            recommendationsList.innerHTML = '';
+            
+            recommendations.forEach(recommendation => {
+                const li = document.createElement('li');
+                li.textContent = recommendation;
+                recommendationsList.appendChild(li);
+            });
+            
+            // Create charts
+            createRevenueBreakdownChart(metrics);
+            createMarketComparisonChart(metrics);
+        }
+        
+        // Generate the full report
+        function generateReport() {
+            const propertyName = document.getElementById('property-name').value;
+            const ownerName = document.getElementById('owner-name').value;
+            
+            if (!propertyName || !ownerName) {
+                alert('Please enter property name and owner name.');
+                return;
+            }
+            
+            const totalNights = parseFloat(document.getElementById('total-nights').value);
+            const bookedNights = parseFloat(document.getElementById('booked-nights').value);
+            const totalRevenue = parseFloat(document.getElementById('total-revenue').value);
+            
+            if (!totalNights || !bookedNights || !totalRevenue) {
+                alert('Please enter all required financial data.');
+                return;
+            }
+            
+            const metrics = calculateMetrics();
+            updateUI(metrics);
+            
+            // Scroll to report content
+            document.getElementById('report-content').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Mock function for exporting the report as PDF
+        function exportReport() {
+            alert('PDF export functionality would be implemented here. This would generate a printable/downloadable PDF version of the current report.');
+        }
+    </script>
+</body>
+</html>
