@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Airbnb: Owner Reporting Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff5a5f;
+            --primary-light: #ff8a8e;
+            --primary-dark: #e54a4f;
+            --secondary: #00A699;
+            --secondary-light: #00c2b3;
+            --secondary-dark: #008577;
+            --text: #484848;
+            --text-light: #767676;
+            --background: #ffffff;
+            --background-alt: #f8f9fa;
+            --border: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --neutral: #8E8E93;
+            --gradient-start: #ff5a5f;
+            --gradient-end: #00A699;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--background-alt);
+            font-size: 16px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin: 1.25rem 0 0.75rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* Dashboard section */
+        .dashboard {
+            padding: 40px 0 60px;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .dashboard-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: var(--background-alt);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.1);
+        }
+        
+        .dashboard-results {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background-color: var(--background-alt);
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .metric-icon {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-subtext {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+        
+        .metric-change.positive {
+            color: var(--success);
+        }
+        
+        .metric-change.negative {
+            color: var(--danger);
+        }
+        
+        .metric-change i {
+            margin-right: 4px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison-table th {
+            font-weight: 600;
+            color: var(--text);
+            background-color: var(--background-alt);
+        }
+        
+        .comparison-table tr:hover {
+            background-color: var(--background-alt);
+        }
+        
+        .performance-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .performance-positive {
+            background-color: rgba(52, 199, 89, 0.1);
+            color: var(--success);
+        }
+        
+        .performance-negative {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: var(--danger);
+        }
+        
+        .performance-neutral {
+            background-color: rgba(142, 142, 147, 0.1);
+            color: var(--neutral);
+        }
+        
+        /* Form sections */
+        .form-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        /* Button group */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Expense breakdown */
+        .expense-list {
+            margin-top: 20px;
+        }
+        
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+        
+        .expense-name {
+            display: flex;
+            align-items: center;
+        }
+        
+        .expense-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .expense-amount {
+            font-weight: 600;
+        }
+        
+        .expense-percent {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-left: 8px;
+        }
+        
+        /* Status indicator */
+        .report-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 12px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+        
+        .report-status i {
+            margin-right: 5px;
+        }
+        
+        .report-date {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .toggle-label {
+            margin-left: 10px;
+        }
+        
+        /* Print styles */
+        @media print {
+            header, footer, .dashboard-form, .btn {
+                display: none;
+            }
+            
+            .dashboard-grid {
+                display: block;
+            }
+            
+            .dashboard-results {
+                display: block;
+            }
+            
+            .card {
+                box-shadow: none;
+                padding: 15px 0;
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            .metric-card {
+                background-color: white;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-form {
+                position: static;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .comparison-table th, .comparison-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
+            <nav class="nav-links">
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">Properties</a>
+                <a href="#">Reports</a>
+                <a href="#">Analytics</a>
+                <a href="#">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Owner Reporting <span class="report-status"><i class="fas fa-sparkles"></i>Pro</span></h1>
+                <p>Generate comprehensive performance reports for property owners with visual analytics</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-form">
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-house"></i> Property Information</div>
+                        <div class="form-group">
+                            <label for="property-name">Property Name</label>
+                            <input type="text" id="property-name" placeholder="Enter property name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="month">Reporting Period</label>
+                            <select id="month" required>
+                                <option value="">Select month</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-coins"></i> Revenue & Occupancy</div>
+                        <div class="form-group">
+                            <label for="total-revenue">Total Revenue ($)</label>
+                            <input type="number" id="total-revenue" min="0" step="0.01" placeholder="e.g. 5000" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="booking-nights">Nights Booked</label>
+                            <input type="number" id="booking-nights" min="0" max="31" placeholder="e.g. 22" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-file-invoice-dollar"></i> Expenses</div>
+                        <div class="form-group">
+                            <label for="cleaning-expenses">Cleaning ($)</label>
+                            <input type="number" id="cleaning-expenses" min="0" step="0.01" placeholder="e.g. 400" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="maintenance-expenses">Maintenance ($)</label>
+                            <input type="number" id="maintenance-expenses" min="0" step="0.01" placeholder="e.g. 150" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supplies-expenses">Supplies ($)</label>
+                            <input type="number" id="supplies-expenses" min="0" step="0.01" placeholder="e.g. 75" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="other-expenses">Other ($)</label>
+                            <input type="number" id="other-expenses" min="0" step="0.01" placeholder="e.g. 100" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-chart-line"></i> Market Benchmarks</div>
+                        <div class="form-group">
+                            <label for="market-occupancy">Market Occupancy (%)</label>
+                            <input type="number" id="market-occupancy" min="0" max="100" placeholder="e.g. 65" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="market-adr">Market Average Daily Rate ($)</label>
+                            <input type="number" id="market-adr" min="0" step="0.01" placeholder="e.g. 150" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="include-commission" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">Include management commission (25%)</span>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="generateReport" class="btn"><i class="fas fa-wand-magic-sparkles"></i> Generate Report</button>
+                        <button type="button" id="printReport" class="btn btn-outline"><i class="fas fa-print"></i> Print Report</button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-results">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 id="report-title">Monthly Performance Report</h2>
+                                <p class="report-date" id="report-date">Enter data and generate the report to see results</p>
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Revenue</div>
+                                    <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                                </div>
+                                <div class="metric-value" id="revenue-value">$0</div>
+                                <div class="metric-subtext">Gross monthly income</div>
+                                <div class="metric-change positive" id="revenue-change"><i class="fas fa-arrow-up"></i> vs. market</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Net Profit</div>
+                                    <div class="metric-icon"><i class="fas fa-piggy-bank"></i></div>
+                                </div>
+                                <div class="metric-value" id="profit-value">$0</div>
+                                <div class="metric-subtext">After all expenses</div>
+                                <div class="metric-change positive" id="profit-percent"><i class="fas fa-percentage"></i> of revenue</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Occupancy</div>
+                                    <div class="metric-icon"><i class="fas fa-calendar-check"></i></div>
+                                </div>
+                                <div class="metric-value" id="occupancy-value">0%</div>
+                                <div class="metric-subtext">Monthly booking rate</div>
+                                <div class="metric-change positive" id="occupancy-change"><i class="fas fa-arrow-up"></i> vs. market</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">ADR</div>
+                                    <div class="metric-icon"><i class="fas fa-tag"></i></div>
+                                </div>
+                                <div class="metric-value" id="adr-value">$0</div>
+                                <div class="metric-subtext">Average nightly rate</div>
+                                <div class="metric-change positive" id="adr-change"><i class="fas fa-arrow-up"></i> vs. market</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Expenses</div>
+                                    <div class="metric-icon"><i class="fas fa-receipt"></i></div>
+                                </div>
+                                <div class="metric-value" id="expenses-value">$0</div>
+                                <div class="metric-subtext">Total monthly costs</div>
+                                <div class="metric-change negative" id="expense-percent"><i class="fas fa-percentage"></i> of revenue</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Commission</div>
+                                    <div class="metric-icon"><i class="fas fa-handshake"></i></div>
+                                </div>
+                                <div class="metric-value" id="fee-value">$0</div>
+                                <div class="metric-subtext">Management fee (25%)</div>
+                                <div class="metric-change" id="fee-percent"><i class="fas fa-percentage"></i> of revenue</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-chart-column"></i> Revenue vs. Expenses</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-circle-dollar-to-slot"></i> Expense Breakdown</h3>
+                        </div>
+                        <div class="chart-container" style="height: 250px">
+                            <canvas id="expensesChart"></canvas>
+                        </div>
+                        <div class="expense-list" id="expense-list">
+                            <!-- Expense items will be dynamically generated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-scale-balanced"></i> Market Comparison</h3>
+                        </div>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Your Property</th>
+                                    <th>Market Average</th>
+                                    <th>Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-body">
+                                <tr>
+                                    <td>Occupancy Rate</td>
+                                    <td id="comp-occupancy">0%</td>
+                                    <td id="market-occupancy-value">0%</td>
+                                    <td><span class="performance-indicator performance-neutral" id="occupancy-performance">—</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Average Daily Rate</td>
+                                    <td id="comp-adr">$0</td>
+                                    <td id="market-adr-value">$0</td>
+                                    <td><span class="performance-indicator performance-neutral" id="adr-performance">—</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Monthly Revenue</td>
+                                    <td id="comp-revenue">$0</td>
+                                    <td id="market-revenue">$0</td>
+                                    <td><span class="performance-indicator performance-neutral" id="revenue-performance">—</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Global chart instances
+        let expensesChart;
+        let performanceChart;
+        
+        // Color palette for expenses
+        const expenseColors = {
+            'Cleaning': '#5AC8FA',
+            'Maintenance': '#5856D6',
+            'Supplies': '#FF9500',
+            'Other': '#FF2D55',
+            'Management Fee': '#FF5A5F'
+        };
+        
+        // Initialize charts with default data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize expense breakdown chart
+            const expensesCtx = document.getElementById('expensesChart').getContext('2d');
+            expensesChart = new Chart(expensesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cleaning', 'Maintenance', 'Supplies', 'Other', 'Management Fee'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: Object.values(expenseColors),
+                        borderWidth: 0,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Initialize performance chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(performanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Revenue', 'Expenses', 'Net Profit'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            '#34C759',
+                            '#FF3B30',
+                            '#007AFF'
+                        ],
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw || 0;
+                                    return `$${value.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                },
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Add event listeners
+            document.getElementById('generateReport').addEventListener('click', generateReport);
+            document.getElementById('printReport').addEventListener('click', printReport);
+        });
+        
+        function generateReport() {
+            // Get form values
+            const propertyName = document.getElementById('property-name').value;
+            const month = document.getElementById('month').value;
+            const totalRevenue = parseFloat(document.getElementById('total-revenue').value) || 0;
+            const cleaningExpenses = parseFloat(document.getElementById('cleaning-expenses').value) || 0;
+            const maintenanceExpenses = parseFloat(document.getElementById('maintenance-expenses').value) || 0;
+            const suppliesExpenses = parseFloat(document.getElementById('supplies-expenses').value) || 0;
+            const otherExpenses = parseFloat(document.getElementById('other-expenses').value) || 0;
+            const bookingNights = parseInt(document.getElementById('booking-nights').value) || 0;
+            const marketOccupancy = parseFloat(document.getElementById('market-occupancy').value) || 0;
+            const marketADR = parseFloat(document.getElementById('market-adr').value) || 0;
+            const includeCommission = document.getElementById('include-commission').checked;
+            
+            // Validate inputs
+            if (!propertyName || !month || totalRevenue <= 0 || bookingNights <= 0 || marketOccupancy <= 0 || marketADR <= 0) {
+                alert('Please fill in all required fields with valid values.');
+                return;
+            }
+            
+            // Calculate metrics
+            const managementFee = includeCommission ? totalRevenue * 0.25 : 0; // 25% management fee
+            const totalExpenses = cleaningExpenses + maintenanceExpenses + suppliesExpenses + otherExpenses + managementFee;
+            const netProfit = totalRevenue - totalExpenses;
+            const occupancyRate = (bookingNights / getDaysInMonth(month)) * 100;
+            const averageDailyRate = totalRevenue / bookingNights;
+            
+            // Calculate market comparisons
+            const daysInMonth = getDaysInMonth(month);
+            const marketMonthlyRevenue = marketADR * (marketOccupancy / 100) * daysInMonth;
+            
+            // Update report title and date
+            document.getElementById('report-title').textContent = propertyName;
+            document.getElementById('report-date').textContent = `${month} ${new Date().getFullYear()} Performance Report`;
+            
+            // Update metrics
+            document.getElementById('revenue-value').textContent = formatCurrency(totalRevenue);
+            document.getElementById('profit-value').textContent = formatCurrency(netProfit);
+            document.getElementById('occupancy-value').textContent = occupancyRate.toFixed(1) + '%';
+            document.getElementById('adr-value').textContent = formatCurrency(averageDailyRate);
+            document.getElementById('expenses-value').textContent = formatCurrency(totalExpenses);
+            document.getElementById('fee-value').textContent = formatCurrency(managementFee);
+            
+            // Update percentage metrics
+            const profitPercent = (netProfit / totalRevenue) * 100;
+            const expensePercent = (totalExpenses / totalRevenue) * 100;
+            const feePercent = (managementFee / totalRevenue) * 100;
+            
+            document.getElementById('profit-percent').textContent = `${profitPercent.toFixed(1)}% of revenue`;
+            document.getElementById('profit-percent').className = profitPercent > 50 ? 'metric-change positive' : 'metric-change';
+            
+            document.getElementById('expense-percent').textContent = `${expensePercent.toFixed(1)}% of revenue`;
+            document.getElementById('expense-percent').className = expensePercent < 50 ? 'metric-change positive' : 'metric-change negative';
+            
+            document.getElementById('fee-percent').textContent = `${feePercent.toFixed(1)}% of revenue`;
+            document.getElementById('fee-percent').className = 'metric-change';
+            
+            // Update comparison indicators
+            updateComparisonIndicator('revenue-change', totalRevenue, marketMonthlyRevenue);
+            updateComparisonIndicator('occupancy-change', occupancyRate, marketOccupancy);
+            updateComparisonIndicator('adr-change', averageDailyRate, marketADR);
+            
+            // Update comparison table
+            document.getElementById('comp-occupancy').textContent = occupancyRate.toFixed(1) + '%';
+            document.getElementById('market-occupancy-value').textContent = marketOccupancy.toFixed(1) + '%';
+            document.getElementById('comp-adr').textContent = formatCurrency(averageDailyRate);
+            document.getElementById('market-adr-value').textContent = formatCurrency(marketADR);
+            document.getElementById('comp-revenue').textContent = formatCurrency(totalRevenue);
+            document.getElementById('market-revenue').textContent = formatCurrency(marketMonthlyRevenue);
+            
+            // Update performance indicators
+            updatePerformanceIndicator('occupancy-performance', occupancyRate, marketOccupancy);
+            updatePerformanceIndicator('adr-performance', averageDailyRate, marketADR);
+            updatePerformanceIndicator('revenue-performance', totalRevenue, marketMonthlyRevenue);
+            
+            // Update expense breakdown chart
+            const expenseData = [
+                cleaningExpenses,
+                maintenanceExpenses,
+                suppliesExpenses,
+                otherExpenses,
+                managementFee
+            ];
+            
+            expensesChart.data.datasets[0].data = expenseData;
+            expensesChart.update();
+            
+            // Update performance chart
+            performanceChart.data.datasets[0].data = [
+                totalRevenue,
+                totalExpenses,
+                netProfit
+            ];
+            performanceChart.update();
+            
+            // Create expense list
+            generateExpenseList(
+                cleaningExpenses,
+                maintenanceExpenses,
+                suppliesExpenses,
+                otherExpenses,
+                managementFee,
+                totalExpenses
+            );
+        }
+        
+        function generateExpenseList(cleaning, maintenance, supplies, other, managementFee, total) {
+            const expenses = [
+                { name: 'Cleaning', amount: cleaning, color: expenseColors['Cleaning'] },
+                { name: 'Maintenance', amount: maintenance, color: expenseColors['Maintenance'] },
+                { name: 'Supplies', amount: supplies, color: expenseColors['Supplies'] },
+                { name: 'Other', amount: other, color: expenseColors['Other'] },
+                { name: 'Management Fee', amount: managementFee, color: expenseColors['Management Fee'] }
+            ];
+            
+            // Sort by amount (descending)
+            expenses.sort((a, b) => b.amount - a.amount);
+            
+            // Generate HTML
+            const expenseList = document.getElementById('expense-list');
+            expenseList.innerHTML = '';
+            
+            expenses.forEach(expense => {
+                const percent = total > 0 ? (expense.amount / total) * 100 : 0;
+                
+                if (expense.amount > 0) {
+                    const item = document.createElement('div');
+                    item.className = 'expense-item';
+                    item.innerHTML = `
+                        <div class="expense-name">
+                            <div class="expense-color" style="background-color: ${expense.color}"></div>
+                            ${expense.name}
+                        </div>
+                        <div>
+                            <span class="expense-amount">${formatCurrency(expense.amount)}</span>
+                            <span class="expense-percent">${percent.toFixed(1)}%</span>
+                        </div>
+                    `;
+                    expenseList.appendChild(item);
+                }
+            });
+        }
+        
+        function getDaysInMonth(monthName) {
+            const months = {
+                'January': 31,
+                'February': new Date().getFullYear() % 4 === 0 ? 29 : 28, // Leap year check
+                'March': 31,
+                'April': 30,
+                'May': 31,
+                'June': 30,
+                'July': 31,
+                'August': 31,
+                'September': 30,
+                'October': 31,
+                'November': 30,
+                'December': 31
+            };
+            
+            return months[monthName] || 30; // Default to 30 if month not found
+        }
+        
+        function formatCurrency(value) {
+            return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+        
+        function updatePerformanceIndicator(elementId, actualValue, benchmarkValue) {
+            const element = document.getElementById(elementId);
+            const percentageDiff = ((actualValue - benchmarkValue) / benchmarkValue) * 100;
+            
+            if (percentageDiff > 5) {
+                element.className = 'performance-indicator performance-positive';
+                element.textContent = '+' + percentageDiff.toFixed(1) + '%';
+            } else if (percentageDiff < -5) {
+                element.className = 'performance-indicator performance-negative';
+                element.textContent = percentageDiff.toFixed(1) + '%';
+            } else {
+                element.className = 'performance-indicator performance-neutral';
+                element.textContent = 'On par';
+            }
+        }
+        
+        function updateComparisonIndicator(elementId, actualValue, benchmarkValue) {
+            const element = document.getElementById(elementId);
+            const percentageDiff = ((actualValue - benchmarkValue) / benchmarkValue) * 100;
+            
+            if (percentageDiff > 0) {
+                element.className = 'metric-change positive';
+                element.innerHTML = `<i class="fas fa-arrow-up"></i> ${percentageDiff.toFixed(1)}% vs. market`;
+            } else if (percentageDiff < 0) {
+                element.className = 'metric-change negative';
+                element.innerHTML = `<i class="fas fa-arrow-down"></i> ${Math.abs(percentageDiff).toFixed(1)}% vs. market`;
+            } else {
+                element.className = 'metric-change';
+                element.innerHTML = `<i class="fas fa-equals"></i> On par with market`;
+            }
+        }
+        
+        function printReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
