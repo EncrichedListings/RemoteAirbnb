@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Airbnb: Property Revenue Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff5a5f;
+            --primary-light: #ff8a8e;
+            --primary-dark: #e54a4f;
+            --secondary: #00A699;
+            --secondary-light: #00c2b3;
+            --secondary-dark: #008577;
+            --text: #484848;
+            --text-light: #767676;
+            --background: #ffffff;
+            --background-alt: #f8f9fa;
+            --border: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --neutral: #8E8E93;
+            --gradient-start: #ff5a5f;
+            --gradient-end: #00A699;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--background-alt);
+            font-size: 16px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin: 1.25rem 0 0.75rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* Calculator section */
+        .calculator {
+            padding: 40px 0 60px;
+        }
+        
+        .calculator-header {
+            margin-bottom: 30px;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .calculator-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: var(--background-alt);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.1);
+        }
+        
+        .calculator-results {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background-color: var(--background-alt);
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .metric-icon {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-subtext {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+        
+        .metric-change.positive {
+            color: var(--success);
+        }
+        
+        .metric-change.negative {
+            color: var(--danger);
+        }
+        
+        .metric-change i {
+            margin-right: 4px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison-table th {
+            font-weight: 600;
+            color: var(--text);
+            background-color: var(--background-alt);
+        }
+        
+        .comparison-table tr:hover {
+            background-color: var(--background-alt);
+        }
+        
+        /* Form sections */
+        .form-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        /* Button group */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Range input styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;  
+            background: var(--background-alt);
+            outline: none;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%; 
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Range display */
+        .range-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .toggle-label {
+            margin-left: 10px;
+        }
+        
+        /* Info tooltip */
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text) transparent transparent transparent;
+        }
+        
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* CTA card */
+        .cta-card {
+            background: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta-card h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .cta-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+        
+        .btn-white {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-white:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-dark);
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-form {
+                position: static;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .comparison-table th, .comparison-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#" class="active">Revenue Calculator</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="calculator">
+        <div class="container">
+            <div class="calculator-header">
+                <h1>Property Revenue Calculator <span style="font-size: 0.8rem; background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">(Beta)</span></h1>
+                <p>Estimate your potential earnings with our co-hosting service</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-form">
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-house"></i> Property Details</div>
+                        <div class="form-group">
+                            <label for="property-type">Property Type</label>
+                            <select id="property-type">
+                                <option value="apartment">Apartment</option>
+                                <option value="house">House</option>
+                                <option value="condo">Condominium</option>
+                                <option value="cabin">Cabin/Cottage</option>
+                                <option value="villa">Villa</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bedrooms">Number of Bedrooms</label>
+                            <select id="bedrooms">
+                                <option value="0">Studio</option>
+                                <option value="1">1 Bedroom</option>
+                                <option value="2" selected>2 Bedrooms</option>
+                                <option value="3">3 Bedrooms</option>
+                                <option value="4">4 Bedrooms</option>
+                                <option value="5">5+ Bedrooms</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location-type">Location Type</label>
+                            <select id="location-type">
+                                <option value="urban">Urban/City Center</option>
+                                <option value="suburban" selected>Suburban</option>
+                                <option value="beach">Beach/Waterfront</option>
+                                <option value="mountain">Mountain/Rural</option>
+                                <option value="resort">Resort Area</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-sliders"></i> Market Factors</div>
+                        
+                        <div class="form-group">
+                            <label for="occupancy-rate">Expected Occupancy Rate <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">The percentage of nights your property is expected to be booked throughout the year.</span>
+                            </span></label>
+                            <input type="range" id="occupancy-rate" min="40" max="90" value="65" step="5">
+                            <div class="range-display">
+                                <span>40%</span>
+                                <span id="occupancy-display">65%</span>
+                                <span>90%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nightly-rate">Average Nightly Rate <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">The average price per night your property can command in your market.</span>
+                            </span></label>
+                            <input type="range" id="nightly-rate" min="50" max="500" value="150" step="10">
+                            <div class="range-display">
+                                <span>$50</span>
+                                <span id="nightly-display">$150</span>
+                                <span>$500</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="seasonality">Seasonality Impact <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">How much your bookings fluctuate throughout the year due to seasonal demand.</span>
+                            </span></label>
+                            <select id="seasonality">
+                                <option value="low">Low (Consistent Year-Round)</option>
+                                <option value="medium" selected>Medium (Some Seasonal Variation)</option>
+                                <option value="high">High (Strong Peak & Off Seasons)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-calculator"></i> Expenses & Fees</div>
+                        
+                        <div class="form-group">
+                            <label for="cleaning-fee">Average Cleaning Fee (per stay)</label>
+                            <input type="number" id="cleaning-fee" min="0" value="85" step="5">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="maintenance">Monthly Maintenance Budget</label>
+                            <input type="number" id="maintenance" min="0" value="100" step="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="include-supplies" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Include supplies budget (toilet paper, soap, etc.)</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="commission-rate">Commission Rate <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">Our percentage fee for managing your property. Industry standard is 30-40%.</span>
+                            </span></label>
+                            <input type="range" id="commission-rate" min="15" max="35" value="25" step="1">
+                            <div class="range-display">
+                                <span>15%</span>
+                                <span id="commission-display">25%</span>
+                                <span>35%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="calculateButton" class="btn"><i class="fas fa-calculator"></i> Calculate Revenue</button>
+                        <button type="button" id="resetButton" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+                
+                <div class="calculator-results">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Revenue Projection</h2>
+                                <p id="calculation-note">Fill in the form and click Calculate to see your estimated earnings</p>
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Gross Annual Revenue</div>
+                                    <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                                </div>
+                                <div class="metric-value" id="gross-annual">$0</div>
+                                <div class="metric-subtext">Before fees and expenses</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Monthly Average</div>
+                                    <div class="metric-icon"><i class="fas fa-calendar-alt"></i></div>
+                                </div>
+                                <div class="metric-value" id="monthly-average">$0</div>
+                                <div class="metric-subtext">Gross monthly income</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Your Net Profit</div>
+                                    <div class="metric-icon"><i class="fas fa-piggy-bank"></i></div>
+                                </div>
+                                <div class="metric-value" id="net-profit">$0</div>
+                                <div class="metric-subtext">Annual earnings after fees</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Expected Bookings</div>
+                                    <div class="metric-icon"><i class="fas fa-calendar-check"></i></div>
+                                </div>
+                                <div class="metric-value" id="bookings-count">0</div>
+                                <div class="metric-subtext">Annual nights booked</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Revenue Increase</div>
+                                    <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                                </div>
+                                <div class="metric-value" id="revenue-increase">0%</div>
+                                <div class="metric-subtext">vs. traditional rental</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Management Fee</div>
+                                    <div class="metric-icon"><i class="fas fa-handshake"></i></div>
+                                </div>
+                                <div class="metric-value" id="management-fee">$0</div>
+                                <div class="metric-subtext">Annual co-hosting fee</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-chart-bar"></i> Revenue Breakdown</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-chart-pie"></i> Expense Breakdown</h3>
+                        </div>
+                        <div class="chart-container" style="height: 250px">
+                            <canvas id="expensesChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-exchange-alt"></i> Comparison: Short-term vs. Long-term Rental</h3>
+                        </div>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Short-term (Airbnb)</th>
+                                    <th>Long-term Rental</th>
+                                    <th>Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Annual Gross Revenue</td>
+                                    <td id="str-revenue">$0</td>
+                                    <td id="ltr-revenue">$0</td>
+                                    <td id="revenue-diff">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>Operating Expenses</td>
+                                    <td id="str-expenses">$0</td>
+                                    <td id="ltr-expenses">$0</td>
+                                    <td id="expenses-diff">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>Management Fees</td>
+                                    <td id="str-fees">$0</td>
+                                    <td id="ltr-fees">$0</td>
+                                    <td id="fees-diff">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>Net Annual Profit</td>
+                                    <td id="str-profit">$0</td>
+                                    <td id="ltr-profit">$0</td>
+                                    <td id="profit-diff">$0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <h3><i class="fas fa-rocket"></i> Ready to maximize your rental income?</h3>
+                        <p>Our co-hosting service handles everything from guest communication to cleaning coordination, while you simply receive your monthly earnings.</p>
+                        <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-white">Get The Complete Blueprint</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Global chart instances
+        let revenueChart;
+        let expensesChart;
+        
+        // Initialize charts and form elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up range input displays
+            document.getElementById('occupancy-rate').addEventListener('input', function() {
+                document.getElementById('occupancy-display').textContent = this.value + '%';
+            });
+            
+            document.getElementById('nightly-rate').addEventListener('input', function() {
+                document.getElementById('nightly-display').textContent = '$' + this.value;
+            });
+            
+            document.getElementById('commission-rate').addEventListener('input', function() {
+                document.getElementById('commission-display').textContent = this.value + '%';
+            });
+            
+            // Initialize revenue chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Monthly Revenue',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: '#00A699',
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw || 0;
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                },
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Initialize expenses chart
+            const expensesCtx = document.getElementById('expensesChart').getContext('2d');
+            expensesChart = new Chart(expensesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Management Fee', 'Cleaning', 'Maintenance', 'Supplies'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#FF5A5F', '#00A699', '#767676', '#FFB400'],
+                        borderWidth: 0,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 15,
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Add event listeners for buttons
+            document.getElementById('calculateButton').addEventListener('click', calculateRevenue);
+            document.getElementById('resetButton').addEventListener('click', resetCalculator);
+        });
+        
+        function calculateRevenue() {
+            // Get form values
+            const propertyType = document.getElementById('property-type').value;
+            const bedrooms = parseInt(document.getElementById('bedrooms').value);
+            const locationType = document.getElementById('location-type').value;
+            const occupancyRate = parseInt(document.getElementById('occupancy-rate').value);
+            const nightlyRate = parseInt(document.getElementById('nightly-rate').value);
+            const seasonality = document.getElementById('seasonality').value;
+            const cleaningFee = parseInt(document.getElementById('cleaning-fee').value);
+            const maintenance = parseInt(document.getElementById('maintenance').value);
+            const includeSupplies = document.getElementById('include-supplies').checked;
+            const commissionRate = parseInt(document.getElementById('commission-rate').value);
+            
+            // Calculate base metrics
+            const daysInYear = 365;
+            const nightsBooked = Math.round((occupancyRate / 100) * daysInYear);
+            
+            // Apply seasonality effects to monthly distribution
+            let monthlyDistribution = [];
+            if (seasonality === 'low') {
+                // Consistent year-round (small variations)
+                monthlyDistribution = [0.08, 0.08, 0.08, 0.08, 0.08, 0.09, 0.09, 0.09, 0.08, 0.08, 0.08, 0.09];
+            } else if (seasonality === 'medium') {
+                // Medium seasonal variation
+                monthlyDistribution = [0.06, 0.06, 0.07, 0.08, 0.09, 0.10, 0.12, 0.12, 0.10, 0.08, 0.06, 0.06];
+            } else { // high
+                // Strong peak & off seasons
+                monthlyDistribution = [0.04, 0.04, 0.05, 0.07, 0.09, 0.12, 0.15, 0.15, 0.12, 0.08, 0.05, 0.04];
+            }
+            
+            // Calculate gross annual revenue
+            const grossAnnualRevenue = nightsBooked * nightlyRate;
+            
+            // Estimate average stays (used for cleaning fee calculation)
+            const averageStayLength = bedrooms < 3 ? 3 : 4; // Smaller properties typically have shorter stays
+            const numberOfStays = Math.ceil(nightsBooked / averageStayLength);
+            
+            // Calculate expenses
+            const annualCleaningCost = numberOfStays * cleaningFee;
+            const annualMaintenanceCost = maintenance * 12;
+            const annualSuppliesCost = includeSupplies ? (bedrooms * 15) * 12 : 0; // $15 per bedroom per month
+            
+            // Calculate management fee
+            const managementFee = (grossAnnualRevenue * commissionRate) / 100;
+            
+            // Calculate total expenses
+            const totalExpenses = annualCleaningCost + annualMaintenanceCost + annualSuppliesCost;
+            
+            // Calculate net profit
+            const netProfit = grossAnnualRevenue - totalExpenses - managementFee;
+            
+            // Estimate traditional long-term rental income
+            let monthlyLongTermRent = 0;
+            
+            // Base monthly rent by property type and location (these are approximations)
+            const baseRentMap = {
+                'urban': {
+                    '0': 1200, // studio
+                    '1': 1500,
+                    '2': 2000,
+                    '3': 2500,
+                    '4': 3000,
+                    '5': 3500  // 5+ bedrooms
+                },
+                'suburban': {
+                    '0': 1000,
+                    '1': 1300,
+                    '2': 1700,
+                    '3': 2200,
+                    '4': 2600,
+                    '5': 3000
+                },
+                'beach': {
+                    '0': 1400,
+                    '1': 1800,
+                    '2': 2300,
+                    '3': 2800,
+                    '4': 3400,
+                    '5': 4000
+                },
+                'mountain': {
+                    '0': 900,
+                    '1': 1200,
+                    '2': 1600,
+                    '3': 2000,
+                    '4': 2400,
+                    '5': 2800
+                },
+                'resort': {
+                    '0': 1300,
+                    '1': 1700,
+                    '2': 2200,
+                    '3': 2700,
+                    '4': 3200,
+                    '5': 3800
+                }
+            };
+            
+            // Get base rent for the property type and bedrooms
+            if (baseRentMap[locationType] && baseRentMap[locationType][bedrooms]) {
+                monthlyLongTermRent = baseRentMap[locationType][bedrooms];
+            } else {
+                // Fallback if not found
+                monthlyLongTermRent = 1500 + (bedrooms * 300);
+            }
+            
+            // Adjust based on nightly rate (as a proxy for property quality/desirability)
+            const qualityFactor = nightlyRate / 100;
+            monthlyLongTermRent = monthlyLongTermRent * Math.min(Math.max(qualityFactor, 0.8), 1.5);
+            
+            // Calculate annual long-term rental income and expenses
+            const annualLongTermRent = monthlyLongTermRent * 12;
+            const longTermManagementFee = annualLongTermRent * 0.10; // Typical 10% for long-term rentals
+            const longTermExpenses = annualMaintenanceCost * 0.6; // Maintenance is typically lower for long-term rentals
+            const longTermNetProfit = annualLongTermRent - longTermManagementFee - longTermExpenses;
+            
+            // Calculate increase percentage
+            const revenueIncrease = ((netProfit / longTermNetProfit) - 1) * 100;
+            
+            // Update UI with results
+            document.getElementById('gross-annual').textContent = formatCurrency(grossAnnualRevenue);
+            document.getElementById('monthly-average').textContent = formatCurrency(grossAnnualRevenue / 12);
+            document.getElementById('net-profit').textContent = formatCurrency(netProfit);
+            document.getElementById('bookings-count').textContent = nightsBooked;
+            document.getElementById('revenue-increase').textContent = revenueIncrease.toFixed(0) + '%';
+            document.getElementById('management-fee').textContent = formatCurrency(managementFee);
+            
+            // Update calculation note
+            document.getElementById('calculation-note').textContent = `Estimated earnings for a ${bedrooms > 0 ? bedrooms + '-bedroom' : 'studio'} ${propertyType} in a ${locationType} area`;
+            
+            // Update comparison table
+            document.getElementById('str-revenue').textContent = formatCurrency(grossAnnualRevenue);
+            document.getElementById('ltr-revenue').textContent = formatCurrency(annualLongTermRent);
+            document.getElementById('revenue-diff').textContent = formatCurrency(grossAnnualRevenue - annualLongTermRent);
+            
+            document.getElementById('str-expenses').textContent = formatCurrency(totalExpenses);
+            document.getElementById('ltr-expenses').textContent = formatCurrency(longTermExpenses);
+            document.getElementById('expenses-diff').textContent = formatCurrency(totalExpenses - longTermExpenses);
+            
+            document.getElementById('str-fees').textContent = formatCurrency(managementFee);
+            document.getElementById('ltr-fees').textContent = formatCurrency(longTermManagementFee);
+            document.getElementById('fees-diff').textContent = formatCurrency(managementFee - longTermManagementFee);
+            
+            document.getElementById('str-profit').textContent = formatCurrency(netProfit);
+            document.getElementById('ltr-profit').textContent = formatCurrency(longTermNetProfit);
+            document.getElementById('profit-diff').textContent = formatCurrency(netProfit - longTermNetProfit);
+            
+            // Style the difference cells
+            styleComparisonCell('revenue-diff', grossAnnualRevenue - annualLongTermRent);
+            styleComparisonCell('expenses-diff', totalExpenses - longTermExpenses);
+            styleComparisonCell('fees-diff', managementFee - longTermManagementFee);
+            styleComparisonCell('profit-diff', netProfit - longTermNetProfit);
+            
+            // Update revenue chart
+            const monthlyRevenues = monthlyDistribution.map(factor => Math.round(grossAnnualRevenue * factor));
+            revenueChart.data.datasets[0].data = monthlyRevenues;
+            revenueChart.update();
+            
+            // Update expenses chart
+            expensesChart.data.datasets[0].data = [
+                managementFee,
+                annualCleaningCost,
+                annualMaintenanceCost,
+                annualSuppliesCost
+            ];
+            expensesChart.update();
+        }
+        
+        function resetCalculator() {
+            // Reset form to default values
+            document.getElementById('property-type').value = 'apartment';
+            document.getElementById('bedrooms').value = '2';
+            document.getElementById('location-type').value = 'suburban';
+            document.getElementById('occupancy-rate').value = 65;
+            document.getElementById('occupancy-display').textContent = '65%';
+            document.getElementById('nightly-rate').value = 150;
+            document.getElementById('nightly-display').textContent = '$150';
+            document.getElementById('seasonality').value = 'medium';
+            document.getElementById('cleaning-fee').value = 85;
+            document.getElementById('maintenance').value = 100;
+            document.getElementById('include-supplies').checked = true;
+            document.getElementById('commission-rate').value = 25;
+            document.getElementById('commission-display').textContent = '25%';
+            
+            // Reset result displays
+            document.getElementById('gross-annual').textContent = '$0';
+            document.getElementById('monthly-average').textContent = '$0';
+            document.getElementById('net-profit').textContent = '$0';
+            document.getElementById('bookings-count').textContent = '0';
+            document.getElementById('revenue-increase').textContent = '0%';
+            document.getElementById('management-fee').textContent = '$0';
+            
+            document.getElementById('calculation-note').textContent = 'Fill in the form and click Calculate to see your estimated earnings';
+            
+            // Reset comparison table
+            document.getElementById('str-revenue').textContent = '$0';
+            document.getElementById('ltr-revenue').textContent = '$0';
+            document.getElementById('revenue-diff').textContent = '$0';
+            
+            document.getElementById('str-expenses').textContent = '$0';
+            document.getElementById('ltr-expenses').textContent = '$0';
+            document.getElementById('expenses-diff').textContent = '$0';
+            
+            document.getElementById('str-fees').textContent = '$0';
+            document.getElementById('ltr-fees').textContent = '$0';
+            document.getElementById('fees-diff').textContent = '$0';
+            
+            document.getElementById('str-profit').textContent = '$0';
+            document.getElementById('ltr-profit').textContent = '$0';
+            document.getElementById('profit-diff').textContent = '$0';
+            
+            // Reset charts
+            revenueChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            revenueChart.update();
+            
+            expensesChart.data.datasets[0].data = [0, 0, 0, 0];
+            expensesChart.update();
+        }
+        
+        function formatCurrency(value) {
+            return '$' + Math.round(value).toLocaleString();
+        }
+        
+        function styleComparisonCell(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (value > 0) {
+                if (elementId === 'expenses-diff' || elementId === 'fees-diff') {
+                    // For expenses and fees, higher is worse
+                    element.style.color = '#FF3B30';
+                } else {
+                    // For revenue and profit, higher is better
+                    element.style.color = '#34C759';
+                }
+            } else if (value < 0) {
+                if (elementId === 'expenses-diff' || elementId === 'fees-diff') {
+                    // For expenses and fees, lower is better
+                    element.style.color = '#34C759';
+                } else {
+                    // For revenue and profit, lower is worse
+                    element.style.color = '#FF3B30';
+                }
+            } else {
+                element.style.color = 'inherit';
+            }
+        }
+    </script>
+</body>
+</html>
