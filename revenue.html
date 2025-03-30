@@ -577,6 +577,87 @@
             color: var(--primary-dark);
         }
         
+        /* Print styles */
+        @media print {
+            header, .calculator-form, .cta-card, .button-group {
+                display: none !important;
+            }
+            
+            body {
+                background-color: white;
+            }
+            
+            .calculator {
+                padding: 0;
+            }
+            
+            .calculator-grid {
+                display: block;
+            }
+            
+            .calculator-results {
+                display: block;
+            }
+            
+            .card {
+                box-shadow: none;
+                padding: 15px 0;
+                margin-bottom: 20px;
+                break-inside: avoid;
+                border: 1px solid #eee;
+                border-radius: 0;
+            }
+            
+            .chart-container {
+                height: 250px;
+                page-break-inside: avoid;
+            }
+            
+            .metric-card {
+                background-color: white;
+                box-shadow: none;
+                border: 1px solid #eee;
+            }
+            
+            /* Override the gradient text in print view */
+            .metric-value {
+                background: none !important;
+                -webkit-text-fill-color: #333 !important;
+                color: #333 !important;
+                font-weight: 700;
+            }
+            
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .print-property-summary {
+                display: block !important;
+                margin-bottom: 20px;
+                padding: 15px;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+            }
+            
+            .print-footer {
+                display: block !important;
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 10px;
+                border-top: 1px solid #ddd;
+                font-size: 0.9rem;
+                color: #666;
+            }
+        }
+        
+        .print-only {
+            display: none;
+        }
+        
         /* Mobile responsive */
         @media (max-width: 900px) {
             .calculator-grid {
@@ -645,6 +726,12 @@
                 <p>Estimate your potential earnings with our co-hosting service</p>
             </div>
             
+            <!-- Print-only header -->
+            <div class="print-only print-header">
+                <h2>Remote Airbnb Co-Hosting Revenue Analysis</h2>
+                <p>Generated on <span id="print-date"></span></p>
+            </div>
+            
             <div class="calculator-grid">
                 <div class="calculator-form">
                     <div class="form-section">
@@ -681,6 +768,13 @@
                                 <option value="mountain">Mountain/Rural</option>
                                 <option value="resort">Resort Area</option>
                             </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="traditional-rent">Monthly Traditional Rental Price ($) <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">The monthly rent you could charge for a traditional long-term lease.</span>
+                            </span></label>
+                            <input type="number" id="traditional-rent" min="0" placeholder="e.g. 2000" value="2000">
                         </div>
                     </div>
                     
@@ -759,11 +853,21 @@
                     
                     <div class="button-group">
                         <button type="button" id="calculateButton" class="btn"><i class="fas fa-calculator"></i> Calculate Revenue</button>
+                        <button type="button" id="printButton" class="btn btn-outline"><i class="fas fa-print"></i> Print Report</button>
                         <button type="button" id="resetButton" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
                     </div>
                 </div>
                 
                 <div class="calculator-results">
+                    <!-- Print-only property summary -->
+                    <div class="print-only print-property-summary">
+                        <h3>Property Summary</h3>
+                        <p id="print-property-details">2-bedroom Apartment in Suburban area</p>
+                        <p id="print-rate-details">$150 per night with 65% occupancy rate</p>
+                        <p id="print-traditional-rent">Monthly long-term rental price: $2,000</p>
+                        <p id="print-management-details">25% management commission</p>
+                    </div>
+                    
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -889,6 +993,13 @@
                         </table>
                     </div>
                     
+                    <!-- Print-only footer -->
+                    <div class="print-only print-footer">
+                        <p>This analysis was prepared by Remote Airbnb Co-Hosting Services.</p>
+                        <p>Contact us at contact@remoteairbnb.com for more information.</p>
+                        <p>&copy; 2025 Remote Airbnb. All Rights Reserved.</p>
+                    </div>
+                    
                     <div class="cta-card">
                         <h3><i class="fas fa-rocket"></i> Ready to maximize your rental income?</h3>
                         <p>Our co-hosting service handles everything from guest communication to cleaning coordination, while you simply receive your monthly earnings.</p>
@@ -906,6 +1017,10 @@
         
         // Initialize charts and form elements
         document.addEventListener('DOMContentLoaded', function() {
+            // Set the date for the print report
+            const now = new Date();
+            document.getElementById('print-date').textContent = now.toLocaleDateString();
+            
             // Set up range input displays
             document.getElementById('occupancy-rate').addEventListener('input', function() {
                 document.getElementById('occupancy-display').textContent = this.value + '%';
@@ -1027,6 +1142,7 @@
             // Add event listeners for buttons
             document.getElementById('calculateButton').addEventListener('click', calculateRevenue);
             document.getElementById('resetButton').addEventListener('click', resetCalculator);
+            document.getElementById('printButton').addEventListener('click', printReport);
         });
         
         function calculateRevenue() {
@@ -1041,6 +1157,13 @@
             const maintenance = parseInt(document.getElementById('maintenance').value);
             const includeSupplies = document.getElementById('include-supplies').checked;
             const commissionRate = parseInt(document.getElementById('commission-rate').value);
+            const traditionalRent = parseFloat(document.getElementById('traditional-rent').value);
+            
+            // Validate inputs
+            if (isNaN(traditionalRent) || traditionalRent <= 0) {
+                alert('Please enter a valid monthly traditional rental price.');
+                return;
+            }
             
             // Calculate base metrics
             const daysInYear = 365;
@@ -1080,67 +1203,10 @@
             // Calculate net profit
             const netProfit = grossAnnualRevenue - totalExpenses - managementFee;
             
-            // Estimate traditional long-term rental income
-            let monthlyLongTermRent = 0;
+            // Calculate annual long-term rental income using the user-provided monthly rent
+            const annualLongTermRent = traditionalRent * 12;
             
-            // Base monthly rent by property type and location (these are approximations)
-            const baseRentMap = {
-                'urban': {
-                    '0': 1200, // studio
-                    '1': 1500,
-                    '2': 2000,
-                    '3': 2500,
-                    '4': 3000,
-                    '5': 3500  // 5+ bedrooms
-                },
-                'suburban': {
-                    '0': 1000,
-                    '1': 1300,
-                    '2': 1700,
-                    '3': 2200,
-                    '4': 2600,
-                    '5': 3000
-                },
-                'beach': {
-                    '0': 1400,
-                    '1': 1800,
-                    '2': 2300,
-                    '3': 2800,
-                    '4': 3400,
-                    '5': 4000
-                },
-                'mountain': {
-                    '0': 900,
-                    '1': 1200,
-                    '2': 1600,
-                    '3': 2000,
-                    '4': 2400,
-                    '5': 2800
-                },
-                'resort': {
-                    '0': 1300,
-                    '1': 1700,
-                    '2': 2200,
-                    '3': 2700,
-                    '4': 3200,
-                    '5': 3800
-                }
-            };
-            
-            // Get base rent for the property type and bedrooms
-            if (baseRentMap[locationType] && baseRentMap[locationType][bedrooms]) {
-                monthlyLongTermRent = baseRentMap[locationType][bedrooms];
-            } else {
-                // Fallback if not found
-                monthlyLongTermRent = 1500 + (bedrooms * 300);
-            }
-            
-            // Adjust based on nightly rate (as a proxy for property quality/desirability)
-            const qualityFactor = nightlyRate / 100;
-            monthlyLongTermRent = monthlyLongTermRent * Math.min(Math.max(qualityFactor, 0.8), 1.5);
-            
-            // Calculate annual long-term rental income and expenses
-            const annualLongTermRent = monthlyLongTermRent * 12;
+            // Long-term rental expenses and fees
             const longTermManagementFee = annualLongTermRent * 0.10; // Typical 10% for long-term rentals
             const longTermExpenses = annualMaintenanceCost * 0.6; // Maintenance is typically lower for long-term rentals
             const longTermNetProfit = annualLongTermRent - longTermManagementFee - longTermExpenses;
@@ -1157,7 +1223,8 @@
             document.getElementById('management-fee').textContent = formatCurrency(managementFee);
             
             // Update calculation note
-            document.getElementById('calculation-note').textContent = `Estimated earnings for a ${bedrooms > 0 ? bedrooms + '-bedroom' : 'studio'} ${propertyType} in a ${locationType} area`;
+            const bedroomText = bedrooms == 0 ? 'studio' : bedrooms + '-bedroom';
+            document.getElementById('calculation-note').textContent = `Estimated earnings for a ${bedroomText} ${propertyType} in a ${locationType} area`;
             
             // Update comparison table
             document.getElementById('str-revenue').textContent = formatCurrency(grossAnnualRevenue);
@@ -1195,6 +1262,16 @@
                 annualSuppliesCost
             ];
             expensesChart.update();
+            
+            // Update print-only sections
+            document.getElementById('print-property-details').textContent = 
+                `${bedroomText} ${propertyType} in ${locationType} area`;
+            document.getElementById('print-rate-details').textContent = 
+                `$${nightlyRate} per night with ${occupancyRate}% occupancy rate`;
+            document.getElementById('print-traditional-rent').textContent = 
+                `Monthly long-term rental price: ${formatCurrency(traditionalRent)}`;
+            document.getElementById('print-management-details').textContent = 
+                `${commissionRate}% management commission`;
         }
         
         function resetCalculator() {
@@ -1202,6 +1279,7 @@
             document.getElementById('property-type').value = 'apartment';
             document.getElementById('bedrooms').value = '2';
             document.getElementById('location-type').value = 'suburban';
+            document.getElementById('traditional-rent').value = '2000';
             document.getElementById('occupancy-rate').value = 65;
             document.getElementById('occupancy-display').textContent = '65%';
             document.getElementById('nightly-rate').value = 150;
@@ -1240,12 +1318,35 @@
             document.getElementById('ltr-profit').textContent = '$0';
             document.getElementById('profit-diff').textContent = '$0';
             
+            // Reset print sections
+            document.getElementById('print-property-details').textContent = '2-bedroom Apartment in Suburban area';
+            document.getElementById('print-rate-details').textContent = '$150 per night with 65% occupancy rate';
+            document.getElementById('print-traditional-rent').textContent = 'Monthly long-term rental price: $2,000';
+            document.getElementById('print-management-details').textContent = '25% management commission';
+            
+            // Reset color styling
+            const diffElements = ['revenue-diff', 'expenses-diff', 'fees-diff', 'profit-diff'];
+            diffElements.forEach(id => {
+                document.getElementById(id).style.color = '';
+            });
+            
             // Reset charts
             revenueChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             revenueChart.update();
             
             expensesChart.data.datasets[0].data = [0, 0, 0, 0];
             expensesChart.update();
+        }
+        
+        function printReport() {
+            // Check if calculation has been run
+            if (document.getElementById('gross-annual').textContent === '$0') {
+                alert('Please calculate revenue projections before printing the report.');
+                return;
+            }
+            
+            // Print the report
+            window.print();
         }
         
         function formatCurrency(value) {
