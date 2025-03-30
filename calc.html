@@ -546,9 +546,40 @@
             margin-left: 10px;
         }
         
+        /* CTA card */
+        .cta-card {
+            background: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta-card h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .cta-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+        
+        .btn-white {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-white:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-dark);
+        }
+        
         /* Print styles */
         @media print {
-            header, .dashboard-form, .btn {
+            header, .dashboard-form, .btn, .cta-card {
                 display: none !important;
             }
             
@@ -901,6 +932,14 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <!-- Added CTA Card from Property Revenue Calculator -->
+                    <div class="cta-card">
+                        <h3><i class="fas fa-rocket"></i> Ready to maximize your  income?</h3>
+                        <p>Launch your remote property management business and earn thousands without owning a single property.</p>
+                        <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-white">Get The Complete Blueprint</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
