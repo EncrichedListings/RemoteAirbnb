@@ -1,0 +1,1812 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Airbnb: Average Daily Rate Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff5a5f;
+            --primary-light: #ff8a8e;
+            --primary-dark: #e54a4f;
+            --secondary: #00A699;
+            --secondary-light: #00c2b3;
+            --secondary-dark: #008577;
+            --text: #484848;
+            --text-light: #767676;
+            --background: #ffffff;
+            --background-alt: #f8f9fa;
+            --border: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --neutral: #8E8E93;
+            --gradient-start: #ff5a5f;
+            --gradient-end: #00A699;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--background-alt);
+            font-size: 16px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin: 1.25rem 0 0.75rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* Calculator section */
+        .calculator {
+            padding: 40px 0 60px;
+        }
+        
+        .calculator-header {
+            margin-bottom: 30px;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .calculator-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: var(--background-alt);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.1);
+        }
+        
+        .calculator-results {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background-color: var(--background-alt);
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .metric-icon {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-subtext {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+        
+        .metric-change.positive {
+            color: var(--success);
+        }
+        
+        .metric-change.negative {
+            color: var(--danger);
+        }
+        
+        .metric-change i {
+            margin-right: 4px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison-table th {
+            font-weight: 600;
+            color: var(--text);
+            background-color: var(--background-alt);
+        }
+        
+        .comparison-table tr:hover {
+            background-color: var(--background-alt);
+        }
+        
+        /* Form sections */
+        .form-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        /* Button group */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Range input styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;  
+            background: var(--background-alt);
+            outline: none;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%; 
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Range display */
+        .range-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .toggle-label {
+            margin-left: 10px;
+        }
+        
+        /* Info tooltip */
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text) transparent transparent transparent;
+        }
+        
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Comparable listings section */
+        .comparable-container {
+            margin-bottom: 20px;
+        }
+        
+        .comparable-item {
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        .comparable-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .add-comparable-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .add-comparable-btn i {
+            margin-right: 5px;
+        }
+        
+        .remove-comparable-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        /* Calendar styling */
+        .calendar-container {
+            margin-top: 20px;
+        }
+        
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .month-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .month-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+        
+        .month-rate {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .month-adjustment {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-form {
+                position: static;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .month-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .comparison-table th, .comparison-table td {
+                padding: 10px;
+            }
+            
+            .month-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparable-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Special events styling */
+        .events-container {
+            margin-top: 15px;
+        }
+        
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        .event-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .event-name {
+            font-weight: 600;
+        }
+        
+        .event-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .event-rate {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .add-event-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .add-event-btn i {
+            margin-right: 5px;
+        }
+        
+        .remove-event-btn {
+            background-color: transparent;
+            color: var(--danger);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#" class="active">ADR Calculator</a>
+                <a href="revenue.html">Revenue Calculator</a>
+                <a href="calc.html">Owner Report Tool</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="calculator">
+        <div class="container">
+            <div class="calculator-header">
+                <h1>Average Daily Rate Calculator</h1>
+                <p>Optimize your listing's nightly rate based on property features, comparable listings, and seasonal factors</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-form">
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-house"></i> Property Details</div>
+                        <div class="form-group">
+                            <label for="property-type">Property Type</label>
+                            <select id="property-type">
+                                <option value="apartment">Apartment</option>
+                                <option value="house">House</option>
+                                <option value="condo">Condominium</option>
+                                <option value="cabin">Cabin/Cottage</option>
+                                <option value="villa">Villa</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bedrooms">Number of Bedrooms</label>
+                            <select id="bedrooms">
+                                <option value="0">Studio</option>
+                                <option value="1">1 Bedroom</option>
+                                <option value="2" selected>2 Bedrooms</option>
+                                <option value="3">3 Bedrooms</option>
+                                <option value="4">4 Bedrooms</option>
+                                <option value="5">5+ Bedrooms</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bathrooms">Number of Bathrooms</label>
+                            <select id="bathrooms">
+                                <option value="1">1 Bathroom</option>
+                                <option value="1.5">1.5 Bathrooms</option>
+                                <option value="2" selected>2 Bathrooms</option>
+                                <option value="2.5">2.5 Bathrooms</option>
+                                <option value="3">3 Bathrooms</option>
+                                <option value="3.5">3.5+ Bathrooms</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location-type">Location Type</label>
+                            <select id="location-type">
+                                <option value="urban">Urban/City Center</option>
+                                <option value="suburban" selected>Suburban</option>
+                                <option value="beach">Beach/Waterfront</option>
+                                <option value="mountain">Mountain/Rural</option>
+                                <option value="resort">Resort Area</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-medal"></i> Property Features</div>
+                        
+                        <div class="form-group">
+                            <label>Special Amenities (select all that apply)</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <label style="display: inline-flex; align-items: center; margin-right: 10px;">
+                                    <input type="checkbox" id="amenity-pool" style="width: auto; margin-right: 5px;">
+                                    Pool
+                                </label>
+                                <label style="display: inline-flex; align-items: center; margin-right: 10px;">
+                                    <input type="checkbox" id="amenity-hottub" style="width: auto; margin-right: 5px;">
+                                    Hot Tub
+                                </label>
+                                <label style="display: inline-flex; align-items: center; margin-right: 10px;">
+                                    <input type="checkbox" id="amenity-view" style="width: auto; margin-right: 5px;">
+                                    Premium View
+                                </label>
+                                <label style="display: inline-flex; align-items: center; margin-right: 10px;">
+                                    <input type="checkbox" id="amenity-kitchen" style="width: auto; margin-right: 5px;">
+                                    Full Kitchen
+                                </label>
+                                <label style="display: inline-flex; align-items: center; margin-right: 10px;">
+                                    <input type="checkbox" id="amenity-parking" style="width: auto; margin-right: 5px;">
+                                    Free Parking
+                                </label>
+                                <label style="display: inline-flex; align-items: center; margin-right: 10px;">
+                                    <input type="checkbox" id="amenity-workspace" style="width: auto; margin-right: 5px;">
+                                    Workspace
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="guest-capacity">Maximum Guest Capacity</label>
+                            <input type="number" id="guest-capacity" min="1" value="4">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cleanliness">Cleanliness Level <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">How clean and well-maintained is your property compared to others in the area?</span>
+                            </span></label>
+                            <select id="cleanliness">
+                                <option value="average">Average</option>
+                                <option value="above-average" selected>Above Average</option>
+                                <option value="exceptional">Exceptional</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-search-dollar"></i> Comparable Listings</div>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Add 3-5 similar properties in your area to establish baseline rates.</p>
+                        
+                        <div id="comparables-container" class="comparable-container">
+                            <div class="comparable-item" id="comparable-1">
+                                <div class="comparable-fields">
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-1-type">Property Type</label>
+                                        <select id="comp-1-type">
+                                            <option value="apartment">Apartment</option>
+                                            <option value="house">House</option>
+                                            <option value="condo">Condominium</option>
+                                            <option value="cabin">Cabin/Cottage</option>
+                                            <option value="villa">Villa</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-1-bedrooms">Bedrooms</label>
+                                        <select id="comp-1-bedrooms">
+                                            <option value="0">Studio</option>
+                                            <option value="1">1 Bedroom</option>
+                                            <option value="2" selected>2 Bedrooms</option>
+                                            <option value="3">3 Bedrooms</option>
+                                            <option value="4">4 Bedrooms</option>
+                                            <option value="5">5+ Bedrooms</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-1-weekday">Weekday Rate ($)</label>
+                                        <input type="number" id="comp-1-weekday" min="0" value="120">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-1-weekend">Weekend Rate ($)</label>
+                                        <input type="number" id="comp-1-weekend" min="0" value="150">
+                                    </div>
+                                </div>
+                                <button type="button" class="remove-comparable-btn" onclick="removeComparable(1)">Remove</button>
+                            </div>
+                            
+                            <div class="comparable-item" id="comparable-2">
+                                <div class="comparable-fields">
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-2-type">Property Type</label>
+                                        <select id="comp-2-type">
+                                            <option value="apartment">Apartment</option>
+                                            <option value="house">House</option>
+                                            <option value="condo" selected>Condominium</option>
+                                            <option value="cabin">Cabin/Cottage</option>
+                                            <option value="villa">Villa</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-2-bedrooms">Bedrooms</label>
+                                        <select id="comp-2-bedrooms">
+                                            <option value="0">Studio</option>
+                                            <option value="1">1 Bedroom</option>
+                                            <option value="2" selected>2 Bedrooms</option>
+                                            <option value="3">3 Bedrooms</option>
+                                            <option value="4">4 Bedrooms</option>
+                                            <option value="5">5+ Bedrooms</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-2-weekday">Weekday Rate ($)</label>
+                                        <input type="number" id="comp-2-weekday" min="0" value="130">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="comp-2-weekend">Weekend Rate ($)</label>
+                                        <input type="number" id="comp-2-weekend" min="0" value="160">
+                                    </div>
+                                </div>
+                                <button type="button" class="remove-comparable-btn" onclick="removeComparable(2)">Remove</button>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="add-comparable-btn" class="add-comparable-btn"><i class="fas fa-plus"></i> Add Another Comparable</button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-calendar-alt"></i> Seasonality</div>
+                        
+                        <div class="form-group">
+                            <label for="seasonality-pattern">Seasonality Pattern</label>
+                            <select id="seasonality-pattern">
+                                <option value="balanced">Balanced (Minimal Seasonal Variation)</option>
+                                <option value="summer" selected>Summer Peak</option>
+                                <option value="winter">Winter Peak</option>
+                                <option value="shoulder">Spring/Fall Peaks</option>
+                                <option value="holiday">Holiday Peaks</option>
+                                <option value="custom">Custom Pattern</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="seasonality-strength">Seasonality Strength <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">How much rates vary between high and low seasons.</span>
+                            </span></label>
+                            <input type="range" id="seasonality-strength" min="1" max="5" value="3" step="1">
+                            <div class="range-display">
+                                <span>Low</span>
+                                <span id="seasonality-display">Medium</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-calendar-star"></i> Special Events</div>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Add local events that drive higher demand in your area.</p>
+                        
+                        <div id="events-container" class="events-container">
+                            <div class="event-item" id="event-1">
+                                <div class="event-details">
+                                    <span class="event-name">Local Festival</span>
+                                    <span class="event-date">July 15-20</span>
+                                </div>
+                                <div>
+                                    <span class="event-rate">+30%</span>
+                                    <button type="button" class="remove-event-btn" onclick="removeEvent(1)"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="add-event-modal-btn" class="add-event-btn"><i class="fas fa-plus"></i> Add Event</button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-sliders"></i> Pricing Strategy</div>
+                        
+                        <div class="form-group">
+                            <label for="pricing-strategy">Pricing Approach</label>
+                            <select id="pricing-strategy">
+                                <option value="competitive">Competitive (Match Market)</option>
+                                <option value="value" selected>Value (Slightly Below Market)</option>
+                                <option value="premium">Premium (Above Market)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="weekday-weekend-diff">Weekend Premium <span class="info-tooltip"><i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">How much to increase rates for Friday and Saturday nights.</span>
+                            </span></label>
+                            <input type="range" id="weekday-weekend-diff" min="0" max="50" value="25" step="5">
+                            <div class="range-display">
+                                <span>0%</span>
+                                <span id="weekend-diff-display">25%</span>
+                                <span>50%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="minimum-stay">Minimum Stay Requirement</label>
+                            <select id="minimum-stay">
+                                <option value="1">1 Night</option>
+                                <option value="2" selected>2 Nights</option>
+                                <option value="3">3 Nights</option>
+                                <option value="5">5 Nights</option>
+                                <option value="7">7 Nights</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="calculateButton" class="btn"><i class="fas fa-calculator"></i> Calculate Optimal ADR</button>
+                        <button type="button" id="resetButton" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+                
+                <div class="calculator-results">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>ADR Recommendation</h2>
+                                <p id="calculation-note">Fill in the form and click Calculate to see your optimal pricing</p>
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Base Rate (Weekday)</div>
+                                    <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                                </div>
+                                <div class="metric-value" id="base-rate-value">$0</div>
+                                <div class="metric-subtext">Standard nightly rate</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Weekend Rate</div>
+                                    <div class="metric-icon"><i class="fas fa-calendar-weekend"></i></div>
+                                </div>
+                                <div class="metric-value" id="weekend-rate-value">$0</div>
+                                <div class="metric-subtext">Friday & Saturday nights</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Average Daily Rate</div>
+                                    <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                                </div>
+                                <div class="metric-value" id="average-rate-value">$0</div>
+                                <div class="metric-subtext">Annual average</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Peak Season</div>
+                                    <div class="metric-icon"><i class="fas fa-mountain"></i></div>
+                                </div>
+                                <div class="metric-value" id="peak-rate-value">$0</div>
+                                <div class="metric-subtext">High season pricing</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Low Season</div>
+                                    <div class="metric-icon"><i class="fas fa-valley"></i></div>
+                                </div>
+                                <div class="metric-value" id="low-rate-value">$0</div>
+                                <div class="metric-subtext">Off-season pricing</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <div class="metric-label">Market Position</div>
+                                    <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                                </div>
+                                <div class="metric-value" id="market-position-value">-</div>
+                                <div class="metric-subtext">Compared to similar listings</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-chart-line"></i> Seasonal Rate Variation</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="seasonalityChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Monthly Rate Recommendations</h3>
+                        </div>
+                        <div class="month-grid" id="month-grid">
+                            <!-- Month cards will be generated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-info-circle"></i> Pricing Recommendations</h3>
+                        </div>
+                        <div id="recommendations-container">
+                            <p>Your recommendations will appear here after calculation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Event Modal -->
+    <div id="event-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); overflow: auto;">
+        <div style="background-color: white; margin: 15% auto; padding: 20px; border-radius: 12px; width: 80%; max-width: 500px; box-shadow: var(--shadow);">
+            <h3 style="margin-top: 0;">Add Special Event</h3>
+            <div class="form-group">
+                <label for="event-name">Event Name</label>
+                <input type="text" id="event-name" placeholder="e.g. Music Festival">
+            </div>
+            <div class="form-group">
+                <label for="event-date">Date Range</label>
+                <input type="text" id="event-date" placeholder="e.g. July 15-20">
+            </div>
+            <div class="form-group">
+                <label for="event-premium">Rate Premium (%)</label>
+                <input type="number" id="event-premium" min="0" max="100" value="30">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="button" id="close-event-modal" class="btn btn-outline">Cancel</button>
+                <button type="button" id="save-event" class="btn btn-secondary">Add Event</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let comparableCount = 2;
+        let eventCount = 1;
+        let seasonalityChart;
+        
+        // Initialize elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up range input displays
+            document.getElementById('seasonality-strength').addEventListener('input', function() {
+                const strengthLabels = ['Very Low', 'Low', 'Medium', 'High', 'Very High'];
+                document.getElementById('seasonality-display').textContent = strengthLabels[this.value - 1];
+            });
+            
+            document.getElementById('weekday-weekend-diff').addEventListener('input', function() {
+                document.getElementById('weekend-diff-display').textContent = this.value + '%';
+            });
+            
+            // Initialize seasonality chart
+            const seasonalityCtx = document.getElementById('seasonalityChart').getContext('2d');
+            seasonalityChart = new Chart(seasonalityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Recommended Rate',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#FF5A5F',
+                        backgroundColor: 'rgba(255, 90, 95, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw || 0;
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Add event listeners
+            document.getElementById('calculateButton').addEventListener('click', calculateADR);
+            document.getElementById('resetButton').addEventListener('click', resetCalculator);
+            document.getElementById('add-comparable-btn').addEventListener('click', addComparable);
+            
+            // Event modal functionality
+            document.getElementById('add-event-modal-btn').addEventListener('click', openEventModal);
+            document.getElementById('close-event-modal').addEventListener('click', closeEventModal);
+            document.getElementById('save-event').addEventListener('click', saveEvent);
+            
+            // Seasonality pattern change listener
+            document.getElementById('seasonality-pattern').addEventListener('change', function() {
+                // In a full implementation, this would update a visualization of the seasonality pattern
+                console.log('Seasonality pattern changed to:', this.value);
+            });
+        });
+        
+        function addComparable() {
+            comparableCount++;
+            
+            const comparableItem = document.createElement('div');
+            comparableItem.className = 'comparable-item';
+            comparableItem.id = 'comparable-' + comparableCount;
+            
+            comparableItem.innerHTML = `
+                <div class="comparable-fields">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label for="comp-${comparableCount}-type">Property Type</label>
+                        <select id="comp-${comparableCount}-type">
+                            <option value="apartment">Apartment</option>
+                            <option value="house">House</option>
+                            <option value="condo">Condominium</option>
+                            <option value="cabin">Cabin/Cottage</option>
+                            <option value="villa">Villa</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label for="comp-${comparableCount}-bedrooms">Bedrooms</label>
+                        <select id="comp-${comparableCount}-bedrooms">
+                            <option value="0">Studio</option>
+                            <option value="1">1 Bedroom</option>
+                            <option value="2" selected>2 Bedrooms</option>
+                            <option value="3">3 Bedrooms</option>
+                            <option value="4">4 Bedrooms</option>
+                            <option value="5">5+ Bedrooms</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label for="comp-${comparableCount}-weekday">Weekday Rate ($)</label>
+                        <input type="number" id="comp-${comparableCount}-weekday" min="0" value="125">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label for="comp-${comparableCount}-weekend">Weekend Rate ($)</label>
+                        <input type="number" id="comp-${comparableCount}-weekend" min="0" value="155">
+                    </div>
+                </div>
+                <button type="button" class="remove-comparable-btn" onclick="removeComparable(${comparableCount})">Remove</button>
+            `;
+            
+            document.getElementById('comparables-container').appendChild(comparableItem);
+            
+            // Disable add button if we reach 5 comparables
+            if (comparableCount >= 5) {
+                document.getElementById('add-comparable-btn').disabled = true;
+            }
+        }
+        
+        function removeComparable(id) {
+            const element = document.getElementById('comparable-' + id);
+            if (element) {
+                element.remove();
+                
+                // Enable add button if we have fewer than 5 comparables
+                document.getElementById('add-comparable-btn').disabled = false;
+            }
+        }
+        
+        function openEventModal() {
+            document.getElementById('event-modal').style.display = 'block';
+        }
+        
+        function closeEventModal() {
+            document.getElementById('event-modal').style.display = 'none';
+        }
+        
+        function saveEvent() {
+            eventCount++;
+            
+            const eventName = document.getElementById('event-name').value || 'Unnamed Event';
+            const eventDate = document.getElementById('event-date').value || 'TBD';
+            const eventPremium = document.getElementById('event-premium').value || '30';
+            
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            eventItem.id = 'event-' + eventCount;
+            
+            eventItem.innerHTML = `
+                <div class="event-details">
+                    <span class="event-name">${eventName}</span>
+                    <span class="event-date">${eventDate}</span>
+                </div>
+                <div>
+                    <span class="event-rate">+${eventPremium}%</span>
+                    <button type="button" class="remove-event-btn" onclick="removeEvent(${eventCount})"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+            
+            document.getElementById('events-container').appendChild(eventItem);
+            
+            // Reset and close modal
+            document.getElementById('event-name').value = '';
+            document.getElementById('event-date').value = '';
+            document.getElementById('event-premium').value = '30';
+            closeEventModal();
+        }
+        
+        function removeEvent(id) {
+            const element = document.getElementById('event-' + id);
+            if (element) {
+                element.remove();
+            }
+        }
+        
+        function calculateADR() {
+            // Get all form inputs
+            const propertyType = document.getElementById('property-type').value;
+            const bedrooms = parseInt(document.getElementById('bedrooms').value);
+            const bathrooms = parseFloat(document.getElementById('bathrooms').value);
+            const locationType = document.getElementById('location-type').value;
+            const seasonalityPattern = document.getElementById('seasonality-pattern').value;
+            const seasonalityStrength = parseInt(document.getElementById('seasonality-strength').value);
+            const weekendPremium = parseInt(document.getElementById('weekday-weekend-diff').value);
+            const pricingStrategy = document.getElementById('pricing-strategy').value;
+            const guestCapacity = parseInt(document.getElementById('guest-capacity').value);
+            
+            // Get amenities
+            const hasPool = document.getElementById('amenity-pool').checked;
+            const hasHotTub = document.getElementById('amenity-hottub').checked;
+            const hasView = document.getElementById('amenity-view').checked;
+            const hasKitchen = document.getElementById('amenity-kitchen').checked;
+            const hasParking = document.getElementById('amenity-parking').checked;
+            const hasWorkspace = document.getElementById('amenity-workspace').checked;
+            
+            // Get comparables data
+            const comparables = [];
+            const comparablesContainer = document.getElementById('comparables-container');
+            const comparableItems = comparablesContainer.getElementsByClassName('comparable-item');
+            
+            for (let i = 0; i < comparableItems.length; i++) {
+                const id = comparableItems[i].id.split('-')[1];
+                comparables.push({
+                    type: document.getElementById('comp-' + id + '-type').value,
+                    bedrooms: parseInt(document.getElementById('comp-' + id + '-bedrooms').value),
+                    weekdayRate: parseFloat(document.getElementById('comp-' + id + '-weekday').value),
+                    weekendRate: parseFloat(document.getElementById('comp-' + id + '-weekend').value)
+                });
+            }
+            
+            // Calculate base rate from comparables
+            let baseRate = calculateBaseRateFromComparables(comparables, propertyType, bedrooms);
+            
+            // Apply adjustments for property features
+            baseRate = adjustBaseRateForFeatures(baseRate, {
+                bathrooms,
+                guestCapacity,
+                hasPool,
+                hasHotTub,
+                hasView,
+                hasKitchen,
+                hasParking,
+                hasWorkspace
+            });
+            
+            // Apply location type adjustment
+            baseRate = adjustBaseRateForLocation(baseRate, locationType);
+            
+            // Apply pricing strategy adjustment
+            baseRate = adjustBaseRateForPricingStrategy(baseRate, pricingStrategy);
+            
+            // Calculate weekend rate
+            const weekendRate = Math.round(baseRate * (1 + (weekendPremium / 100)));
+            
+            // Calculate seasonal rates based on pattern and strength
+            const seasonalRates = calculateSeasonalRates(baseRate, seasonalityPattern, seasonalityStrength);
+            
+            // Calculate average daily rate across the year
+            const averageRate = Math.round(calculateAverageRate(baseRate, weekendRate, seasonalRates));
+            
+            // Find peak and low season rates
+            const peakRate = Math.max(...seasonalRates);
+            const lowRate = Math.min(...seasonalRates);
+            
+            // Determine market position
+            const marketPosition = determineMarketPosition(baseRate, comparables);
+            
+            // Update UI with results
+            document.getElementById('base-rate-value').textContent = '$' + Math.round(baseRate);
+            document.getElementById('weekend-rate-value').textContent = '$' + weekendRate;
+            document.getElementById('average-rate-value').textContent = '$' + averageRate;
+            document.getElementById('peak-rate-value').textContent = '$' + Math.round(peakRate);
+            document.getElementById('low-rate-value').textContent = '$' + Math.round(lowRate);
+            document.getElementById('market-position-value').textContent = marketPosition;
+            
+            // Update calculation note
+            const bedroomText = bedrooms === 0 ? 'Studio' : bedrooms + ' Bedroom';
+            document.getElementById('calculation-note').textContent = 
+                `Optimal pricing for a ${bedroomText} ${propertyType} in a ${locationType} location`;
+            
+            // Update seasonality chart
+            seasonalityChart.data.datasets[0].data = seasonalRates;
+            seasonalityChart.update();
+            
+            // Generate monthly rate cards
+            generateMonthlyRateCards(seasonalRates);
+            
+            // Generate recommendations
+            generateRecommendations(baseRate, weekendRate, seasonalityPattern, pricingStrategy, comparables);
+        }
+        
+        function calculateBaseRateFromComparables(comparables, propertyType, bedrooms) {
+            // If no comparables, return default
+            if (comparables.length === 0) {
+                return 100; // Default base rate
+            }
+            
+            // Filter comparables to find the most similar ones
+            let similarComparables = comparables.filter(comp => 
+                comp.type === propertyType && Math.abs(comp.bedrooms - bedrooms) <= 1
+            );
+            
+            // If no similar comparables, use all comparables
+            if (similarComparables.length === 0) {
+                similarComparables = comparables;
+            }
+            
+            // Calculate average weekday rate from similar comparables
+            let totalWeekdayRate = 0;
+            similarComparables.forEach(comp => {
+                totalWeekdayRate += comp.weekdayRate;
+            });
+            
+            // Apply adjustments for bedroom difference
+            let baseRate = totalWeekdayRate / similarComparables.length;
+            
+            // For each comparable used, adjust the base rate if bedrooms differ
+            similarComparables.forEach(comp => {
+                const bedroomDiff = bedrooms - comp.bedrooms;
+                if (bedroomDiff > 0) {
+                    // More bedrooms than comparable, increase by 15% per bedroom
+                    baseRate += (comp.weekdayRate * 0.15 * bedroomDiff) / similarComparables.length;
+                } else if (bedroomDiff < 0) {
+                    // Fewer bedrooms than comparable, decrease by 15% per bedroom
+                    baseRate -= (comp.weekdayRate * 0.15 * Math.abs(bedroomDiff)) / similarComparables.length;
+                }
+            });
+            
+            return baseRate;
+        }
+        
+        function adjustBaseRateForFeatures(baseRate, features) {
+            let adjustedRate = baseRate;
+            
+            // Bathroom adjustment (5% per additional bathroom above 1)
+            if (features.bathrooms > 1) {
+                adjustedRate *= (1 + ((features.bathrooms - 1) * 0.05));
+            }
+            
+            // Guest capacity adjustment (2% per guest above 2)
+            if (features.guestCapacity > 2) {
+                adjustedRate *= (1 + ((features.guestCapacity - 2) * 0.02));
+            }
+            
+            // Premium amenities adjustments
+            if (features.hasPool) adjustedRate *= 1.15; // +15%
+            if (features.hasHotTub) adjustedRate *= 1.10; // +10%
+            if (features.hasView) adjustedRate *= 1.12; // +12%
+            if (features.hasKitchen) adjustedRate *= 1.05; // +5%
+            if (features.hasParking) adjustedRate *= 1.03; // +3%
+            if (features.hasWorkspace) adjustedRate *= 1.02; // +2%
+            
+            return adjustedRate;
+        }
+        
+        function adjustBaseRateForLocation(baseRate, locationType) {
+            // Location type multipliers
+            const locationMultipliers = {
+                'urban': 1.1,     // +10% for urban
+                'suburban': 1.0,  // baseline
+                'beach': 1.25,    // +25% for beach
+                'mountain': 1.15, // +15% for mountain
+                'resort': 1.2     // +20% for resort
+            };
+            
+            return baseRate * (locationMultipliers[locationType] || 1.0);
+        }
+        
+        function adjustBaseRateForPricingStrategy(baseRate, strategy) {
+            // Strategy multipliers
+            const strategyMultipliers = {
+                'competitive': 1.0,  // baseline
+                'value': 0.95,       // -5% for value strategy
+                'premium': 1.1       // +10% for premium strategy
+            };
+            
+            return baseRate * (strategyMultipliers[strategy] || 1.0);
+        }
+        
+        function calculateSeasonalRates(baseRate, pattern, strength) {
+            // Define the seasonality patterns (multipliers for each month)
+            const patterns = {
+                'balanced': [0.95, 0.95, 1.0, 1.0, 1.0, 1.05, 1.05, 1.05, 1.0, 1.0, 0.95, 0.95],
+                'summer': [0.8, 0.85, 0.9, 1.0, 1.1, 1.2, 1.3, 1.3, 1.1, 0.9, 0.8, 0.85],
+                'winter': [1.2, 1.2, 1.0, 0.9, 0.8, 0.8, 0.8, 0.8, 0.9, 1.0, 1.1, 1.3],
+                'shoulder': [0.9, 0.95, 1.1, 1.2, 1.1, 0.9, 0.9, 0.9, 1.1, 1.2, 1.1, 0.9],
+                'holiday': [0.9, 0.85, 0.9, 1.0, 1.0, 1.1, 1.2, 1.1, 0.9, 0.95, 1.1, 1.3],
+                'custom': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+            };
+            
+            // Get the chosen pattern or default to balanced
+            const patternMultipliers = patterns[pattern] || patterns['balanced'];
+            
+            // Apply seasonality strength factor (1-5 scale)
+            // 1 = minimal seasonality, 5 = extreme seasonality
+            const seasonalRates = [];
+            
+            for (let i = 0; i < 12; i++) {
+                // Apply strength factor to deviation from 1.0
+                const deviation = patternMultipliers[i] - 1.0;
+                const adjustedDeviation = deviation * (strength / 3); // Scale based on strength
+                const adjustedMultiplier = 1.0 + adjustedDeviation;
+                
+                // Calculate the seasonal rate and round to nearest dollar
+                seasonalRates.push(Math.round(baseRate * adjustedMultiplier));
+            }
+            
+            return seasonalRates;
+        }
+        
+        function calculateAverageRate(baseRate, weekendRate, seasonalRates) {
+            // Assume 5 weekdays and 2 weekend days per week
+            const weekdayWeight = 5/7;
+            const weekendWeight = 2/7;
+            
+            // Calculate weighted average of weekday and weekend rates
+            const weightedAverage = (baseRate * weekdayWeight) + (weekendRate * weekendWeight);
+            
+            // Apply seasonal variation
+            let seasonalAverage = 0;
+            seasonalRates.forEach(rate => {
+                seasonalAverage += rate;
+            });
+            seasonalAverage /= 12;
+            
+            // Final average is average of the two approaches
+            return (weightedAverage + seasonalAverage) / 2;
+        }
+        
+        function determineMarketPosition(baseRate, comparables) {
+            if (comparables.length === 0) {
+                return 'Unknown';
+            }
+            
+            // Calculate average weekday rate from all comparables
+            let totalWeekdayRate = 0;
+            comparables.forEach(comp => {
+                totalWeekdayRate += comp.weekdayRate;
+            });
+            const avgRate = totalWeekdayRate / comparables.length;
+            
+            // Determine position based on percentage difference
+            const percentDiff = ((baseRate - avgRate) / avgRate) * 100;
+            
+            if (percentDiff <= -10) {
+                return 'Value (Lower Price Point)';
+            } else if (percentDiff >= 10) {
+                return 'Premium (Higher Price Point)';
+            } else {
+                return 'Competitive (Market Rate)';
+            }
+        }
+        
+        function generateMonthlyRateCards(seasonalRates) {
+            const monthGrid = document.getElementById('month-grid');
+            monthGrid.innerHTML = '';
+            
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June', 
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            for (let i = 0; i < 12; i++) {
+                const monthCard = document.createElement('div');
+                monthCard.className = 'month-card';
+                
+                // Calculate the percentage adjustment from the average
+                const avgRate = seasonalRates.reduce((a, b) => a + b, 0) / 12;
+                const percentAdjustment = ((seasonalRates[i] - avgRate) / avgRate) * 100;
+                const adjustmentText = percentAdjustment >= 0 ? 
+                    `+${percentAdjustment.toFixed(1)}%` : 
+                    `${percentAdjustment.toFixed(1)}%`;
+                
+                monthCard.innerHTML = `
+                    <div class="month-header">${months[i]}</div>
+                    <div class="month-rate">$${seasonalRates[i]}</div>
+                    <div class="month-adjustment">${adjustmentText} from average</div>
+                `;
+                
+                monthGrid.appendChild(monthCard);
+            }
+        }
+        
+        function generateRecommendations(baseRate, weekendRate, seasonalityPattern, pricingStrategy, comparables) {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
+            
+            // Generate recommendations based on inputs
+            const recommendations = [];
+            
+            // Base rate recommendation
+            recommendations.push(`
+                <p><strong>Base Rate:</strong> Your recommended base rate of $${Math.round(baseRate)} is optimized based on your property features and local market data.</p>
+            `);
+            
+            // Weekend strategy
+            const weekendDiff = ((weekendRate - baseRate) / baseRate) * 100;
+            recommendations.push(`
+                <p><strong>Weekend Strategy:</strong> Apply a ${weekendDiff.toFixed(0)}% premium for Friday and Saturday night bookings ($${weekendRate}).</p>
+            `);
+            
+            // Seasonality advice
+            let seasonalityAdvice = '';
+            switch(seasonalityPattern) {
+                case 'summer':
+                    seasonalityAdvice = 'Maximize revenue by focusing your marketing efforts during the peak summer months (June-August).';
+                    break;
+                case 'winter':
+                    seasonalityAdvice = 'Consider offering special packages or amenities during winter months (December-February) to capitalize on your peak season.';
+                    break;
+                case 'shoulder':
+                    seasonalityAdvice = 'Your spring and fall peaks offer great opportunities to target different tourist segments with seasonal promotions.';
+                    break;
+                case 'holiday':
+                    seasonalityAdvice = 'Ensure you have appropriate minimum stays during holiday periods to maximize your revenue during these high-demand times.';
+                    break;
+                default:
+                    seasonalityAdvice = 'Your relatively balanced seasonality allows for consistent pricing and marketing strategies year-round.';
+            }
+            recommendations.push(`
+                <p><strong>Seasonality Strategy:</strong> ${seasonalityAdvice}</p>
+            `);
+            
+            // Pricing position advice
+            let positionAdvice = '';
+            switch(pricingStrategy) {
+                case 'premium':
+                    positionAdvice = 'Ensure your listing photos and description strongly emphasize your premium amenities to justify your above-market rates.';
+                    break;
+                case 'value':
+                    positionAdvice = 'Your value-oriented pricing should help maintain high occupancy. Focus on quick response times and excellent service to earn top reviews.';
+                    break;
+                default:
+                    positionAdvice = 'Your competitive market positioning means you need to ensure your listing stands out with quality photos and compelling descriptions.';
+            }
+            recommendations.push(`
+                <p><strong>Market Positioning:</strong> ${positionAdvice}</p>
+            `);
+            
+            // Competitor analysis
+            if (comparables.length > 0) {
+                const avgCompPrice = comparables.reduce((sum, comp) => sum + comp.weekdayRate, 0) / comparables.length;
+                const priceDiff = ((baseRate - avgCompPrice) / avgCompPrice) * 100;
+                
+                let competitorAdvice = '';
+                if (priceDiff > 15) {
+                    competitorAdvice = 'Your rates are significantly higher than competitors. Make sure your listing clearly communicates your unique value proposition.';
+                } else if (priceDiff < -15) {
+                    competitorAdvice = 'Your rates are significantly lower than competitors. Consider gradually increasing rates for new bookings if your occupancy stays high.';
+                } else {
+                    competitorAdvice = 'Your rates are in line with market competitors. Focus on earning excellent reviews to maintain competitiveness.';
+                }
+                
+                recommendations.push(`
+                    <p><strong>Competitor Analysis:</strong> ${competitorAdvice}</p>
+                `);
+            }
+            
+            // Add additional recommendation for dynamic pricing
+            recommendations.push(`
+                <p><strong>Dynamic Pricing:</strong> Consider adjusting rates based on lead time. For last-minute availability (less than 7 days), you might offer a 10-15% discount to increase occupancy.</p>
+            `);
+            
+            // Add recommendation for length-of-stay discounts
+            recommendations.push(`
+                <p><strong>Length-of-Stay Strategy:</strong> Offer a 10-15% discount for stays of a week or longer to encourage longer bookings, which typically have lower turnover costs.</p>
+            `);
+            
+            // Join and set recommendations
+            container.innerHTML = recommendations.join('');
+        }
+        
+        function resetCalculator() {
+            // Reset form elements to defaults
+            document.getElementById('property-type').value = 'apartment';
+            document.getElementById('bedrooms').value = '2';
+            document.getElementById('bathrooms').value = '2';
+            document.getElementById('location-type').value = 'suburban';
+            document.getElementById('guest-capacity').value = '4';
+            document.getElementById('cleanliness').value = 'above-average';
+            
+            // Reset amenities
+            document.getElementById('amenity-pool').checked = false;
+            document.getElementById('amenity-hottub').checked = false;
+            document.getElementById('amenity-view').checked = false;
+            document.getElementById('amenity-kitchen').checked = true;
+            document.getElementById('amenity-parking').checked = true;
+            document.getElementById('amenity-workspace').checked = false;
+            
+            // Reset seasonality and pricing
+            document.getElementById('seasonality-pattern').value = 'summer';
+            document.getElementById('seasonality-strength').value = '3';
+            document.getElementById('seasonality-display').textContent = 'Medium';
+            document.getElementById('pricing-strategy').value = 'value';
+            document.getElementById('weekday-weekend-diff').value = '25';
+            document.getElementById('weekend-diff-display').textContent = '25%';
+            document.getElementById('minimum-stay').value = '2';
+            
+            // Reset results
+            document.getElementById('base-rate-value').textContent = '$0';
+            document.getElementById('weekend-rate-value').textContent = '$0';
+            document.getElementById('average-rate-value').textContent = '$0';
+            document.getElementById('peak-rate-value').textContent = '$0';
+            document.getElementById('low-rate-value').textContent = '$0';
+            document.getElementById('market-position-value').textContent = '-';
+            document.getElementById('calculation-note').textContent = 'Fill in the form and click Calculate to see your optimal pricing';
+            
+            // Reset chart
+            seasonalityChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            seasonalityChart.update();
+            
+            // Reset month grid
+            document.getElementById('month-grid').innerHTML = '';
+            
+            // Reset recommendations
+            document.getElementById('recommendations-container').innerHTML = '<p>Your recommendations will appear here after calculation.</p>';
+            
+            // Reset comparables (keep the first two and delete the rest)
+            const comparablesContainer = document.getElementById('comparables-container');
+            const comparableItems = comparablesContainer.getElementsByClassName('comparable-item');
+            
+            // Keep only the first two comparables and reset their values
+            while (comparablesContainer.children.length > 2) {
+                comparablesContainer.removeChild(comparablesContainer.lastChild);
+            }
+            
+            // Reset values for the first two comparables
+            document.getElementById('comp-1-type').value = 'apartment';
+            document.getElementById('comp-1-bedrooms').value = '2';
+            document.getElementById('comp-1-weekday').value = '120';
+            document.getElementById('comp-1-weekend').value = '150';
+            
+            document.getElementById('comp-2-type').value = 'condo';
+            document.getElementById('comp-2-bedrooms').value = '2';
+            document.getElementById('comp-2-weekday').value = '130';
+            document.getElementById('comp-2-weekend').value = '160';
+            
+            // Reset comparable count
+            comparableCount = 2;
+            
+            // Enable add button
+            document.getElementById('add-comparable-btn').disabled = false;
+            
+            // Reset events (keep only the first one)
+            const eventsContainer = document.getElementById('events-container');
+            const eventItems = eventsContainer.getElementsByClassName('event-item');
+            
+            // Keep only the first event
+            while (eventsContainer.children.length > 1) {
+                eventsContainer.removeChild(eventsContainer.lastChild);
+            }
+            
+            // Reset event count
+            eventCount = 1;
+        }
+    </script>
+</body>
+</html>
