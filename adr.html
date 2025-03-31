@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -192,6 +192,54 @@
         
         .nav-links a.active::after {
             width: 100%;
+        }
+        
+        /* Dropdown menu styling */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px 0;
+            z-index: 1000;
+            top: 100%;
+            left: 0;
+            margin-top: 5px;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: var(--background-alt);
+            color: var(--primary);
+        }
+        
+        .dropdown-menu a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
         }
         
         /* Calculator section */
@@ -754,11 +802,11 @@
 <body>
     <header>
         <div class="container header-container">
-            <a href="#" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
+            <a href="index.html" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="#" class="active">ADR Calculator</a>
-                <a href="revenue.html">Revenue Calculator</a>
+                <a href="revenue">Revenue Calculator</a>
                 <a href="calc.html">Owner Report Tool</a>
             </nav>
         </div>
@@ -1013,13 +1061,13 @@
                         
                         <div class="form-group">
                             <label for="weekday-weekend-diff">Weekend Premium <span class="info-tooltip"><i class="fas fa-info-circle"></i>
-                                <span class="tooltip-text">How much to increase rates for Friday and Saturday nights.</span>
+                                <span class="tooltip-text">Adjust rates for Friday and Saturday nights (negative values for discounts, positive for premiums).</span>
                             </span></label>
-                            <input type="range" id="weekday-weekend-diff" min="0" max="50" value="25" step="5">
+                            <input type="range" id="weekday-weekend-diff" min="-50" max="50" value="25" step="5">
                             <div class="range-display">
-                                <span>0%</span>
+                                <span>-50%</span>
                                 <span id="weekend-diff-display">25%</span>
-                                <span>50%</span>
+                                <span>+50%</span>
                             </div>
                         </div>
                         
@@ -1403,7 +1451,7 @@
             // Apply pricing strategy adjustment
             baseRate = adjustBaseRateForPricingStrategy(baseRate, pricingStrategy);
             
-            // Calculate weekend rate
+            // Calculate weekend rate (supporting negative premiums)
             const weekendRate = Math.round(baseRate * (1 + (weekendPremium / 100)));
             
             // Calculate seasonal rates based on pattern and strength
@@ -1650,7 +1698,7 @@
             // Weekend strategy
             const weekendDiff = ((weekendRate - baseRate) / baseRate) * 100;
             recommendations.push(`
-                <p><strong>Weekend Strategy:</strong> Apply a ${weekendDiff.toFixed(0)}% premium for Friday and Saturday night bookings ($${weekendRate}).</p>
+                <p><strong>Weekend Strategy:</strong> Apply a ${weekendDiff.toFixed(0)}% ${weekendDiff >= 0 ? 'premium' : 'discount'} for Friday and Saturday night bookings ($${weekendRate}).</p>
             `);
             
             // Seasonality advice
@@ -1807,6 +1855,31 @@
             // Reset event count
             eventCount = 1;
         }
+        
+        // Dropdown menu functionality for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // If on mobile, make dropdown require click instead of hover
+            if (window.innerWidth < 900) {
+                const dropdowns = document.querySelectorAll('.dropdown');
+                
+                dropdowns.forEach(dropdown => {
+                    const toggle = dropdown.querySelector('.dropdown-toggle');
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (!dropdown.contains(e.target)) {
+                            menu.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>
