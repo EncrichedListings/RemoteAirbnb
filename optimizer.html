@@ -1,1 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Airbnb: Property Listing Optimizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff5a5f;
+            --primary-light: #ff8a8e;
+            --primary-dark: #e54a4f;
+            --secondary: #00A699;
+            --secondary-light: #00c2b3;
+            --secondary-dark: #008577;
+            --text: #484848;
+            --text-light: #767676;
+            --background: #ffffff;
+            --background-alt: #f8f9fa;
+            --border: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --neutral: #8E8E93;
+            --gradient-start: #ff5a5f;
+            --gradient-end: #00A699;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--background-alt);
+            font-size: 16px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin: 1.25rem 0 0.75rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* Optimizer section */
+        .optimizer {
+            padding: 40px 0 60px;
+        }
+        
+        .optimizer-header {
+            margin-bottom: 30px;
+        }
+        
+        .optimizer-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .optimizer-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: var(--background-alt);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.1);
+        }
+        
+        .optimizer-results {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        /* Form sections */
+        .form-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        /* Button group */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Info tooltip */
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text) transparent transparent transparent;
+        }
+        
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Title options */
+        .title-option {
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+        
+        .title-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .title-option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .title-option-label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .title-option-copy {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .title-option-copy:hover {
+            color: var(--primary-dark);
+        }
+        
+        .title-option-text {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: var(--text);
+        }
+        
+        .title-option-note {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        
+        /* Description sections */
+        .description-section {
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .description-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .description-section-title {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .description-section-copy {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .description-section-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+        
+        /* Amenities section */
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .amenity-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .amenity-icon {
+            color: var(--secondary);
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .amenity-recommended {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* Score indicators */
+        .score-container {
+            margin-bottom: 20px;
+        }
+        
+        .score-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .score-label {
+            flex-basis: 140px;
+            font-weight: 500;
+            margin-right: 15px;
+        }
+        
+        .score-bar-container {
+            flex-grow: 1;
+            height: 8px;
+            background-color: var(--background-alt);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .score-bar {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        .score-value {
+            margin-left: 15px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        /* Photo order */
+        .photo-order-container {
+            margin-top: 20px;
+        }
+        
+        .photo-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        .photo-number {
+            width: 24px;
+            height: 24px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-right: 15px;
+        }
+        
+        .photo-type {
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .photo-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        /* Keywords */
+        .keywords-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .keyword-tag {
+            background-color: var(--background-alt);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            color: var(--text);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+        
+        .keyword-tag:hover {
+            background-color: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
+        }
+        
+        /* Target guests */
+        .target-guests-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .guest-type-option {
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .guest-type-option:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .guest-type-option.active {
+            background-color: var(--primary-light);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .guest-type-option.active .guest-type-icon,
+        .guest-type-option.active .guest-type-label {
+            color: white;
+        }
+        
+        .guest-type-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .guest-type-label {
+            font-weight: 500;
+        }
+        
+        /* CTA card */
+        .cta-card {
+            background: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta-card h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .cta-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+        
+        .btn-white {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-white:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-dark);
+        }
+        
+        /* Checkbox list */
+        .checkbox-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .optimizer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .optimizer-form {
+                position: static;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .checkbox-list,
+            .target-guests-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .checkbox-list,
+            .target-guests-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="adr.html">ADR Calculator</a>
+                <a href="revenue.html">Revenue Calculator</a>
+                <a href="calc.html">Owner Report Tool</a>
+                <a href="#" class="active">Listing Optimizer</a>
+            </nav>
+        </div>
+    </header>
 
+    <section class="optimizer">
+        <div class="container">
+            <div class="optimizer-header">
+                <h1>Property Listing Optimizer</h1>
+                <p>Create high-converting, SEO-optimized property listings that stand out from the competition</p>
+            </div>
+            
+            <div class="optimizer-grid">
+                <div class="optimizer-form">
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-house"></i> Property Details</div>
+                        <div class="form-group">
+                            <label for="property-type">Property Type</label>
+                            <select id="property-type">
+                                <option value="apartment">Apartment</option>
+                                <option value="house">House</option>
+                                <option value="condo">Condominium</option>
+                                <option value="cabin">Cabin/Cottage</option>
+                                <option value="villa">Villa</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bedrooms">Number of Bedrooms</label>
+                            <select id="bedrooms">
+                                <option value="0">Studio</option>
+                                <option value="1">1 Bedroom</option>
+                                <option value="2" selected>2 Bedrooms</option>
+                                <option value="3">3 Bedrooms</option>
+                                <option value="4">4 Bedrooms</option>
+                                <option value="5">5+ Bedrooms</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bathrooms">Number of Bathrooms</label>
+                            <select id="bathrooms">
+                                <option value="1">1 Bathroom</option>
+                                <option value="1.5">1.5 Bathrooms</option>
+                                <option value="2" selected>2 Bathrooms</option>
+                                <option value="2.5">2.5 Bathrooms</option>
+                                <option value="3">3 Bathrooms</option>
+                                <option value="3.5">3.5+ Bathrooms</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location-type">Location Type</label>
+                            <select id="location-type">
+                                <option value="urban">Urban/City Center</option>
+                                <option value="suburban" selected>Suburban</option>
+                                <option value="beach">Beach/Waterfront</option>
+                                <option value="mountain">Mountain/Rural</option>
+                                <option value="resort">Resort Area</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="neighborhood">Neighborhood/Area</label>
+                            <input type="text" id="neighborhood" placeholder="e.g. Downtown, West Hills, etc.">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-medal"></i> Property Features</div>
+                        
+                        <div class="form-group">
+                            <label>Special Amenities (select all that apply)</label>
+                            <div class="checkbox-list">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-pool">
+                                    Pool
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-hottub">
+                                    Hot Tub
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-view">
+                                    Premium View
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-kitchen" checked>
+                                    Full Kitchen
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-parking" checked>
+                                    Free Parking
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-workspace" checked>
+                                    Workspace
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-wifi" checked>
+                                    Fast WiFi
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-ac" checked>
+                                    Air Conditioning
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-tv" checked>
+                                    Smart TV
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-pets">
+                                    Pet Friendly
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-backyard">
+                                    Backyard
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-bbq">
+                                    BBQ Grill
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="unique-feature">Unique Feature (if any)</label>
+                            <input type="text" id="unique-feature" placeholder="e.g. Rooftop terrace, Historic building, etc.">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-users"></i> Target Guests</div>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Select your primary target audience</p>
+                        
+                        <div class="target-guests-grid">
+                            <div class="guest-type-option" data-guest-type="business">
+                                <div class="guest-type-icon"><i class="fas fa-briefcase"></i></div>
+                                <div class="guest-type-label">Business</div>
+                            </div>
+                            <div class="guest-type-option active" data-guest-type="families">
+                                <div class="guest-type-icon"><i class="fas fa-users"></i></div>
+                                <div class="guest-type-label">Families</div>
+                            </div>
+                            <div class="guest-type-option" data-guest-type="couples">
+                                <div class="guest-type-icon"><i class="fas fa-heart"></i></div>
+                                <div class="guest-type-label">Couples</div>
+                            </div>
+                            <div class="guest-type-option" data-guest-type="solo">
+                                <div class="guest-type-icon"><i class="fas fa-user"></i></div>
+                                <div class="guest-type-label">Solo</div>
+                            </div>
+                            <div class="guest-type-option" data-guest-type="groups">
+                                <div class="guest-type-icon"><i class="fas fa-user-friends"></i></div>
+                                <div class="guest-type-label">Groups</div>
+                            </div>
+                            <div class="guest-type-option" data-guest-type="luxury">
+                                <div class="guest-type-icon"><i class="fas fa-gem"></i></div>
+                                <div class="guest-type-label">Luxury</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-location-dot"></i> Nearby Attractions</div>
+                        <div class="form-group">
+                            <label for="attractions">List nearby attractions, landmarks, or conveniences</label>
+                            <textarea id="attractions" placeholder="e.g. 10 min walk to beach, 5 min drive to downtown, etc."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-sliders"></i> Optimization Options</div>
+                        
+                        <div class="form-group">
+                            <label for="title-style">Title Style Preference</label>
+                            <select id="title-style">
+                                <option value="descriptive" selected>Descriptive (feature-focused)</option>
+                                <option value="emotional">Emotional (experience-focused)</option>
+                                <option value="luxury">Luxury (upscale language)</option>
+                                <option value="minimal">Minimal (clean and simple)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description-length">Description Length</label>
+                            <select id="description-length">
+                                <option value="concise">Concise (300-400 words)</option>
+                                <option value="standard" selected>Standard (400-600 words)</option>
+                                <option value="detailed">Detailed (600+ words)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="optimizeButton" class="btn"><i class="fas fa-wand-magic-sparkles"></i> Optimize Listing</button>
+                        <button type="button" id="resetButton" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+                
+                <div class="optimizer-results">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Listing Title Options</h2>
+                            <p>Choose from these SEO-optimized title suggestions for your property</p>
+                        </div>
+                        
+                        <div id="titles-container">
+                            <div class="title-option">
+                                <div class="title-option-header">
+                                    <span class="title-option-label">Feature-Focused Title</span>
+                                    <button class="title-option-copy"><i class="fas fa-copy"></i></button>
+                                </div>
+                                <div class="title-option-text">Bright 2BR/2BA with Mountain Views & Pool Access in West Hills</div>
+                                <div class="title-option-note">Emphasizes property features and location</div>
+                            </div>
+                            
+                            <div class="title-option">
+                                <div class="title-option-header">
+                                    <span class="title-option-label">Experience-Focused Title</span>
+                                    <button class="title-option-copy"><i class="fas fa-copy"></i></button>
+                                </div>
+                                <div class="title-option-text">Cozy Family Retreat in West Hills - Workspace, Smart TV & Pool</div>
+                                <div class="title-option-note">Highlights guest experience and top amenities</div>
+                            </div>
+                            
+                            <div class="title-option">
+                                <div class="title-option-header">
+                                    <span class="title-option-label">Location-Focused Title</span>
+                                    <button class="title-option-copy"><i class="fas fa-copy"></i></button>
+                                </div>
+                                <div class="title-option-text">West Hills Getaway - 2BR near Downtown & Parks w/ Free Parking</div>
+                                <div class="title-option-note">Emphasizes location and accessibility</div>
+                            </div>
+                            
+                            <div class="title-option">
+                                <div class="title-option-header">
+                                    <span class="title-option-label">Unique Value Title</span>
+                                    <button class="title-option-copy"><i class="fas fa-copy"></i></button>
+                                </div>
+                                <div class="title-option-text">Family-Friendly 2BR Apartment with Kid's Play Area & Fast WiFi</div>
+                                <div class="title-option-note">Focuses on unique selling points for target guests</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-chart-line"></i> Listing Performance Analysis</h3>
+                        </div>
+                        
+                        <p>Based on our analysis, here's how your optimized listing should perform:</p>
+                        
+                        <div class="score-container">
+                            <div class="score-item">
+                                <div class="score-label">Search Visibility</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar" style="width: 85%"></div>
+                                </div>
+                                <div class="score-value">85%</div>
+                            </div>
+                            
+                            <div class="score-item">
+                                <div class="score-label">Click-Through Rate</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar" style="width: 78%"></div>
+                                </div>
+                                <div class="score-value">78%</div>
+                            </div>
+                            
+                            <div class="score-item">
+                                <div class="score-label">Booking Conversion</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar" style="width: 72%"></div>
+                                </div>
+                                <div class="score-value">72%</div>
+                            </div>
+                            
+                            <div class="score-item">
+                                <div class="score-label">Overall Optimization</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar" style="width: 82%"></div>
+                                </div>
+                                <div class="score-value">82%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-align-left"></i> Optimized Description</h3>
+                        </div>
+                        
+                        <div class="description-section">
+                            <div class="description-section-header">
+                                <span class="description-section-title">Property Introduction</span>
+                                <button class="description-section-copy"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <div class="description-section-text">Welcome to our bright and comfortable 2-bedroom apartment in the peaceful West Hills neighborhood. This family-friendly retreat offers the perfect balance of suburban tranquility and convenient access to city attractions. With mountain views, modern amenities, and thoughtful touches throughout, our space provides everything you need for a memorable stay.
+
+Our 2-bedroom, 2-bathroom apartment comfortably accommodates up to 6 guests, making it perfect for families, small groups, or business travelers seeking a comfortable home base to explore the area.</div>
+                        </div>
+                        
+                        <div class="description-section">
+                            <div class="description-section-header">
+                                <span class="description-section-title">Living Space & Amenities</span>
+                                <button class="description-section-copy"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <div class="description-section-text">The open-concept living area features comfortable seating, a Smart TV with streaming services, and large windows that fill the space with natural light. The fully-equipped kitchen includes modern appliances, cookware, and essential supplies for preparing anything from quick breakfasts to full family meals.
+
+The primary bedroom offers a queen bed with premium linens and an ensuite bathroom, while the second bedroom features two twin beds perfect for children or additional guests. Both bedrooms include blackout curtains and ample storage space. A dedicated workspace with fast WiFi makes it easy to stay connected, whether you're catching up on work or planning your next day's adventures.</div>
+                        </div>
+                        
+                        <div class="description-section">
+                            <div class="description-section-header">
+                                <span class="description-section-title">Location & Accessibility</span>
+                                <button class="description-section-copy"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <div class="description-section-text">Our apartment is ideally located in the West Hills area, offering the perfect balance of accessibility and tranquility. You'll be just a 15-minute drive from downtown attractions, a 10-minute walk to local parks, and 5 minutes from grocery stores, restaurants, and coffee shops.
+
+Free designated parking makes it easy to explore by car, while public transportation options are also available nearby. The neighborhood is safe, quiet, and perfect for morning walks or evening strolls.</div>
+                        </div>
+                        
+                        <div class="description-section">
+                            <div class="description-section-header">
+                                <span class="description-section-title">Guest Experience</span>
+                                <button class="description-section-copy"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <div class="description-section-text">Families will appreciate our child-friendly amenities, including games, books, and a small play area. Business travelers will find our fast WiFi, dedicated workspace, and quiet environment perfect for productivity.
+
+As your hosts, we're committed to making your stay exceptional. We provide detailed check-in information, local recommendations, and quick responses to any questions you might have during your stay. Our property is professionally cleaned between guests, with extra attention to high-touch surfaces.
+
+Whether you're visiting for a family vacation, a business trip, or a weekend getaway, our comfortable apartment offers everything you need for a memorable stay in West Hills.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-tags"></i> Essential Amenities & Features</h3>
+                        </div>
+                        
+                        <p>Make sure these key amenities are highlighted prominently in your listing:</p>
+                        
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <i class="fas fa-wifi amenity-icon"></i>
+                                <span>Fast WiFi</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-parking amenity-icon"></i>
+                                <span>Free Parking</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-tv amenity-icon"></i>
+                                <span>Smart TV</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-snowflake amenity-icon"></i>
+                                <span>Air Conditioning</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-laptop amenity-icon"></i>
+                                <span>Workspace</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-utensils amenity-icon"></i>
+                                <span>Full Kitchen</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-swimming-pool amenity-icon"></i>
+                                <span>Pool Access</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-mountain amenity-icon"></i>
+                                <span>Mountain Views</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 20px;">Recommended amenities to add (based on your target guests):</p>
+                        
+                        <div class="amenities-grid">
+                            <div class="amenity-item">
+                                <i class="fas fa-baby amenity-icon"></i>
+                                <span class="amenity-recommended">Pack and Play</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-chair amenity-icon"></i>
+                                <span class="amenity-recommended">High Chair</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-door-closed amenity-icon"></i>
+                                <span class="amenity-recommended">Safety Gates</span>
+                            </div>
+                            <div class="amenity-item">
+                                <i class="fas fa-gamepad amenity-icon"></i>
+                                <span class="amenity-recommended">Board Games</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-camera"></i> Photo Sequence Recommendation</h3>
+                        </div>
+                        
+                        <p>For maximum impact, arrange your photos in this recommended order:</p>
+                        
+                        <div class="photo-order-container">
+                            <div class="photo-item">
+                                <div class="photo-number">1</div>
+                                <span class="photo-type">Living Room</span>
+                                <span class="photo-description">Showcase the main living space with natural light</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">2</div>
+                                <span class="photo-type">View/Feature</span>
+                                <span class="photo-description">Highlight mountain views or unique selling point</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">3</div>
+                                <span class="photo-type">Kitchen</span>
+                                <span class="photo-description">Show full kitchen with modern appliances</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">4</div>
+                                <span class="photo-type">Master Bedroom</span>
+                                <span class="photo-description">Showcase comfortable bed and linens</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">5</div>
+                                <span class="photo-type">Second Bedroom</span>
+                                <span class="photo-description">Highlight twin beds for children/guests</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">6</div>
+                                <span class="photo-type">Bathrooms</span>
+                                <span class="photo-description">Show clean, well-appointed bathrooms</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">7</div>
+                                <span class="photo-type">Workspace</span>
+                                <span class="photo-description">Feature dedicated work area with good lighting</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">8</div>
+                                <span class="photo-type">Pool/Amenities</span>
+                                <span class="photo-description">Show shared spaces or additional amenities</span>
+                            </div>
+                            
+                            <div class="photo-item">
+                                <div class="photo-number">9</div>
+                                <span class="photo-type">Neighborhood</span>
+                                <span class="photo-description">Highlight local area or nearby attractions</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 20px; font-style: italic;">Pro tip: Use bright, well-lit photos taken during daylight hours. Make sure each photo tells part of your property's story.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-key"></i> SEO Keywords & Phrases</h3>
+                        </div>
+                        
+                        <p>Include these high-performing keywords throughout your listing:</p>
+                        
+                        <div class="keywords-container">
+                            <div class="keyword-tag">Family-friendly</div>
+                            <div class="keyword-tag">Mountain views</div>
+                            <div class="keyword-tag">2-bedroom apartment</div>
+                            <div class="keyword-tag">Pool access</div>
+                            <div class="keyword-tag">Free parking</div>
+                            <div class="keyword-tag">Fast WiFi</div>
+                            <div class="keyword-tag">West Hills</div>
+                            <div class="keyword-tag">Fully equipped kitchen</div>
+                            <div class="keyword-tag">Smart TV</div>
+                            <div class="keyword-tag">Dedicated workspace</div>
+                            <div class="keyword-tag">Kid-friendly</div>
+                            <div class="keyword-tag">15 min to downtown</div>
+                            <div class="keyword-tag">Near parks</div>
+                            <div class="keyword-tag">Modern</div>
+                            <div class="keyword-tag">Clean</div>
+                            <div class="keyword-tag">Comfortable</div>
+                            <div class="keyword-tag">Air conditioning</div>
+                            <div class="keyword-tag">Quiet neighborhood</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <h3><i class="fas fa-rocket"></i> Ready to maximize your rental income?</h3>
+                        <p>Launch your remote property management business and earn thousands without owning a single property.</p>
+                        <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-white">Get The Complete Blueprint</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle guest type selection
+            const guestTypeOptions = document.querySelectorAll('.guest-type-option');
+            guestTypeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    guestTypeOptions.forEach(opt => opt.classList.remove('active'));
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                });
+            });
+            
+            // Copy button functionality
+            const copyButtons = document.querySelectorAll('.title-option-copy, .description-section-copy');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const textElement = this.closest('.title-option, .description-section').querySelector('.title-option-text, .description-section-text');
+                    const text = textElement.textContent;
+                    
+                    navigator.clipboard.writeText(text).then(() => {
+                        // Show copy confirmation
+                        const originalIcon = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => {
+                            this.innerHTML = originalIcon;
+                        }, 2000);
+                    });
+                });
+            });
+            
+            // Optimize button functionality
+            document.getElementById('optimizeButton').addEventListener('click', optimizeListing);
+            
+            // Reset button functionality
+            document.getElementById('resetButton').addEventListener('click', resetForm);
+        });
+        
+        function optimizeListing() {
+            // Get form values
+            const propertyType = document.getElementById('property-type').value;
+            const bedrooms = document.getElementById('bedrooms').value;
+            const bathrooms = document.getElementById('bathrooms').value;
+            const locationType = document.getElementById('location-type').value;
+            const neighborhood = document.getElementById('neighborhood').value || 'West Hills';
+            
+            // Generate title with actual form values
+            const titleOptions = document.querySelectorAll('.title-option-text');
+            const bedroomText = bedrooms == 0 ? 'Studio' : bedrooms + 'BR';
+            const bathroomText = bathrooms + 'BA';
+            
+            // Replace placeholders with actual values
+            titleOptions.forEach((titleOption, index) => {
+                let titleText = '';
+                
+                switch(index) {
+                    case 0: // Feature-focused
+                        titleText = `Bright ${bedroomText}/${bathroomText} with Mountain Views & Pool Access in ${neighborhood}`;
+                        break;
+                    case 1: // Experience-focused
+                        titleText = `Cozy Family Retreat in ${neighborhood} - Workspace, Smart TV & Pool`;
+                        break;
+                    case 2: // Location-focused
+                        titleText = `${neighborhood} Getaway - ${bedroomText} near Downtown & Parks w/ Free Parking`;
+                        break;
+                    case 3: // Unique value
+                        titleText = `Family-Friendly ${bedroomText} ${propertyType} with Kid's Play Area & Fast WiFi`;
+                        break;
+                }
+                
+                titleOption.textContent = titleText;
+            });
+            
+            // Update description sections with actual property info
+            const descSections = document.querySelectorAll('.description-section-text');
+            const propertyTypeText = propertyType.charAt(0).toUpperCase() + propertyType.slice(1);
+            
+            // Replace property type in descriptions
+            descSections.forEach(section => {
+                section.textContent = section.textContent
+                    .replace(/apartment/g, propertyType)
+                    .replace(/Apartment/g, propertyTypeText)
+                    .replace(/West Hills/g, neighborhood);
+            });
+            
+            // Scroll to top of results
+            document.querySelector('.optimizer-results').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetForm() {
+            // Reset all form fields to defaults
+            document.getElementById('property-type').value = 'apartment';
+            document.getElementById('bedrooms').value = '2';
+            document.getElementById('bathrooms').value = '2';
+            document.getElementById('location-type').value = 'suburban';
+            document.getElementById('neighborhood').value = '';
+            document.getElementById('unique-feature').value = '';
+            
+            // Uncheck all amenities except defaults
+            const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = ['amenity-kitchen', 'amenity-parking', 'amenity-workspace', 'amenity-wifi', 'amenity-ac', 'amenity-tv'].includes(checkbox.id);
+            });
+            
+            // Reset guest type selection
+            const guestTypeOptions = document.querySelectorAll('.guest-type-option');
+            guestTypeOptions.forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.guestType === 'families') {
+                    option.classList.add('active');
+                }
+            });
+            
+            // Reset attractions field
+            document.getElementById('attractions').value = '';
+            
+            // Reset optimization options
+            document.getElementById('title-style').value = 'descriptive';
+            document.getElementById('description-length').value = 'standard';
+        }
+    </script>
+</body>
+</html>
