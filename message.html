@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Airbnb: Guest Message Sequence Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff5a5f;
+            --primary-light: #ff8a8e;
+            --primary-dark: #e54a4f;
+            --secondary: #00A699;
+            --secondary-light: #00c2b3;
+            --secondary-dark: #008577;
+            --text: #484848;
+            --text-light: #767676;
+            --background: #ffffff;
+            --background-alt: #f8f9fa;
+            --border: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --neutral: #8E8E93;
+            --gradient-start: #ff5a5f;
+            --gradient-end: #00A699;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--background-alt);
+            font-size: 16px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin: 1.25rem 0 0.75rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* Generator section */
+        .generator {
+            padding: 40px 0 60px;
+        }
+        
+        .generator-header {
+            margin-bottom: 30px;
+        }
+        
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .generator-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background-color: var(--background-alt);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.1);
+        }
+        
+        .generator-results {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        /* Form sections */
+        .form-section {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        /* Button group */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Info tooltip */
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text) transparent transparent transparent;
+        }
+        
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Message templates */
+        .message-template {
+            background-color: var(--background-alt);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+        
+        .message-template:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .message-template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .message-badge {
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .message-timing {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-left: 10px;
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .message-action-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .message-action-btn:hover {
+            background-color: rgba(255, 90, 95, 0.1);
+            color: var(--primary-dark);
+        }
+        
+        .message-action-btn i {
+            margin-right: 5px;
+        }
+        
+        .message-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text);
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+        }
+        
+        .message-notes {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            background-color: rgba(0, 166, 153, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .message-notes-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .message-notes-title i {
+            margin-right: 5px;
+        }
+        
+        /* Message journey visualization */
+        .message-journey {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .message-journey::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 2px;
+            z-index: 0;
+        }
+        
+        .journey-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            max-width: 100px;
+        }
+        
+        .journey-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .journey-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            color: var(--text);
+        }
+        
+        /* Export options */
+        .export-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .export-btn {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .export-btn:hover {
+            background-color: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
+        }
+        
+        .export-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Communication style */
+        .style-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .style-option {
+            flex: 1;
+            background-color: var(--background-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .style-option:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .style-option.active {
+            background-color: rgba(255, 90, 95, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .style-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .style-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .style-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        /* Guest Personas */
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .persona-option {
+            background-color: var(--background-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .persona-option:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .persona-option.active {
+            background-color: rgba(255, 90, 95, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .persona-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .persona-label {
+            font-weight: 500;
+        }
+        
+        /* Checkbox list */
+        .checkbox-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        /* Platform badges */
+        .platform-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        
+        .platform-airbnb {
+            background-color: rgba(255, 90, 95, 0.15);
+            color: var(--primary);
+        }
+        
+        .platform-vrbo {
+            background-color: rgba(0, 166, 153, 0.15);
+            color: var(--secondary);
+        }
+        
+        .platform-bookingcom {
+            background-color: rgba(0, 113, 194, 0.15);
+            color: #0071C2;
+        }
+        
+        /* CTA card */
+        .cta-card {
+            background: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta-card h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .cta-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+        
+        .btn-white {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-white:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-dark);
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .generator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .generator-form {
+                position: static;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .style-options,
+            .personas-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .message-journey {
+                display: none;
+            }
+            
+            .checkbox-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .button-group,
+            .export-options {
+                flex-direction: column;
+            }
+            
+            .style-options,
+            .personas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo"><i class="fas fa-home"></i> Remote Airbnb</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="adr.html">ADR Calculator</a>
+                <a href="revenue.html">Revenue Calculator</a>
+                <a href="calc.html">Owner Report Tool</a>
+                <a href="listing-optimizer.html">Listing Optimizer</a>
+                <a href="#" class="active">Message Generator</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="generator">
+        <div class="container">
+            <div class="generator-header">
+                <h1>Guest Message Sequence Generator</h1>
+                <p>Create professionally crafted message templates for the entire guest journey</p>
+            </div>
+            
+            <div class="generator-grid">
+                <div class="generator-form">
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-house"></i> Property Details</div>
+                        <div class="form-group">
+                            <label for="property-name">Property Name</label>
+                            <input type="text" id="property-name" placeholder="e.g. Mountain View Cabin" value="Sunset Beach House">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="property-type">Property Type</label>
+                            <select id="property-type">
+                                <option value="apartment">Apartment</option>
+                                <option value="house" selected>House</option>
+                                <option value="condo">Condominium</option>
+                                <option value="cabin">Cabin/Cottage</option>
+                                <option value="villa">Villa</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="check-in-type">Check-in Method</label>
+                            <select id="check-in-type">
+                                <option value="lockbox">Lockbox</option>
+                                <option value="smartlock" selected>Smart Lock</option>
+                                <option value="keypad">Keypad</option>
+                                <option value="keys">Key Handoff</option>
+                                <option value="front-desk">Front Desk</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-user-group"></i> Guest Personas</div>
+                        <p style="font-size: 0.9rem; margin-bottom: 10px;">Select your primary target guests (choose up to 2)</p>
+                        
+                        <div class="personas-grid">
+                            <div class="persona-option" data-persona="families">
+                                <div class="persona-icon"><i class="fas fa-users"></i></div>
+                                <div class="persona-label">Families</div>
+                            </div>
+                            <div class="persona-option active" data-persona="couples">
+                                <div class="persona-icon"><i class="fas fa-heart"></i></div>
+                                <div class="persona-label">Couples</div>
+                            </div>
+                            <div class="persona-option" data-persona="business">
+                                <div class="persona-icon"><i class="fas fa-briefcase"></i></div>
+                                <div class="persona-label">Business</div>
+                            </div>
+                            <div class="persona-option" data-persona="groups">
+                                <div class="persona-icon"><i class="fas fa-user-friends"></i></div>
+                                <div class="persona-label">Groups</div>
+                            </div>
+                            <div class="persona-option" data-persona="solo">
+                                <div class="persona-icon"><i class="fas fa-user"></i></div>
+                                <div class="persona-label">Solo</div>
+                            </div>
+                            <div class="persona-option active" data-persona="luxury">
+                                <div class="persona-icon"><i class="fas fa-gem"></i></div>
+                                <div class="persona-label">Luxury</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-comments"></i> Communication Style</div>
+                        
+                        <div class="style-options">
+                            <div class="style-option" data-style="friendly">
+                                <div class="style-icon"><i class="fas fa-smile"></i></div>
+                                <div class="style-label">Friendly & Casual</div>
+                                <div class="style-desc">Warm, conversational, and approachable</div>
+                            </div>
+                            <div class="style-option active" data-style="professional">
+                                <div class="style-icon"><i class="fas fa-user-tie"></i></div>
+                                <div class="style-label">Professional</div>
+                                <div class="style-desc">Polished, concise, and business-like</div>
+                            </div>
+                            <div class="style-option" data-style="detailed">
+                                <div class="style-icon"><i class="fas fa-list-check"></i></div>
+                                <div class="style-label">Detailed</div>
+                                <div class="style-desc">Comprehensive, thorough, and informative</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-star"></i> Property Highlights</div>
+                        
+                        <div class="form-group">
+                            <label>Key Amenities (select all that apply)</label>
+                            <div class="checkbox-list">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-wifi" checked>
+                                    Fast WiFi
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-parking" checked>
+                                    Free Parking
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-pool" checked>
+                                    Pool
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-hottub" checked>
+                                    Hot Tub
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-kitchen" checked>
+                                    Full Kitchen
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-workspace">
+                                    Workspace
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-ac" checked>
+                                    Air Conditioning
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="amenity-pets">
+                                    Pet Friendly
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="unique-feature">Unique Feature (optional)</label>
+                            <input type="text" id="unique-feature" placeholder="e.g. Ocean views, historic building, etc." value="Beachfront access">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-location-dot"></i> Local Information</div>
+                        <div class="form-group">
+                            <label for="nearby-attractions">Nearby Attractions/Restaurants</label>
+                            <textarea id="nearby-attractions" placeholder="List popular nearby places your guests might enjoy">Sandy Beach (direct access)
+The Coastal Trail (0.5 miles)
+Sunset Bistro (5 min walk)
+Local Seafood Market (10 min walk)
+Downtown Shopping (15 min drive)</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-sliders"></i> Special Requests</div>
+                        
+                        <div class="form-group">
+                            <label for="review-request">Review Request Preference</label>
+                            <select id="review-request">
+                                <option value="standard">Standard Request</option>
+                                <option value="detailed" selected>Detailed Feedback Request</option>
+                                <option value="gentle">Gentle Reminder</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="checkout-instructions">Special Checkout Instructions</label>
+                            <textarea id="checkout-instructions" placeholder="Any special instructions for checkout...">Strip the beds and place linens in the laundry basket
+Place used towels in the bathroom hamper
+Lock all doors and windows
+Return keys to the lockbox</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="generateButton" class="btn"><i class="fas fa-wand-magic-sparkles"></i> Generate Messages</button>
+                        <button type="button" id="resetButton" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+                
+                <div class="generator-results">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Guest Journey Message Sequence</h2>
+                            <p>Professionally crafted messages optimized for your property</p>
+                        </div>
+                        
+                        <div class="message-journey">
+                            <div class="journey-step">
+                                <div class="journey-icon"><i class="fas fa-check"></i></div>
+                                <div class="journey-label">Booking Confirmation</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="journey-icon"><i class="fas fa-calendar-alt"></i></div>
+                                <div class="journey-label">Pre-Arrival</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="journey-icon"><i class="fas fa-key"></i></div>
+                                <div class="journey-label">Check-In</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="journey-icon"><i class="fas fa-bed"></i></div>
+                                <div class="journey-label">During Stay</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="journey-icon"><i class="fas fa-sign-out-alt"></i></div>
+                                <div class="journey-label">Check-Out</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="journey-icon"><i class="fas fa-star"></i></div>
+                                <div class="journey-label">Post-Stay</div>
+                            </div>
+                        </div>
+                        
+                        <div class="export-options">
+                            <button class="export-btn"><i class="fas fa-file-alt"></i> Export to Text</button>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Confirmation Message -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-check-circle"></i> Booking Confirmation</h3>
+                            <div>
+                                <span class="platform-badge platform-airbnb">Airbnb</span>
+                                <span class="platform-badge platform-vrbo">VRBO</span>
+                                <span class="platform-badge platform-bookingcom">Booking.com</span>
+                            </div>
+                        </div>
+                        
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Immediate</span>
+                                    <span class="message-timing">Sent automatically after booking confirmation</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Thank you for choosing Sunset Beach House for your upcoming stay. Your reservation is confirmed, and we're pleased to welcome you soon.
+
+Your reservation details:
+• Check-in: [Check-in Date] after 3:00 PM
+• Check-out: [Check-out Date] by 11:00 AM
+• Number of guests: [Number of Guests]
+
+Sunset Beach House offers a luxurious beachfront experience with direct beach access, a private pool, hot tub, and full kitchen. We're confident you'll enjoy the premium amenities and spectacular ocean views during your stay.
+
+As your check-in date approaches, you'll receive detailed access instructions for our smart lock system. In the meantime, if you have any questions or special requests, please don't hesitate to contact us.
+
+We look forward to providing you with an exceptional experience.
+
+Best regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>This message establishes a professional tone and confirms essential details</li>
+                                    <li>Highlights luxury amenities to reinforce booking decision</li>
+                                    <li>Sets expectations for future communications</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pre-Arrival Messages -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Pre-Arrival Messages</h3>
+                        </div>
+                        
+                        <!-- 7 Days Before -->
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">7 Days Before</span>
+                                    <span class="message-timing">Sent automatically 7 days prior to check-in</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Your stay at Sunset Beach House is just one week away, and we're preparing for your arrival.
+
+We wanted to share some local recommendations that our guests particularly enjoy:
+• Sandy Beach (direct access from the property)
+• The Coastal Trail (0.5 miles away) - perfect for morning walks
+• Sunset Bistro (5-minute walk) - exceptional seafood dining
+• Local Seafood Market (10-minute walk) - for fresh catches if you prefer to cook
+• Downtown Shopping (15-minute drive) - boutiques and galleries
+
+Is there anything specific you're interested in during your stay? We're happy to provide additional recommendations tailored to your preferences.
+
+Also, please let us know your estimated arrival time to help us ensure everything is prepared for your check-in.
+
+Looking forward to hosting you,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Builds anticipation for the stay while providing valuable local information</li>
+                                    <li>Prompts guests for arrival time information to help with planning</li>
+                                    <li>Opens dialogue for personalized recommendations</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 2 Days Before -->
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">2 Days Before</span>
+                                    <span class="message-timing">Sent automatically 2 days prior to check-in</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Your stay at Sunset Beach House is just two days away. Here's the essential information you'll need for a smooth check-in:
+
+CHECK-IN DETAILS:
+• Date: [Check-in Date]
+• Time: Any time after 3:00 PM
+• Address: [Property Address]
+
+ACCESS INSTRUCTIONS:
+• Our property features a smart lock system for convenient, keyless entry
+• Your unique access code is: [Access Code]
+• This code will be active from your check-in time until check-out
+
+PARKING:
+• Free designated parking is available on-site
+• Please park in the spaces marked "Guest Parking"
+
+WIFI:
+• Network: Sunset Beach House
+• Password: [WiFi Password]
+
+Attached is our digital guidebook with detailed property information, amenities instructions, and local recommendations.
+
+If you need assistance during your stay, you can reach us at [Contact Number]. We're available 24/7 for urgent matters.
+
+Safe travels, and we look forward to welcoming you soon.
+
+Best regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Provides all critical check-in information in a well-organized format</li>
+                                    <li>Clear access instructions reduce check-in questions and confusion</li>
+                                    <li>Mention of 24/7 availability for urgent matters sets service expectations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Check-In Message -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-key"></i> Check-In Message</h3>
+                        </div>
+                        
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Check-In Day</span>
+                                    <span class="message-timing">Sent automatically at 3:00 PM on check-in day</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Welcome to Sunset Beach House! Your accommodation is now ready for check-in.
+
+To access the property, simply enter your code [Access Code] on the smart lock keypad. The lock is located on the main entrance door. Press the "Lock" button after entering the code to unlock the door.
+
+Upon entering, you'll find:
+• Master switches for lights on the right wall in the entryway
+• Thermostat controls in the main hallway
+• Pool and hot tub controls on the back patio
+
+The property features:
+• Direct beach access through the back gate
+• Full kitchen with premium appliances
+• Pool and hot tub with temperature controls
+• Air conditioning throughout
+• Smart TVs in the living room and bedrooms
+
+Please take a moment to review the digital guidebook we provided for detailed information about the property and its amenities.
+
+If you have any questions or need assistance, please don't hesitate to contact us at [Contact Number].
+
+Enjoy your stay!
+
+Best regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Confirms the property is ready for check-in</li>
+                                    <li>Repeats access code and provides specific lock instructions</li>
+                                    <li>Highlights important features and controls guests will need immediately</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- During Stay Message -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-bed"></i> During Stay Message</h3>
+                        </div>
+                        
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Mid-Stay</span>
+                                    <span class="message-timing">Sent automatically after the first night of stay</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+I hope you're enjoying your stay at Sunset Beach House. I'm reaching out to ensure everything is meeting your expectations and to address any questions or concerns you might have.
+
+Is everything in the property functioning properly? Are you finding everything you need for a comfortable stay?
+
+If you've had a chance to visit the beach, I hope you're enjoying the private access. The sunsets from the back patio are particularly spectacular—guests often tell us it's their favorite part of the stay.
+
+For couples looking for a special dinner, Sunset Bistro (5-minute walk) offers a romantic oceanfront dining experience. Their seafood is exceptional, and they take reservations if you're interested.
+
+Please don't hesitate to contact us if you need anything at all during the remainder of your stay.
+
+Warm regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Checks in with guests without being intrusive</li>
+                                    <li>Provides relevant recommendations tailored to couples</li>
+                                    <li>Opens communication channel for any issues</li>
+                                    <li>Subtly highlights the property's best features</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Check-Out Message -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-sign-out-alt"></i> Check-Out Message</h3>
+                        </div>
+                        
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Day Before Check-Out</span>
+                                    <span class="message-timing">Sent automatically at 6:00 PM the day before check-out</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Thank you for choosing Sunset Beach House. We hope you've enjoyed your stay with us.
+
+As a reminder, check-out is tomorrow at 11:00 AM. Here are our simple check-out procedures:
+
+• Strip the beds and place linens in the laundry basket
+• Place used towels in the bathroom hamper
+• Lock all doors and windows
+• Ensure the pool heater and hot tub are turned off
+• The smart lock will automatically lock behind you upon departure
+
+No need to worry about extensive cleaning—our professional team will handle that. We simply ask that you leave the property in reasonable condition.
+
+If you require a late check-out, please let us know as soon as possible, and we'll do our best to accommodate your request if the calendar allows.
+
+We hope you've created wonderful memories during your stay with us.
+
+Best regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Reminds guests of check-out time and procedures</li>
+                                    <li>Includes special instructions for property-specific items (pool/hot tub)</li>
+                                    <li>Sets clear expectations for check-out condition</li>
+                                    <li>Offers late check-out option if available</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Post-Stay/Review Request Message -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-star"></i> Review Request Message</h3>
+                        </div>
+                        
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Post-Stay</span>
+                                    <span class="message-timing">Sent automatically on check-out day at 3:00 PM</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Thank you for choosing Sunset Beach House for your stay. We hope your experience exceeded expectations and that you enjoyed the beachfront location, pool, and premium amenities.
+
+We would greatly appreciate your detailed feedback on your experience. Your insights help us maintain the high standards our guests expect and continuously improve our offerings.
+
+If you could take a moment to share a review, it would be invaluable to us. Here are some aspects you might consider:
+• Overall comfort and cleanliness
+• Quality of amenities and property features
+• Location and proximity to attractions
+• Check-in/check-out experience
+• Communication throughout your stay
+
+Should you have any private feedback you'd prefer to share directly, please feel free to respond to this message instead.
+
+We strive to provide exceptional experiences for our discerning guests, and we hope to welcome you back to Sunset Beach House in the future.
+
+Warm regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Professional request for detailed feedback</li>
+                                    <li>Specifically asks for feedback on key aspects of the stay</li>
+                                    <li>Offers private feedback channel as an alternative</li>
+                                    <li>Reinforces luxury positioning while being gracious</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Special Situation Messages -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-exclamation-circle"></i> Special Situation Messages</h3>
+                        </div>
+                        
+                        <!-- Maintenance Issue -->
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Maintenance Response</span>
+                                    <span class="message-timing">Send when a guest reports an issue</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Thank you for bringing this matter to our attention. We take all maintenance issues seriously and are committed to resolving this promptly.
+
+I've arranged for our maintenance team to address this issue [specify timeframe—e.g., within the next hour/today at 2:00 PM]. They will [explain solution, e.g., repair the pool heater, fix the air conditioning, etc.].
+
+Please let us know if this timeframe works for you. We're happy to schedule the maintenance visit when it's most convenient for you.
+
+We sincerely apologize for any inconvenience this may have caused. Your comfort and satisfaction are our top priorities, and we appreciate your patience as we work to resolve this matter.
+
+If you have any questions or concerns in the meantime, please don't hesitate to contact me directly at [Phone Number].
+
+Best regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Acknowledges the issue promptly and professionally</li>
+                                    <li>Provides a specific timeframe for resolution</li>
+                                    <li>Offers schedule flexibility to accommodate guest preferences</li>
+                                    <li>Includes direct contact information for follow-up</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Early Check-In Request -->
+                        <div class="message-template">
+                            <div class="message-template-header">
+                                <div>
+                                    <span class="message-badge">Early Check-In Response</span>
+                                    <span class="message-timing">Send when a guest requests early check-in</span>
+                                </div>
+                                <div class="message-actions">
+                                    <button class="message-action-btn" data-action="copy"><i class="fas fa-copy"></i> Copy</button>
+                                    <button class="message-action-btn" data-action="edit"><i class="fas fa-edit"></i> Edit</button>
+                                </div>
+                            </div>
+                            <div class="message-content">Dear [Guest Name],
+
+Thank you for your request regarding an early check-in on [Check-in Date].
+
+I'm pleased to confirm that we can accommodate your early arrival. The property will be ready for you at [Time, e.g., 1:00 PM] instead of the standard 3:00 PM check-in time. Your access code will be active from this earlier time.
+
+[Alternative if early check-in isn't possible:]
+Thank you for your request regarding an early check-in. Unfortunately, due to a same-day checkout and our thorough cleaning protocol, we won't be able to accommodate an early arrival on this occasion. The property will be ready at the standard check-in time of 3:00 PM.
+
+However, if you arrive earlier, we'd be happy to recommend several nearby locations where you could enjoy lunch or refreshments while waiting. The Local Seafood Market (10-minute walk) offers excellent takeaway options, and there's a beautiful oceanfront park just a 5-minute walk from the property.
+
+Please let me know if you have any questions or if there's anything else we can assist with before your arrival.
+
+Best regards,
+[Your Name]
+Property Manager</div>
+                            <div class="message-notes">
+                                <div class="message-notes-title"><i class="fas fa-lightbulb"></i> Pro Tips</div>
+                                <ul>
+                                    <li>Provides a clear yes/no answer to the request</li>
+                                    <li>If declining, explains why and offers helpful alternatives</li>
+                                    <li>Maintains a professional, service-oriented tone</li>
+                                    <li>Proactively addresses access code timing if accepting</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <h3><i class="fas fa-rocket"></i> Ready to maximize your rental income?</h3>
+                        <p>Launch your remote property management business and earn thousands without owning a single property.</p>
+                        <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-white">Get The Complete Blueprint</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle persona selection
+            const personaOptions = document.querySelectorAll('.persona-option');
+            let activePersonas = 0;
+            
+            personaOptions.forEach(option => {
+                if (option.classList.contains('active')) {
+                    activePersonas++;
+                }
+                
+                option.addEventListener('click', function() {
+                    if (this.classList.contains('active')) {
+                        this.classList.remove('active');
+                        activePersonas--;
+                    } else {
+                        if (activePersonas < 2) {
+                            this.classList.add('active');
+                            activePersonas++;
+                        } else {
+                            alert('You can select a maximum of 2 guest personas. Please deselect one before adding another.');
+                        }
+                    }
+                });
+            });
+            
+            // Toggle communication style selection
+            const styleOptions = document.querySelectorAll('.style-option');
+            styleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    styleOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Copy button functionality
+            const copyButtons = document.querySelectorAll('[data-action="copy"]');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const messageContent = this.closest('.message-template').querySelector('.message-content').textContent;
+                    
+                    navigator.clipboard.writeText(messageContent).then(() => {
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                        }, 2000);
+                    });
+                });
+            });
+            
+            // Edit button functionality
+            const editButtons = document.querySelectorAll('[data-action="edit"]');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const messageContent = this.closest('.message-template').querySelector('.message-content');
+                    const currentText = messageContent.textContent;
+                    
+                    // Replace text with textarea
+                    const textarea = document.createElement('textarea');
+                    textarea.value = currentText;
+                    textarea.style.width = '100%';
+                    textarea.style.minHeight = '200px';
+                    textarea.style.padding = '10px';
+                    textarea.style.marginBottom = '10px';
+                    textarea.style.borderRadius = '8px';
+                    textarea.style.border = '1px solid var(--border)';
+                    
+                    messageContent.replaceWith(textarea);
+                    textarea.focus();
+                    
+                    // Add save button
+                    const saveButton = document.createElement('button');
+                    saveButton.className = 'btn btn-secondary';
+                    saveButton.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                    saveButton.style.marginBottom = '15px';
+                    
+                    textarea.parentNode.insertBefore(saveButton, textarea.nextSibling);
+                    
+                    // Save changes
+                    saveButton.addEventListener('click', function() {
+                        const newText = textarea.value;
+                        const newMessageContent = document.createElement('div');
+                        newMessageContent.className = 'message-content';
+                        newMessageContent.textContent = newText;
+                        
+                        textarea.replaceWith(newMessageContent);
+                        saveButton.remove();
+                    });
+                });
+            });
+            
+            // Generate button functionality
+            document.getElementById('generateButton').addEventListener('click', generateMessages);
+            
+            // Reset button functionality
+            document.getElementById('resetButton').addEventListener('click', resetForm);
+        });
+        
+        function generateMessages() {
+            // Get form values
+            const propertyName = document.getElementById('property-name').value;
+            const propertyType = document.getElementById('property-type').value;
+            const checkInType = document.getElementById('check-in-type').value;
+            const uniqueFeature = document.getElementById('unique-feature').value;
+            
+            // Update message content based on form values
+            const messageContents = document.querySelectorAll('.message-content');
+            messageContents.forEach(content => {
+                let updatedContent = content.textContent
+                    .replace(/Sunset Beach House/g, propertyName)
+                    .replace(/house/g, propertyType)
+                    .replace(/House/g, propertyType.charAt(0).toUpperCase() + propertyType.slice(1));
+                
+                // Update check-in method based on selection
+                if (checkInType === 'smartlock') {
+                    updatedContent = updatedContent.replace(/smart lock system/g, 'smart lock system');
+                } else if (checkInType === 'lockbox') {
+                    updatedContent = updatedContent.replace(/smart lock system/g, 'lockbox system');
+                    updatedContent = updatedContent.replace(/on the smart lock keypad/g, 'and retrieve the key from the lockbox');
+                } else if (checkInType === 'keypad') {
+                    updatedContent = updatedContent.replace(/smart lock system/g, 'keypad entry system');
+                    updatedContent = updatedContent.replace(/on the smart lock keypad/g, 'on the keypad');
+                } else if (checkInType === 'keys') {
+                    updatedContent = updatedContent.replace(/smart lock system/g, 'key handoff');
+                    updatedContent = updatedContent.replace(/enter your code \[Access Code\] on the smart lock keypad/g, 'meet our representative at the property for key handoff');
+                }
+                
+                // Update unique feature if provided
+                if (uniqueFeature) {
+                    updatedContent = updatedContent.replace(/direct beach access/g, uniqueFeature.toLowerCase());
+                    updatedContent = updatedContent.replace(/Direct beach access/g, uniqueFeature);
+                    updatedContent = updatedContent.replace(/beachfront/g, uniqueFeature.toLowerCase());
+                }
+                
+                content.textContent = updatedContent;
+            });
+            
+            // Scroll to messages
+            document.querySelector('.generator-results').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetForm() {
+        // Reset all form fields to defaults
+        document.getElementById('property-name').value = 'Sunset Beach House';
+        document.getElementById('property-type').value = 'house';
+        document.getElementById('check-in-type').value = 'smartlock';
+        document.getElementById('unique-feature').value = 'Beachfront access';
+        document.getElementById('nearby-attractions').value = 'Sandy Beach (direct access)\nThe Coastal Trail (0.5 miles)\nSunset Bistro (5 min walk)\nLocal Seafood Market (10 min walk)\nDowntown Shopping (15 min drive)';
+        document.getElementById('checkout-instructions').value = 'Strip the beds and place linens in the laundry basket\nPlace used towels in the bathroom hamper\nLock all doors and windows\nReturn keys to the lockbox';
+        document.getElementById('review-request').value = 'detailed';
+        
+        // Reset checkboxes to default values
+        const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = ['amenity-wifi', 'amenity-parking', 'amenity-pool', 'amenity-hottub', 'amenity-kitchen', 'amenity-ac'].includes(checkbox.id);
+        });
+        
+        // Reset communication style options
+        const styleOptions = document.querySelectorAll('.style-option');
+        styleOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.style === 'professional') {
+                option.classList.add('active');
+            }
+        });
+        
+        // Reset persona options
+        const personaOptions = document.querySelectorAll('.persona-option');
+        personaOptions.forEach(option => {
+            option.classList.remove('active');
+            if (['couples', 'luxury'].includes(option.dataset.persona)) {
+                option.classList.add('active');
+            }
+        });
+        
+        // Reset activePersonas counter
+        activePersonas = 2;
+    }
+    
+    // Export functionality
+    document.querySelectorAll('.export-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const format = this.textContent.includes('Word') ? 'docx' : 
+                          this.textContent.includes('CSV') ? 'csv' : 
+                          this.textContent.includes('Hospitable') ? 'hospitable' : 'txt';
+            
+            exportMessages(format);
+        });
+    });
+    
+    function exportMessages(format) {
+        // Get property name for filename
+        const propertyName = document.getElementById('property-name').value.replace(/\s+/g, '-').toLowerCase();
+        let filename = `${propertyName}-message-templates`;
+        
+        // Collect all message templates
+        const messages = [];
+        document.querySelectorAll('.message-template').forEach(template => {
+            const header = template.querySelector('.message-template-header');
+            const badge = header.querySelector('.message-badge').textContent;
+            const content = template.querySelector('.message-content').textContent;
+            
+            messages.push({
+                type: badge,
+                content: content
+            });
+        });
+        
+        // Handle different export formats
+        if (format === 'docx') {
+            alert(`Preparing Word document: ${filename}.docx\n\nThe download would start automatically in a real implementation.`);
+            // In a real implementation, this would generate a Word document using a library like docx-js
+        } 
+        else if (format === 'csv') {
+            // Create CSV content
+            let csvContent = "Message Type,Content\n";
+            messages.forEach(message => {
+                // Escape quotes in the content
+                const escapedContent = message.content.replace(/"/g, '""');
+                csvContent += `"${message.type}","${escapedContent}"\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${filename}.csv`;
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } 
+        else if (format === 'hospitable') {
+            alert('Preparing export to Hospitable.com\n\nThis would connect to the Hospitable API in a real implementation.');
+            // In a real implementation, this would connect to Hospitable's API
+        } 
+        else {
+            // Create text content
+            let textContent = `MESSAGE TEMPLATES FOR ${document.getElementById('property-name').value.toUpperCase()}\n\n`;
+            messages.forEach(message => {
+                textContent += `=== ${message.type.toUpperCase()} ===\n\n`;
+                textContent += `${message.content}\n\n`;
+                textContent += `------------------\n\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${filename}.txt`;
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+    
+    // Function to dynamically update message content based on form selections
+    function updateMessageContent() {
+        // Get active personas
+        const activePersonas = [];
+        document.querySelectorAll('.persona-option.active').forEach(option => {
+            activePersonas.push(option.dataset.persona);
+        });
+        
+        // Get communication style
+        let communicationStyle = 'professional';
+        document.querySelectorAll('.style-option.active').forEach(option => {
+            communicationStyle = option.dataset.style;
+        });
+        
+        // Get selected amenities
+        const selectedAmenities = [];
+        document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedAmenities.push(checkbox.id.replace('amenity-', ''));
+        });
+        
+        // Update mid-stay message based on selected personas
+        const midStayMessage = document.querySelectorAll('.message-template')[4]; // Fifth message template
+        const midStayContent = midStayMessage.querySelector('.message-content');
+        let personaSpecificContent = '';
+        
+        if (activePersonas.includes('couples')) {
+            personaSpecificContent = 'For couples looking for a special dinner, Sunset Bistro (5-minute walk) offers a romantic oceanfront dining experience. Their seafood is exceptional, and they take reservations if you\'re interested.';
+        } else if (activePersonas.includes('families')) {
+            personaSpecificContent = 'For families, the Local Beach Park (10-minute walk) has excellent play facilities for children. Many of our family guests also enjoy the ice cream shop just down the street.';
+        } else if (activePersonas.includes('business')) {
+            personaSpecificContent = 'For business travelers, the property\'s high-speed WiFi extends to the patio area, and the desk in the second bedroom provides an excellent workspace with natural light.';
+        } else if (activePersonas.includes('luxury')) {
+            personaSpecificContent = 'If you\'re looking for premium experiences, I\'d be happy to arrange a private chef or in-house massage services with advance notice.';
+        }
+        
+        // Update the mid-stay message with persona-specific content
+        let currentContent = midStayContent.textContent;
+        
+        // Find the paragraph before "Please don't hesitate to contact us"
+        const lastParagraphStart = currentContent.lastIndexOf('Please don\'t hesitate');
+        if (lastParagraphStart !== -1) {
+            // Split content at the beginning of the last paragraph
+            const beforeLastParagraph = currentContent.substring(0, lastParagraphStart);
+            const lastParagraph = currentContent.substring(lastParagraphStart);
+            
+            // Find the end of the second-to-last paragraph
+            const beforePersonaContentEnd = beforeLastParagraph.lastIndexOf('\n\n');
+            if (beforePersonaContentEnd !== -1) {
+                // Reconstruct content with new persona-specific paragraph
+                const contentStart = beforeLastParagraph.substring(0, beforePersonaContentEnd + 2);
+                midStayContent.textContent = contentStart + personaSpecificContent + '\n\n' + lastParagraph;
+            }
+        }
+        
+        // Update communication style across all messages
+        const messageTemplates = document.querySelectorAll('.message-template');
+        messageTemplates.forEach(template => {
+            const content = template.querySelector('.message-content');
+            let currentText = content.textContent;
+            
+            // Adjust greeting and closing based on communication style
+            if (communicationStyle === 'friendly') {
+                currentText = currentText.replace(/Dear \[Guest Name\],/g, 'Hi [Guest Name]!');
+                currentText = currentText.replace(/Best regards,/g, 'Cheers,');
+                currentText = currentText.replace(/Warm regards,/g, 'Thanks & best wishes,');
+                currentText = currentText.replace(/Property Manager/g, 'Your Host');
+            } else if (communicationStyle === 'detailed') {
+                // Add more detailed information where appropriate
+                if (template.querySelector('.message-badge').textContent.includes('Check-In')) {
+                    // Add more detailed check-in instructions
+                    if (!currentText.includes('Additional Information')) {
+                        currentText += '\n\nAdditional Information:\n• Check-in process should take less than 5 minutes\n• If the smart lock doesn\'t respond, please try removing and reinserting the batteries located on the inside panel\n• For security, your access code will only work during your confirmed stay dates';
+                    }
+                }
+            }
+            
+            content.textContent = currentText;
+        });
+    }
+    
+    // Add event listeners for real-time updates
+    document.querySelectorAll('.persona-option, .style-option, .checkbox-item input[type="checkbox"]').forEach(element => {
+        element.addEventListener('click', updateMessageContent);
+    });
+        
+    // Initialize the page with default values
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set default active personas
+        activePersonas = 2;
+        
+        // Add event listener for export buttons
+        document.querySelectorAll('.export-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    });
+</script>
+</body>
+</html>
