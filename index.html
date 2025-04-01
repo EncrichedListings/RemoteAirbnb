@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remote Airbnb: Remote Airbnb Co-Hosting Business Blueprint</title>
+    <title>Remote Airbnb: Build a Profitable Co-Hosting Business Without Owning Property</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -210,6 +210,35 @@
             max-width: 100%;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Highlight banner */
+        .highlight-banner {
+            background: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px 0;
+        }
+
+        .highlight-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-icon {
+            font-size: 1.5rem;
+        }
+
+        .highlight-text {
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: white;
         }
         
         /* Features section */
@@ -482,7 +511,7 @@
         /* CTA */
         .cta {
             padding: 100px 0;
-            background-color: var(--background-alt);
+            background-color: white;
             text-align: center;
         }
         
@@ -657,6 +686,134 @@
         .guarantee-content h3 {
             margin-top: 0;
         }
+
+        /* Revenue calculator section */
+        .calculator-preview {
+            background-color: white;
+            padding: 80px 0;
+        }
+
+        .calculator-frame {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .calculator-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calculator-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .calculator-content {
+            padding: 30px;
+        }
+
+        .calc-example {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .calc-inputs {
+            background-color: var(--background-alt);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .calc-result {
+            background-color: var(--background-alt);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+
+        .input-row {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-label {
+            font-weight: 500;
+        }
+
+        .input-value {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .result-highlight {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result-subtitle {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .result-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .result-label {
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        .comparison-bar {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .bar-container {
+            background-color: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .bar-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            border-radius: 15px;
+            width: 75%;
+        }
+
+        .bar-labels {
+            display: flex;
+            justify-content: space-between;
+        }
         
         /* Mobile responsive */
         @media (max-width: 900px) {
@@ -665,7 +822,8 @@
             .doc-categories, 
             .testimonial-grid, 
             .benefits-grid,
-            .footer-container {
+            .footer-container,
+            .calc-example {
                 grid-template-columns: 1fr;
             }
             
@@ -692,6 +850,13 @@
                 justify-content: center;
                 gap: 15px;
             }
+
+            .highlight-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -713,9 +878,9 @@
     <section class="hero">
         <div class="container hero-container">
             <div class="hero-content">
-                <h1>The Complete Airbnb Co-Hosting Business Blueprint</h1>
-                <p class="hero-subtitle">Launch your remote property management business and earn thousands without owning a single property.</p>
-                <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get Started Today</a>
+                <h1>Build a $10,000/Month Airbnb Business Without Owning Property</h1>
+                <p class="hero-subtitle">Our proven co-hosting blueprint shows you exactly how to manage other people's properties remotely, earn 20-30% commission, and scale to a full-time income with complete location freedom.</p>
+                <a href="#blueprint" class="btn btn-secondary btn-large">See What's Inside the Blueprint</a>
             </div>
             <div class="hero-image">
                 <img src="https://github.com/EncrichedListings/RemoteAirbnb/blob/main/Remote%20Airbnb.png?raw=true" alt="Remote property management" />
@@ -723,32 +888,162 @@
         </div>
     </section>
 
+    <div class="highlight-banner">
+        <div class="container highlight-container">
+            <div class="highlight-item">
+                <div class="highlight-icon"><i class="fas fa-house"></i></div>
+                <div class="highlight-text">No property investment required</div>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-icon"><i class="fas fa-location-dot"></i></div>
+                <div class="highlight-text">Work from anywhere in the world</div>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="highlight-text">$700-$1,500+ monthly income per property</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="cta">
+        <div class="container cta-container">
+            <h2>Launch Your Remote Co-Hosting Business Today</h2>
+            <p>Just ONE property client generates $7,000 to $18,000 in annual management fees. Your investment in this blueprint will pay for itself many times over with your very first client.</p>
+            <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get The Complete Blueprint</a>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-heading">
+                <h2>The Co-Hosting Business Model Explained</h2>
+                <p>A simple 3-step system that anyone can implement</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Partner with Property Owners (No Buying or Leasing)</h3>
+                        <p>Find property owners who want higher income but don't want the hassle of managing short-term rentals. You'll offer to boost their income by 30-100% compared to traditional long-term rentals while taking all the work off their hands. We show you exactly how to find these owners and convince them to say yes.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Manage Everything Remotely</h3>
+                        <p>Handle all aspects of the rental remotely including listing creation, pricing optimization, guest communication, and coordinating cleaning and maintenance. Our systems automate 80% of the work, allowing you to manage multiple properties efficiently from anywhere with internet access.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Collect 20-30% Commission</h3>
+                        <p>For every booking, you keep 20-30% of the rental income. With just 10 properties under management, you can easily generate $10,000+ per month in commission income. And because you've built systems that scale, adding new properties increases your income without proportionally increasing your workload.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="calculator-preview">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Calculate Your Potential Income</h2>
+                <p>See how much you could earn with just one property</p>
+            </div>
+            <div class="calculator-frame">
+                <div class="calculator-header">
+                    <div class="calculator-title">Revenue Projection</div>
+                    <div><i class="fas fa-calculator"></i></div>
+                </div>
+                <div class="calculator-content">
+                    <div class="calc-example">
+                        <div class="calc-inputs">
+                            <h3>Example Property</h3>
+                            <div class="input-row">
+                                <span class="input-label">Property Type:</span>
+                                <span class="input-value">2-Bedroom Apartment</span>
+                            </div>
+                            <div class="input-row">
+                                <span class="input-label">Long-Term Rental Rate:</span>
+                                <span class="input-value">$2,000/month</span>
+                            </div>
+                            <div class="input-row">
+                                <span class="input-label">Airbnb Nightly Rate:</span>
+                                <span class="input-value">$150/night</span>
+                            </div>
+                            <div class="input-row">
+                                <span class="input-label">Occupancy Rate:</span>
+                                <span class="input-value">65%</span>
+                            </div>
+                            <div class="input-row">
+                                <span class="input-label">Commission Rate:</span>
+                                <span class="input-value">25%</span>
+                            </div>
+                        </div>
+                        <div class="calc-result">
+                            <div class="result-highlight">$10,804</div>
+                            <div class="result-subtitle">Your Annual Commission</div>
+                            
+                            <div class="result-detail">
+                                <span class="result-label">Monthly Income:</span>
+                                <span class="result-value">$900</span>
+                            </div>
+                            <div class="result-detail">
+                                <span class="result-label">Annual Airbnb Revenue:</span>
+                                <span class="result-value">$43,217</span>
+                            </div>
+                            <div class="result-detail">
+                                <span class="result-label">Owner's Annual Profit:</span>
+                                <span class="result-value">$24,000 → $32,413</span>
+                            </div>
+                            
+                            <div class="comparison-bar">
+                                <div class="comparison-title">Revenue Increase vs Long-Term Rental</div>
+                                <div class="bar-container">
+                                    <div class="bar-fill"></div>
+                                </div>
+                                <div class="bar-labels">
+                                    <span>Long-Term: $24,000</span>
+                                    <span>Airbnb: $43,217</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center" style="margin-top: 30px;">
+                        <a href="revenue.html" class="btn btn-secondary">Calculate Your Own Potential</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="features" id="features">
         <div class="container">
             <div class="section-heading">
-                <h2>Why Remote Airbnb Works</h2>
-                <p>Our innovative approach combines professional remote management with reliable local support</p>
+                <h2>Why This Business Model Works So Well</h2>
+                <p>The perfect balance of high returns and low risk</p>
             </div>
             <div class="feature-grid">
                 <div class="feature-item">
                     <div class="feature-icon">💰</div>
-                    <h3>Competitive Edge</h3>
-                    <p>Charge just 25% commission (instead of the industry-standard 30-40%) while delivering exceptional results that property owners love.</p>
+                    <h3>High Profit Margins</h3>
+                    <p>With typical commission rates of 20-30% and minimal overhead costs, co-hosting delivers exceptional profit margins. Each property can generate $700-$1,500+ per month in commission income, and you can manage multiple properties simultaneously.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">🌍</div>
-                    <h3>Work From Anywhere</h3>
-                    <p>Our proven remote management system lets you operate your business from anywhere in the world while maintaining 5-star quality service.</p>
+                    <div class="feature-icon">🚫</div>
+                    <h3>No Property Investment</h3>
+                    <p>Unlike traditional real estate investing that requires large down payments or rental arbitrage that requires signing leases, co-hosting has virtually no startup costs and zero financial risk. You're leveraging other people's properties for profit.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Ready-to-Use Systems</h3>
-                    <p>Save 300+ hours of document creation and process development with our comprehensive, professional business templates.</p>
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Automation-Powered Scalability</h3>
+                    <p>Our proven systems automate 80% of the daily operations, allowing you to scale from 1 to 10+ properties without hiring a team. Guest communications, pricing, and reservation management can all be handled through streamlined processes.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">🚀</div>
-                    <h3>Rapid Implementation</h3>
-                    <p>Launch your business in weeks instead of months, and start generating revenue from your very first client almost immediately.</p>
+                    <div class="feature-icon">🌎</div>
+                    <h3>Complete Location Freedom</h3>
+                    <p>The entire business can be run remotely from anywhere with internet access. You don't need to be physically present for check-ins, cleaning, or maintenance. Our blueprint shows you exactly how to set up reliable systems for on-the-ground operations.</p>
                 </div>
             </div>
         </div>
@@ -757,182 +1052,77 @@
     <section class="benefits">
         <div class="container">
             <div class="section-heading">
-                <h2>Benefits of Remote Co-Hosting</h2>
-                <p>Create a flexible business that grows with you</p>
+                <h2>What Your Co-Hosting Business Delivers</h2>
+                <p>For both you and property owners</p>
             </div>
             <div class="benefits-grid">
                 <div class="benefit-item">
-                    <div class="benefit-icon">🏡</div>
-                    <h3>No Property Investment</h3>
-                    <p>Build a profitable business without the risks and capital requirements of owning property.</p>
-                </div>
-                <div class="benefit-item">
                     <div class="benefit-icon">📈</div>
-                    <h3>Recurring Revenue</h3>
-                    <p>Create stable, predictable monthly income that grows as you add properties to your portfolio.</p>
+                    <h3>Increased Owner Profits</h3>
+                    <p>Boost property owners' income by 30-100% compared to traditional long-term rentals while handling all the work for them.</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">⏱️</div>
-                    <h3>Flexible Schedule</h3>
-                    <p>Design your work around your lifestyle, not the other way around.</p>
+                    <h3>Passive Income Stream</h3>
+                    <p>Earn steady monthly commission income that requires just 1-2 hours of management per property per week once systems are in place.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔄</div>
+                    <h3>Recurring Revenue</h3>
+                    <p>Create stable, predictable monthly cashflow that continues growing as you add more properties to your portfolio.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="documents" id="documents">
+    <section class="documents" id="blueprint">
         <div class="container">
             <div class="section-heading">
-                <h2>22 Comprehensive Business Documents</h2>
-                <p>Everything you need to launch and operate a professional property management business</p>
+                <h2>What's Inside The Co-Hosting Blueprint</h2>
+                <p>A complete business system with 22 ready-to-use professional documents</p>
             </div>
             <div class="doc-categories">
                 <div class="doc-category">
-                    <h3>Client-Facing Documents</h3>
+                    <h3>Property Acquisition System</h3>
                     <ul class="doc-list">
-                        <li>Co-Hosting Service Agreement</li>
-                        <li>Property Assessment Checklist</li>
-                        <li>Property Onboarding Questionnaire</li>
-                        <li>Service Packages and Pricing Sheet</li>
-                        <li>Client Welcome Packet</li>
-                        <li>Monthly Owner Reporting Template</li>
+                        <li>Professional pitch deck for approaching owners</li>
+                        <li>Property assessment checklist for evaluating opportunities</li>
+                        <li>Service packages and pricing sheet template</li>
+                        <li>Co-hosting service agreement (legal contract)</li>
+                        <li>Property onboarding questionnaire</li>
+                        <li>Client welcome packet template</li>
                     </ul>
                 </div>
                 <div class="doc-category">
-                    <h3>Team Documents</h3>
+                    <h3>Remote Operations System</h3>
                     <ul class="doc-list">
-                        <li>Service Agreement</li>
-                        <li>Cleaning and Inspection Standards Guide</li>
-                        <li>Property Management Responsibilities Outline</li>
-                        <li>Compensation Structure Document</li>
-                        <li>Team Training Manual</li>
+                        <li>Complete standard operating procedures manual</li>
+                        <li>Guest communication templates (entire guest journey)</li>
+                        <li>Booking management workflow document</li>
+                        <li>Turnover coordination process guide</li>
+                        <li>Issue resolution protocol document</li>
+                        <li>Emergency response plan template</li>
                     </ul>
                 </div>
                 <div class="doc-category">
-                    <h3>Operational Documents</h3>
+                    <h3>Team Management System</h3>
                     <ul class="doc-list">
-                        <li>Standard Operating Procedures Manual</li>
-                        <li>Guest Communication Templates</li>
-                        <li>Booking Management Workflow</li>
-                        <li>Turnover Coordination Process</li>
-                        <li>Issue Resolution Protocol</li>
-                        <li>Emergency Response Plan</li>
+                        <li>Cleaner and service provider agreement template</li>
+                        <li>Cleaning and inspection standards guide</li>
+                        <li>Property maintenance responsibility outline</li>
+                        <li>Service provider compensation structure</li>
+                        <li>Team training manual template</li>
                     </ul>
                 </div>
                 <div class="doc-category">
-                    <h3>Marketing Documents</h3>
+                    <h3>Business Growth System</h3>
                     <ul class="doc-list">
-                        <li>Company Overview/Pitch Deck</li>
-                        <li>Service Brochure</li>
-                        <li>Case Study Template</li>
-                        <li>Website Content Plan</li>
-                        <li>Social Media Strategy Document</li>
+                        <li>Monthly owner reporting template</li>
+                        <li>Income projection calculator</li>
+                        <li>Case study template for marketing</li>
+                        <li>Website content plan</li>
+                        <li>Social media strategy document</li>
                     </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="faq" id="faq">
-        <div class="container">
-            <div class="section-heading">
-                <h2>Frequently Asked Questions</h2>
-                <p>Common questions about our Remote Co-Hosting Blueprint</p>
-            </div>
-            <div class="faq-container">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>Do I need experience in Airbnb or property management?</span>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            <p>No, our comprehensive blueprint provides everything you need to start from scratch. The documents and training materials are designed to guide complete beginners through the entire process, from finding your first client to scaling your business.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>How can I manage properties remotely?</span>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            <p>Our blueprint explains our secret model that solves the biggest challenge in remote management. This system allows you to deliver high-quality service from anywhere in the world.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>How quickly can I start making money?</span>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            <p>Many of our clients secure their first property within 30 days of implementing our marketing materials and client acquisition strategies. With just one property, you can typically earn $500-$1,000+ per month in management fees, depending on the property's booking value. Our blueprint includes step-by-step guidance for client acquisition to help you start generating revenue quickly.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>Are the documents customizable?</span>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            <p>Yes, all 22 documents come in fully editable formats. You can easily add your company name, logo, and adjust any details to fit your specific market or preferences. The documents are designed to be templates that you can personalize to match your brand and business needs.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>What ongoing costs will I have for my co-hosting business?</span>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            <p>One of the biggest advantages of this business model is the minimal overhead. Typical costs include a basic website ($15-30/month), communication tools (~$20/month), and possibly some initial marketing expenses. Your main "cost" will be the time invested in client acquisition. The business is designed to be extremely cost-efficient with strong profit margins.</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-heading">
-                <h2>How Our Remote Management System Works</h2>
-                <p>The innovative approach that lets you run properties from anywhere</p>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Handle Digital Management Remotely</h3>
-                        <p>Manage listings, pricing, booking management, and guest communications from anywhere in the world using our streamlined systems and templates.</p>
-                    </div>
-                </div>
-
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Coordinate Through Centralized Systems</h3>
-                        <p>Keep everything organized with our proven workflows, communication protocols, and coordination systems that ensure a seamless guest experience.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Scale Across Multiple Properties</h3>
-                        <p>As you add properties to your portfolio, our systems scale easily, allowing you to grow your business efficiently without adding proportional time commitments.</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -941,7 +1131,7 @@
     <section class="testimonials" id="testimonials">
         <div class="container">
             <div class="section-heading">
-                <h2>Success Stories from Property Managers</h2>
+                <h2>Success Stories from Co-Hosting Entrepreneurs</h2>
                 <p>Real results from people using our blueprint</p>
             </div>
             <div class="testimonial-grid">
@@ -989,7 +1179,75 @@
         </div>
     </section>
 
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Frequently Asked Questions</h2>
+                <p>Common questions about starting a co-hosting business</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need experience in Airbnb or property management?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>No, our comprehensive blueprint provides everything you need to start from scratch. The documents and training materials are designed to guide complete beginners through the entire process, from finding your first client to scaling your business. All the templates, scripts, and systems are included so you don't need to have prior experience.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How quickly can I expect to find my first property to manage?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Many of our clients secure their first property within 30 days of implementing our marketing materials and client acquisition strategies. The blueprint includes multiple proven methods for finding property owners, including direct outreach, networking with real estate agents, identifying underperforming listings, and leveraging existing vacation homeowners. The professional documents instantly give you credibility, making it easier to convert prospects into clients.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How much time do I need to dedicate to this business?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Initially, you'll spend most of your time acquiring properties and setting up systems (approximately 10-15 hours per week). Once established, each property typically requires just 1-2 hours of management per week thanks to our automation systems. A portfolio of 10 properties can be managed in 10-20 hours per week while generating $7,000-$15,000 in monthly income. The business is designed to be highly efficient with your time.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Are the documents customizable for my own business?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, all 22 documents come in fully editable formats. You can easily add your company name, logo, and adjust any details to fit your specific market or preferences. The documents are designed to be templates that you can personalize to match your brand and business needs. They've been battle-tested by successful co-hosts across diverse markets.</p>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What if the property owner already uses Airbnb themselves?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>This is actually a great opportunity - owners who are already using Airbnb but struggling with the management are perfect prospects. Our blueprint includes specific strategies for approaching these owners and demonstrating how your professional management can improve their performance, increase their ratings, and free up their time. We include scripts specifically for convincing DIY hosts to switch to your management.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section class="pricing" id="pricing">
         <div class="container">
@@ -1008,7 +1266,7 @@
                 <div class="price-features">
                     <div class="price-feature">
                         <span class="price-feature-icon">✓</span>
-                        <span>All 22 professional business documents</span>
+                        <span>All 22 professional business documents & templates</span>
                     </div>
                     <div class="price-feature">
                         <span class="price-feature-icon">✓</span>
@@ -1016,24 +1274,17 @@
                     </div>
                     <div class="price-feature">
                         <span class="price-feature-icon">✓</span>
-                        <span>Detailed implementation guide</span>
+                        <span>Step-by-step implementation guide</span>
                     </div>
                     <div class="price-feature">
                         <span class="price-feature-icon">✓</span>
-                        <span>30-day money-back guarantee</span>
+                        <span>Access to online calculation tools</span>
                     </div>
-</div>
+
+                </div>
                 
                 <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get the Complete Blueprint</a>
             </div>
-        </div>
-    </section>
-
-    <section class="cta">
-        <div class="container cta-container">
-            <h2>Start Your Remote Property Management Business Today</h2>
-            <p>Just ONE property client generates $7,000 to $10,000+ in annual management fees. Your investment in this blueprint will pay for itself many times over with your very first client.</p>
-            <a href="https://buy.stripe.com/fZe9EFe7taQmdJCeUU" class="btn btn-secondary btn-large">Get The Complete Blueprint</a>
         </div>
     </section>
 
@@ -1046,9 +1297,9 @@
             <div>
                 <h3 class="footer-heading">Quick Links</h3>
                 <ul class="footer-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#documents">Documents</a></li>
                     <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#blueprint">Blueprint</a></li>
                     <li><a href="#testimonials">Testimonials</a></li>
                     <li><a href="#pricing">Pricing</a></li>
                 </ul>
